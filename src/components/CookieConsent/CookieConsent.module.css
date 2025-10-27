@@ -1,0 +1,441 @@
+/* CookieConsent Component Styles */
+/* Based on original hardwey.css cookie container styles */
+
+.cookieContainer {
+  z-index: 9999;
+  width: 100%;
+  background-color: var(--color-background-primary);
+  border-top: 1px solid var(--color-border);
+  padding: var(--spacing-md) var(--spacing-lg);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.cookieContainerVisible {
+  transform: translateY(0);
+}
+
+.cookieTextContain {
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.cookieSubhead {
+  color: var(--color-text-primary);
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  margin: 0 0 var(--spacing-xs) 0;
+  line-height: 1.2;
+}
+
+.flexBlock {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  flex-wrap: wrap;
+}
+
+.subheading {
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-normal);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.privacyLink,
+.termsLink {
+  color: var(--color-accent-blue);
+  text-decoration: underline;
+  font-weight: var(--font-weight-medium);
+  transition: color 0.3s ease;
+}
+
+.privacyLink:hover,
+.termsLink:hover {
+  color: var(--color-accent-blue-dark);
+}
+
+.cookieCategories {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  margin-top: var(--spacing-sm);
+  max-width: 100%;
+}
+
+.cookieCategory {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-xs);
+}
+
+.categoryLabel {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-xs);
+  cursor: pointer;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-xs);
+  line-height: 1.3;
+}
+
+.categoryCheckbox {
+  margin: 0;
+  margin-top: 2px;
+  cursor: pointer;
+  accent-color: var(--color-accent-blue);
+}
+
+.categoryCheckbox:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.categoryName {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  min-width: 80px;
+}
+
+.categoryDescription {
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-normal);
+  font-size: 11px;
+}
+
+.actionButtons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  align-items: flex-end;
+  min-width: 200px;
+}
+
+.cookieAccept {
+  color: var(--color-text-primary);
+  text-transform: uppercase;
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  line-height: 1em;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius-sm);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.acceptButton {
+  background-color: var(--color-accent-green);
+  color: var(--color-text-inverse);
+}
+
+.acceptButton:hover {
+  background-color: var(--color-accent-green-dark);
+  transform: translateY(-2px);
+}
+
+.declineButton {
+  background-color: var(--color-accent-red);
+  color: var(--color-text-inverse);
+}
+
+.declineButton:hover {
+  background-color: var(--color-accent-red-dark);
+  transform: translateY(-2px);
+}
+
+.saveButton {
+  background-color: var(--color-accent-blue);
+  color: var(--color-text-inverse);
+}
+
+.saveButton:hover {
+  background-color: var(--color-accent-blue-dark);
+  transform: translateY(-2px);
+}
+
+.acceptArrow {
+  width: 1em;
+  height: 1em;
+  transition: transform 0.3s ease;
+}
+
+.cookieAccept:hover .acceptArrow {
+  transform: translateX(2px);
+}
+
+/* Responsive Design */
+@media (max-width: 991px) {
+  .cookieContainer {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+  }
+
+  .cookieTextContain {
+    width: 100%;
+  }
+
+  .actionButtons {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .cookieAccept {
+    font-size: var(--font-size-sm);
+    padding: var(--spacing-xs);
+  }
+
+  .cookieCategories {
+    margin-top: var(--spacing-md);
+  }
+
+  .categoryLabel {
+    font-size: var(--font-size-xs);
+  }
+
+  .categoryName {
+    min-width: 70px;
+  }
+
+  .categoryDescription {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 767px) {
+  .cookieContainer {
+    padding: var(--spacing-sm);
+  }
+
+  .cookieSubhead {
+    font-size: var(--font-size-base);
+  }
+
+  .subheading {
+    font-size: var(--font-size-xs);
+  }
+
+  .actionButtons {
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    align-items: stretch;
+  }
+
+  .cookieAccept {
+    justify-content: center;
+    font-size: var(--font-size-sm);
+    padding: var(--spacing-sm);
+  }
+
+  .cookieCategories {
+    gap: var(--spacing-xs);
+  }
+
+  .cookieCategory {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+  }
+
+  .categoryLabel {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+  }
+
+  .categoryName {
+    min-width: auto;
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .categoryDescription {
+    font-size: var(--font-size-xs);
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 479px) {
+  .cookieContainer {
+    padding: var(--spacing-xs);
+  }
+
+  .cookieSubhead {
+    font-size: var(--font-size-sm);
+  }
+
+  .subheading {
+    font-size: 11px;
+  }
+
+  .cookieAccept {
+    font-size: var(--font-size-xs);
+    padding: var(--spacing-xs);
+  }
+
+  .acceptArrow {
+    width: 0.8em;
+    height: 0.8em;
+  }
+
+  .categoryName {
+    font-size: 11px;
+  }
+
+  .categoryDescription {
+    font-size: 10px;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .cookieContainer {
+    border-top-width: 2px;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  .cookieAccept {
+    border: 2px solid currentColor;
+  }
+
+  .categoryCheckbox {
+    border: 2px solid var(--color-text-primary);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .cookieContainer,
+  .cookieAccept,
+  .acceptArrow {
+    transition: none;
+  }
+
+  .cookieAccept:hover {
+    transform: none;
+  }
+
+  .cookieAccept:hover .acceptArrow {
+    transform: none;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .cookieContainer {
+    background-color: var(--color-background-dark);
+    border-top-color: var(--color-border-dark);
+  }
+
+  .cookieSubhead {
+    color: var(--color-text-inverse);
+  }
+
+  .subheading {
+    color: var(--color-text-secondary-dark);
+  }
+
+  .categoryName {
+    color: var(--color-text-inverse);
+  }
+
+  .categoryDescription {
+    color: var(--color-text-secondary-dark);
+  }
+}
+
+/* Print styles */
+@media print {
+  .cookieContainer {
+    display: none;
+  }
+}
+
+/* Focus management for accessibility */
+.cookieAccept:focus-visible {
+  outline: 2px solid var(--color-accent-blue);
+  outline-offset: 2px;
+}
+
+.categoryCheckbox:focus-visible {
+  outline: 2px solid var(--color-accent-blue);
+  outline-offset: 2px;
+}
+
+.privacyLink:focus-visible,
+.termsLink:focus-visible {
+  outline: 2px solid var(--color-accent-blue);
+  outline-offset: 2px;
+}
+
+/* Animation for cookie categories */
+.cookieCategories {
+  animation: slideInUp 0.3s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Loading state for buttons */
+.cookieAccept:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.cookieAccept:disabled:hover {
+  transform: none;
+}
+
+/* Success state for accepted cookies */
+.cookieContainer.accepted {
+  background-color: var(--color-accent-green-light);
+  border-top-color: var(--color-accent-green);
+}
+
+.cookieContainer.accepted .cookieSubhead {
+  color: var(--color-accent-green-dark);
+}
+
+/* Error state for declined cookies */
+.cookieContainer.declined {
+  background-color: var(--color-accent-red-light);
+  border-top-color: var(--color-accent-red);
+}
+
+.cookieContainer.declined .cookieSubhead {
+  color: var(--color-accent-red-dark);
+}

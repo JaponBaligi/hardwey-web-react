@@ -1,0 +1,369 @@
+/* HeroSection.module.css - EXACT copy of static CSS styles */
+
+/* CSS Variables */
+:root {
+  --white: white;
+  --mita-blue: #bbdbfa;
+  --black: black;
+  --mita-red: #d12d37;
+  --faded-black: rgba(0, 0, 0, .4);
+}
+
+/* Hero Section */
+.heroSection {
+  z-index: 2;
+  width: 100%;
+  height: 100vh;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Animation Initial States - Elements start invisible/transformed */
+.heroLogoDiv {
+  z-index: 3;
+  width: 80vw;
+  perspective: 1000px;
+  position: relative;
+  /* Animation initial state */
+  opacity: 0;
+  animation: fadeInUp 1.2s ease-out forwards;
+  animation-delay: 0.2s;
+  /* Parallax will be applied via JavaScript */
+  will-change: transform;
+}
+
+.outerIdent,
+.outerIdentLeft {
+  /* Animation initial state */
+  opacity: 0;
+  transform: translate3d(0, 7vh, 0);
+  animation: slideInUp 1s ease-out forwards;
+}
+
+.outerIdentLeft {
+  animation-delay: 0.4s;
+}
+
+.outerIdent:not(.outerIdentLeft) {
+  animation-delay: 0.5s;
+}
+
+.motif {
+  /* Animation initial state */
+  opacity: 0;
+}
+
+.motif2k23 {
+  transform: translate3d(0, 6vh, 0);
+  animation: slideInUp 1s ease-out forwards;
+  animation-delay: 0.6s;
+}
+
+.motifRestricted {
+  opacity: 0;
+  animation: slideInUp 1s ease-out forwards;
+  animation-delay: 0.7s;
+}
+
+.mitaHeroText {
+  /* Desktop */
+}
+
+.mitaHeroTextDesktop {
+  opacity: 0;
+  animation: slideInUp 1s ease-out forwards;
+  animation-delay: 0.8s;
+}
+
+.motifGlobal {
+  transform: translate3d(0, 5vh, 0);
+  opacity: 0;
+  animation: slideInUp 1s ease-out forwards;
+  animation-delay: 0.9s;
+}
+
+.motifRights {
+  transform: translate3d(0, 6vh, 0);
+  opacity: 0;
+  animation: slideInUp 1s ease-out forwards;
+  animation-delay: 1.0s;
+}
+
+.motifStars {
+  transform: translate3d(0, 6vh, 0);
+  opacity: 0;
+  animation: slideInUp 1s ease-out forwards;
+  animation-delay: 1.1s;
+}
+
+.bodyCaps {
+  /* Subtitle animation */
+}
+
+.bodyCapsBlue {
+  opacity: 0;
+  animation: fadeIn 0.8s ease-out forwards;
+  animation-delay: 1.2s;
+}
+
+.image {
+  z-index: 1;
+  width: 100%;
+  height: 110%;
+  object-fit: cover;
+  position: absolute;
+  top: 0%;
+  bottom: 0%;
+  left: 0%;
+  right: 0%;
+  /* Background image initial animation */
+  transform: scale3d(1.1, 1.1, 1);
+  animation: zoomInOut 3s ease-out forwards;
+  /* Parallax and blur will be applied via JavaScript after animation */
+  will-change: transform, filter;
+  /* Initial filter state */
+  filter: blur(0);
+}
+
+/* Keyframe Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, var(--slide-from, 0), 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes zoomInOut {
+  from {
+    transform: scale3d(1.1, 1.1, 1);
+  }
+  to {
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+/* Animation Overrides for Desktop - Only on larger screens */
+@media (min-width: 768px) {
+  .motifRestricted {
+    transform: translate3d(0, 5vh, 0);
+  }
+  
+  .mitaHeroTextDesktop {
+    transform: translate3d(0, 4vh, 0);
+  }
+}
+
+/* Responsive - disable animations on mobile for performance */
+@media screen and (max-width: 767px) {
+  .heroLogoDiv,
+  .outerIdent,
+  .outerIdentLeft,
+  .motif2k23,
+  .motifRestricted,
+  .mitaHeroTextDesktop,
+  .motifGlobal,
+  .motifRights,
+  .motifStars,
+  .bodyCapsBlue,
+  .image {
+    animation: none !important;
+    opacity: 1;
+    transform: none !important;
+    filter: none !important;
+  }
+}
+
+.heroLogo {
+  width: 100%;
+  height: auto;
+}
+
+.heroBaseContainer {
+  z-index: 3;
+  grid-row-gap: 0em;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 1vw;
+  padding-left: 1vw;
+  padding-right: 1vw;
+  display: flex;
+  position: absolute;
+  top: auto;
+  bottom: 0%;
+  left: 0%;
+  right: 0%;
+}
+
+.outerIdent {
+  width: 7vw;
+  max-width: none;
+  position: absolute;
+  top: auto;
+  bottom: 2vw;
+  left: auto;
+  right: 2vw;
+}
+
+.outerIdentLeft {
+  width: 8vw;
+  left: 2vw;
+  right: auto;
+}
+
+.mitaHeroText {
+  color: var(--mita-blue);
+  text-align: center;
+  text-transform: uppercase;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-family: Helveticanowdisplay, sans-serif;
+  font-size: 1.4em;
+  font-weight: 700;
+}
+
+.mitaHeroTextMobile {
+  display: none;
+}
+
+.mitaHeroTextDesktop {
+  display: block;
+}
+
+.heroIdentsFlex {
+  grid-column-gap: 1.2em;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.motif {
+  max-width: none;
+}
+
+.motif2k23 {
+  width: 4vw;
+}
+
+.motifRestricted {
+  width: 10vw;
+}
+
+.motifGlobal {
+  width: 4.8vw;
+}
+
+.motifRights {
+  width: 7vw;
+}
+
+.motifStars {
+  width: 1.5vw;
+}
+
+.fixedWidthTextContainer {
+  width: 25em;
+}
+
+.fixedWidthTextContainerHh {
+  /* Additional styles if needed */
+}
+
+.bodyCaps {
+  color: var(--white);
+  text-align: center;
+  text-transform: uppercase;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-family: Helveticanowdisplay, sans-serif;
+  font-size: 1em;
+  font-weight: 300;
+  line-height: 1.2em;
+}
+
+.bodyCapsBlue {
+  color: var(--mita-blue);
+}
+
+.heroOverlay {
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  background-color: var(--faded-black);
+  position: absolute;
+  top: 0%;
+  bottom: 0%;
+  left: 0%;
+  right: 0%;
+}
+
+/* Responsive Design - Tablet */
+@media screen and (max-width: 991px) {
+  .heroSection {
+    height: 95vh;
+  }
+
+  .heroLogoDiv {
+    width: 90vw;
+  }
+
+  .motifRights, 
+  .motifStars {
+    display: none;
+  }
+}
+
+/* Responsive Design - Mobile */
+@media screen and (max-width: 767px) {
+  .heroSection {
+    height: auto;
+    min-height: 180vh;
+  }
+
+  .mitaHeroTextMobile {
+    display: block;
+  }
+
+  .mitaHeroTextDesktop {
+    display: none;
+  }
+
+  .motifGlobal {
+    width: 15vw;
+  }
+}
+
+/* Responsive Design - Small Mobile */
+@media screen and (max-width: 479px) {
+  .heroSection {
+    height: 96vh;
+    min-height: auto;
+  }
+}

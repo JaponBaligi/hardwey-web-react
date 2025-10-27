@@ -1,0 +1,477 @@
+/* ErrorPage Component Styles */
+/* Based on original 404.html styles */
+
+.errorPageContainer {
+  min-height: 100vh;
+  background-color: var(--color-background-dark);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  padding: 2em;
+  overflow-x: hidden;
+}
+
+.backgroundPattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/assets/img/Green eye.gif');
+  background-repeat: repeat;
+  background-size: 200px 200px;
+  opacity: 0.1;
+  z-index: 1;
+}
+
+.patternOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle at center,
+    rgba(0, 0, 0, 0.3) 0%,
+    rgba(0, 0, 0, 0.8) 100%
+  );
+  z-index: 2;
+}
+
+.errorContent {
+  text-align: center;
+  z-index: 10;
+  max-width: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 3em 2em;
+  border-radius: 10px;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.6s ease;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.errorContentVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.errorTitle {
+  color: var(--color-accent-red);
+  font-family: var(--font-family-heading);
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: var(--font-weight-bold);
+  line-height: 0.8em;
+  margin: 0 0 0.5em 0;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  text-shadow: 0 0 20px rgba(209, 45, 55, 0.3);
+}
+
+.errorDescription {
+  color: var(--color-text-inverse);
+  font-family: var(--font-family-primary);
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  font-weight: var(--font-weight-normal);
+  line-height: 1.4em;
+  margin: 0 0 2em 0;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  opacity: 0.9;
+}
+
+.backButton {
+  cursor: pointer;
+  justify-content: center;
+  align-items: center;
+  padding: 1em 2em;
+  border: 2px solid var(--color-accent-red);
+  background-color: transparent;
+  text-decoration: none;
+  display: inline-flex;
+  position: relative;
+  transition: all 0.3s ease;
+  margin-top: 1em;
+  border-radius: var(--border-radius-sm);
+  overflow: hidden;
+}
+
+.backButton:hover {
+  box-shadow: 4px 4px 25px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+.backButton:focus-visible {
+  outline: 2px solid var(--color-accent-red);
+  outline-offset: 2px;
+}
+
+.backButtonText {
+  color: var(--color-accent-red);
+  text-align: center;
+  text-transform: uppercase;
+  font-family: var(--font-family-heading);
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  font-weight: var(--font-weight-semibold);
+  margin: 0;
+  z-index: 5;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.backButtonHover {
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-accent-red);
+  opacity: 0;
+  transform-origin: 50% 100%;
+  position: absolute;
+  top: auto;
+  bottom: 0%;
+  left: 0%;
+  right: 0%;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.backButtonHoverActive {
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+.backButton:hover .backButtonText {
+  color: var(--color-text-inverse);
+  mix-blend-mode: difference;
+}
+
+.arrowDivWrapper {
+  z-index: 5;
+  width: 2em;
+  height: 2em;
+  margin-left: 1em;
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.backButton:hover .arrowDivWrapper {
+  transform: translateX(5px);
+}
+
+.arrowDiv {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: filter 0.3s ease;
+}
+
+.arrowDivInvert {
+  filter: invert(1);
+}
+
+.helpLinks {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+  opacity: 0.7;
+}
+
+.helpLink {
+  background: none;
+  border: none;
+  color: var(--color-text-inverse);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  text-decoration: underline;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  padding: var(--spacing-xs);
+}
+
+.helpLink:hover {
+  color: var(--color-accent-blue);
+}
+
+.helpLink:focus-visible {
+  outline: 2px solid var(--color-accent-blue);
+  outline-offset: 2px;
+}
+
+.helpSeparator {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.decorativeElements {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.floatingElement {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background-color: var(--color-accent-red);
+  border-radius: 50%;
+  opacity: 0.1;
+  animation: float 6s ease-in-out infinite;
+}
+
+.floatingElement:nth-child(1) {
+  top: 20%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.floatingElement:nth-child(2) {
+  top: 60%;
+  right: 15%;
+  animation-delay: 2s;
+}
+
+.floatingElement:nth-child(3) {
+  bottom: 30%;
+  left: 20%;
+  animation-delay: 4s;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+    opacity: 0.1;
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+    opacity: 0.3;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .errorPageContainer {
+    padding: 1em;
+  }
+
+  .errorContent {
+    padding: 2em 1em;
+  }
+
+  .errorTitle {
+    font-size: clamp(2.5rem, 10vw, 4rem);
+  }
+
+  .errorDescription {
+    font-size: clamp(0.9rem, 4vw, 1rem);
+  }
+
+  .backButton {
+    padding: 0.8em 1.5em;
+  }
+
+  .backButtonText {
+    font-size: clamp(0.9rem, 4vw, 1rem);
+  }
+
+  .arrowDivWrapper {
+    width: 1.5em;
+    height: 1.5em;
+    margin-left: 0.8em;
+  }
+
+  .helpLinks {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  .helpSeparator {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .errorPageContainer {
+    padding: 0.5em;
+  }
+
+  .errorContent {
+    padding: 1.5em 1em;
+  }
+
+  .errorTitle {
+    font-size: clamp(2rem, 12vw, 3rem);
+  }
+
+  .errorDescription {
+    font-size: clamp(0.8rem, 5vw, 0.9rem);
+  }
+
+  .backButton {
+    padding: 0.7em 1.2em;
+  }
+
+  .backButtonText {
+    font-size: clamp(0.8rem, 5vw, 0.9rem);
+  }
+
+  .arrowDivWrapper {
+    width: 1.2em;
+    height: 1.2em;
+    margin-left: 0.6em;
+  }
+
+  .floatingElement {
+    width: 15px;
+    height: 15px;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .errorContent {
+    background-color: rgba(0, 0, 0, 0.95);
+    border-width: 2px;
+  }
+
+  .backButton {
+    border-width: 3px;
+  }
+
+  .errorTitle {
+    text-shadow: 0 0 10px var(--color-accent-red);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .errorContent,
+  .backButton,
+  .backButtonText,
+  .backButtonHover,
+  .arrowDivWrapper,
+  .arrowDiv,
+  .floatingElement {
+    transition: none;
+    animation: none;
+  }
+
+  .backButton:hover {
+    transform: none;
+  }
+
+  .backButton:hover .arrowDivWrapper {
+    transform: none;
+  }
+
+  .floatingElement {
+    animation: none;
+    opacity: 0.1;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .errorPageContainer {
+    background-color: var(--color-background-darker);
+  }
+
+  .errorContent {
+    background-color: rgba(0, 0, 0, 0.9);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .patternOverlay {
+    background: radial-gradient(
+      circle at center,
+      rgba(0, 0, 0, 0.4) 0%,
+      rgba(0, 0, 0, 0.9) 100%
+    );
+  }
+}
+
+/* Print styles */
+@media print {
+  .errorPageContainer {
+    background-color: var(--color-background-primary);
+    color: var(--color-text-primary);
+  }
+
+  .errorTitle {
+    color: var(--color-text-primary);
+    text-shadow: none;
+  }
+
+  .errorDescription {
+    color: var(--color-text-secondary);
+  }
+
+  .backButton {
+    border-color: var(--color-text-primary);
+    background-color: transparent;
+  }
+
+  .backButtonText {
+    color: var(--color-text-primary);
+  }
+
+  .backgroundPattern,
+  .decorativeElements {
+    display: none;
+  }
+}
+
+/* Loading state */
+.errorContent:not(.errorContentVisible) {
+  pointer-events: none;
+}
+
+/* Focus management for accessibility */
+.backButton:focus-visible {
+  outline: 2px solid var(--color-accent-red);
+  outline-offset: 2px;
+}
+
+.helpLink:focus-visible {
+  outline: 2px solid var(--color-accent-blue);
+  outline-offset: 2px;
+}
+
+/* Error code specific styles */
+.errorPageContainer.error404 .errorTitle {
+  color: var(--color-accent-red);
+}
+
+.errorPageContainer.error500 .errorTitle {
+  color: var(--color-accent-orange);
+}
+
+.errorPageContainer.error403 .errorTitle {
+  color: var(--color-accent-yellow);
+}
+
+/* Animation delays for staggered entrance */
+.errorTitle {
+  animation-delay: 0.1s;
+}
+
+.errorDescription {
+  animation-delay: 0.2s;
+}
+
+.backButton {
+  animation-delay: 0.3s;
+}
+
+.helpLinks {
+  animation-delay: 0.4s;
+}

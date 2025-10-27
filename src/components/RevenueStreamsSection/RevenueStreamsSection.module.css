@@ -1,0 +1,261 @@
+/* RevenueStreamsSection Component Styles */
+/* Matches the live site revenue streams section */
+
+:root {
+  --black: #000000;
+  --font-family-heading: Helveticanowdisplay, sans-serif;
+  --font-family-primary: Helveticanowdisplay, sans-serif;
+  --font-weight-bold: 800;
+  --font-weight-normal: 300;
+}
+
+.revenueStreamsSection {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #bbdbfa; /* --mita-blue */
+  padding: 4rem 0;
+}
+
+.container {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 3rem;
+}
+
+/* Main Heading */
+.mainHeading {
+  font-family: var(--font-family-heading);
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  font-weight: var(--font-weight-bold);
+  color: var(--black);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  line-height: 1.1;
+  margin: 0;
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 1s ease;
+}
+
+.mainHeadingVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Subtitle */
+.subtitle {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 1s ease 0.5s;
+}
+
+.subtitleVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.subtitleText {
+  font-family: var(--font-family-heading);
+  font-size: clamp(1.5rem, 5vw, 3rem);
+  font-weight: var(--font-weight-bold);
+  color: var(--black);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  line-height: 1;
+}
+
+/* Description */
+.description {
+  font-family: var(--font-family-primary);
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  font-weight: var(--font-weight-normal);
+  color: var(--black);
+  line-height: 1.6;
+  max-width: 800px;
+  margin: 0;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 1s ease 1s;
+}
+
+.descriptionVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Revenue Streams */
+.streamsContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 1s ease 1.5s;
+}
+
+.streamsContainerVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.streamsDuplicate {
+  margin-top: 1rem;
+  opacity: 0.7;
+}
+
+.streamItem {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.streamLabel {
+  font-family: var(--font-family-heading);
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-weight: var(--font-weight-bold);
+  color: var(--black);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.separator {
+  font-family: var(--font-family-heading);
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-weight: var(--font-weight-bold);
+  color: var(--black);
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .revenueStreamsSection {
+    padding: 2rem 0;
+  }
+
+  .container {
+    padding: 0 1rem;
+  }
+
+  .content {
+    gap: 2rem;
+  }
+
+  .mainHeading {
+    font-size: clamp(2rem, 10vw, 3.5rem);
+  }
+
+  .subtitle {
+    gap: 0.25rem;
+  }
+
+  .subtitleText {
+    font-size: clamp(1.2rem, 6vw, 2rem);
+  }
+
+  .description {
+    font-size: clamp(0.875rem, 3vw, 1.25rem);
+  }
+
+  .streamsContainer {
+    gap: 0.75rem;
+  }
+
+  .streamItem {
+    gap: 0.75rem;
+  }
+
+  .streamLabel {
+    font-size: clamp(1.2rem, 5vw, 2rem);
+  }
+
+  .separator {
+    font-size: clamp(1.2rem, 5vw, 2rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .revenueStreamsSection {
+    padding: 1.5rem 0;
+  }
+
+  .content {
+    gap: 1.5rem;
+  }
+
+  .mainHeading {
+    font-size: clamp(1.5rem, 12vw, 2.5rem);
+  }
+
+  .subtitleText {
+    font-size: clamp(1rem, 8vw, 1.5rem);
+  }
+
+  .description {
+    font-size: clamp(0.75rem, 4vw, 1rem);
+  }
+
+  .streamsContainer {
+    gap: 0.5rem;
+  }
+
+  .streamItem {
+    gap: 0.5rem;
+  }
+
+  .streamLabel {
+    font-size: clamp(1rem, 6vw, 1.5rem);
+  }
+
+  .separator {
+    font-size: clamp(1rem, 6vw, 1.5rem);
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .mainHeading,
+  .subtitleText,
+  .streamLabel {
+    color: var(--black);
+  }
+
+  .description {
+    color: var(--black);
+  }
+
+  .separator {
+    color: var(--black);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .mainHeading,
+  .subtitle,
+  .description,
+  .streamsContainer {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+}

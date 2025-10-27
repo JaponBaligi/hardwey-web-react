@@ -1,0 +1,547 @@
+/* Join Us Modal Component Styles */
+/* Exact recreation from hardwey/static/index.html and assets/css/hardwey.css */
+
+.formOverlayWrapper {
+  z-index: 9999;
+  width: 100%;
+  height: 100vh;
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+  background-color: rgba(0, 0, 0, 0.75);
+  flex-direction: column;
+  justify-content: space-between;
+  display: flex;
+  position: fixed;
+  top: -100%;
+  bottom: 0%;
+  left: 0%;
+  right: 0%;
+  transition: top 0.8s ease-in-out;
+}
+
+.formOverlayWrapper.isOpen {
+  top: 0%;
+}
+
+/* Overlay Form Top Section */
+.overlayFormTop {
+  flex-direction: column;
+  align-items: center;
+  display: flex;
+  height: auto;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.closeContainer {
+  z-index: 999;
+  width: 100%;
+  justify-content: flex-end;
+  padding-top: 1vw;
+  padding-right: 1vw;
+  display: flex;
+  position: relative;
+}
+
+.rotateTarget {
+  z-index: 999;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.6s ease;
+}
+
+.rotateTarget:hover {
+  transform: rotate(360deg);
+}
+
+.closeIcon {
+  width: 3em;
+  height: 3em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.closeIcon svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Footer Heading - White Version for Modal */
+.footerHeadingWhite {
+  color: var(--white);
+  margin-top: -4vw;
+  font-size: 18vw;
+  text-align: center;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  margin-bottom: 0;
+  font-family: "Helveticanowdisplay", sans-serif;
+  font-weight: 800;
+  line-height: 1em;
+}
+
+/* Horizontal Flex - A movement in music */
+.horizontalFlexCmNs {
+  width: 100%;
+  justify-content: space-between;
+  margin-top: 1em;
+  padding-left: 1vw;
+  padding-right: 1vw;
+  display: none;
+  flex-direction: row;
+}
+
+/* Subheading styles for modal */
+.subheadingBlackNmIsw {
+  color: var(--black);
+  font-family: "Helveticanowdisplay", sans-serif;
+  font-size: 1.4em;
+  font-weight: 400;
+  line-height: 1em;
+}
+
+.subheadingBlackAbsoluteNmIsw {
+  color: var(--black);
+  font-family: "Helveticanowdisplay", sans-serif;
+  font-size: 1.4em;
+  font-weight: 400;
+  line-height: 1em;
+  position: absolute;
+}
+
+/* Form Separator */
+.formSeparator {
+  width: 100%;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.2);
+  margin: 2em 0;
+}
+
+/* Overlay Form Wrap */
+.overlayFormWrap {
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  display: flex;
+  padding: 0 1vw 0 1vw;
+  box-sizing: border-box;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+  margin-top: 8vh;
+}
+
+/* Form Explainer Div */
+.formExplainerDiv {
+  width: 100%;
+  justify-content: flex-start;
+  align-items: flex-end;
+  margin-bottom: 1em;
+  padding-left: 1vw;
+  display: flex;
+}
+
+.bodyCopyBlackLeftFormWhite {
+  color: var(--white);
+  font-family: "Helveticanowdisplay", sans-serif;
+  font-size: 0.9em;
+  line-height: 1em;
+  text-align: left;
+  font-weight: 300;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+/* Footer Form Container - Overlay */
+.footerFormContainerOverlay {
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0;
+  box-sizing: border-box;
+}
+
+/* Form Container */
+.formContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Form Field Div */
+.formFieldDiv {
+  width: 100%;
+  justify-content: space-between;
+  align-items: flex-start;
+  display: flex;
+  position: relative;
+  margin-bottom: 1em;
+}
+
+/* Form Field - Top (Modal) Version */
+.formFieldTp {
+  width: 100%;
+  color: var(--white);
+  background-color: rgba(0, 0, 0, 0);
+  border: 0 solid #000;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  margin-bottom: 0;
+  padding: 0 5vw 0 2vh;
+  font-family: "Helveticanowdisplay", sans-serif;
+  font-size: 5vh;
+  font-weight: 800;
+  line-height: 5vh;
+  text-transform: uppercase;
+  transition: border-bottom-color 0.3s, opacity 0.3s ease-in-out;
+  position: relative;
+  outline: none;
+  max-width: 100%;
+}
+
+.formFieldTp:hover {
+  opacity: 0.62;
+}
+
+.formFieldTp:active,
+.formFieldTp:focus {
+  border-bottom-color: var(--white);
+}
+
+.formFieldTp::-ms-input-placeholder {
+  color: var(--white);
+}
+
+.formFieldTp::placeholder {
+  color: var(--white);
+}
+
+.formFieldTpArt {
+  width: 100%;
+  color: var(--white);
+  background-color: rgba(0, 0, 0, 0);
+  border: 0 solid #000;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  margin-bottom: 0;
+  padding: 0 5vw 0 2vh;
+  font-family: "Helveticanowdisplay", sans-serif;
+  font-size: 5vh;
+  font-weight: 800;
+  line-height: 5vh;
+  text-transform: uppercase;
+  transition: border-bottom-color 0.3s, opacity 0.3s ease-in-out;
+  position: relative;
+  outline: none;
+  max-width: 100%;
+}
+
+.formFieldTpArt:hover {
+  opacity: 0.62;
+}
+
+.formFieldTpArt::-ms-input-placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.formFieldTpArt::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Form Star Icon (Asterisk) */
+.formStarIcon {
+  z-index: 5;
+  width: 2em;
+  height: 2em;
+  margin-top: 1vw;
+  position: absolute;
+  top: 0%;
+  bottom: auto;
+  left: auto;
+  right: 1vw;
+}
+
+/* Subheading Black Form White */
+.subheadingBlackFormIsw {
+  width: 16em;
+  text-align: right;
+  margin-top: 1vw;
+  margin-right: 1vw;
+  color: var(--white);
+  font-family: "Helveticanowdisplay", sans-serif;
+  font-size: 1em;
+  font-weight: 800;
+  line-height: 1em;
+  text-transform: uppercase;
+}
+
+/* Submit Div - Overlay */
+.submitDivOverlay {
+  width: 100%;
+  display: flex;
+  background-color: var(--mita-blue);
+  padding: 10px 0;
+  flex-direction: column;
+  align-items: stretch;
+  position: relative;
+  margin-top: 0;
+}
+
+/* Submit Button - Form Blue */
+.submitButtonFormBlue {
+  z-index: 4;
+  flex: 1;
+  height: auto;
+  min-height: 1.5em;
+  background-color: var(--mita-blue);
+  color: var(--black);
+  text-align: left;
+  text-transform: uppercase;
+  padding: 0 0 0 2vh;
+  font-family: "Helveticanowdisplay", sans-serif;
+  font-size: 5vh;
+  font-weight: 800;
+  line-height: 5vh;
+  position: relative;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.25s;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.3em;
+}
+
+.submitButtonFormBlue:hover {
+  opacity: 0.62;
+}
+
+.submitButtonFormBlue:hover .buttonArrowImg {
+  transform: translate3d(0.7em, -0.7em, 0px);
+  opacity: 0;
+}
+
+.submitButtonFormBlue:hover .buttonArrowImg2 {
+  transform: translate3d(0em, 0em, 0px);
+  opacity: 1;
+}
+
+.submitButtonText {
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  text-transform: uppercase;
+}
+
+/* Button Arrow */
+.buttonArrow {
+  width: 0.7em;
+  height: 0.7em;
+  max-width: none;
+  flex-direction: column;
+  align-items: center;
+  display: flex;
+  overflow: hidden;
+  position: relative;
+}
+
+.buttonArrowImg {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+  transform: translate3d(0em, 0em, 0px);
+  opacity: 1;
+  transform-style: preserve-3d;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.buttonArrowImg2 {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+  transform: translate3d(-1.4em, 0.7em, 0px);
+  opacity: 0;
+  transform-style: preserve-3d;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+}
+
+/* Button Text Div */
+.buttonTextDiv {
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 2vh;
+}
+
+.subheadingBlueFormOverlay {
+  color: #000000;
+  font-family: "Helveticanowdisplay", sans-serif;
+  font-size: 1.2em;
+  font-weight: 400;
+  line-height: 1em;
+  text-align: right;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* Submit Button Arrow */
+.submitButtonArrowHm {
+  display: none;
+}
+
+.arrowDiv1IsBlack,
+.arrowDiv2IsBlack {
+  display: none;
+}
+
+/* Mobile Responsive Styles */
+@media screen and (max-width: 991px) {
+  .footerHeadingWhite {
+    margin-top: -1vw;
+    font-size: 10vw;
+  }
+
+  .horizontalFlexCmNs {
+    justify-content: space-between;
+    margin-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .formSeparator {
+    margin: 1em 1vw;
+  }
+
+  .formExplainerDiv {
+    width: auto;
+    padding-left: 0;
+    align-items: flex-start;
+  }
+
+  .bodyCopyBlackLeftFormWhite {
+    font-size: 0.8em;
+  }
+
+  .formFieldTp,
+  .formFieldTpArt {
+    padding-left: 10px;
+    line-height: 10vw;
+    font-size: 10vw;
+  }
+
+  .formFieldTpArt {
+    margin-top: -10px;
+  }
+
+  .formFieldDiv {
+    flex-direction: column-reverse;
+  }
+
+  .formStarIcon {
+    width: 5vw;
+    height: 5vw;
+    margin-top: 4vw;
+    right: 10px;
+  }
+
+  .subheadingBlackFormIsw {
+    width: auto;
+    font-size: 0.7em;
+    text-align: left;
+    margin: 5px 0 0 0;
+  }
+
+  .submitDivOverlay {
+    flex-direction: column;
+    align-items: flex-start;
+    padding-top: 10px;
+  }
+
+  .submitButtonFormBlue {
+    min-height: auto;
+    padding-left: 10px;
+    font-size: 10vw;
+    line-height: 10vw;
+  }
+
+  .footerFormContainerOverlay {
+    margin-bottom: 0;
+    max-width: 100%;
+  }
+
+  .formExplainerDiv {
+    padding-left: 0;
+  }
+
+  .overlayFormWrap {
+    margin-top: 3vh;
+    align-items: flex-start;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .footerHeadingWhite {
+    font-size: 8vw;
+  }
+
+  .formFieldTp,
+  .formFieldTpArt {
+    font-size: 10vw;
+  }
+
+  .formFieldTpArt {
+    margin-top: -12px;
+  }
+
+  .submitDivOverlay {
+    padding-top: 2vw;
+  }
+
+  .submitButtonFormBlue {
+    font-size: 10vw;
+    line-height: 10vw;
+  }
+
+  .overlayFormWrap {
+    padding: 0 3vw 0 3vw;
+    align-items: flex-start;
+    margin-top: 5vh;
+  }
+}
+
+/* Very Small Screens */
+@media screen and (max-width: 479px) {
+  .footerHeadingWhite {
+    font-size: 7vw;
+  }
+
+  .closeIcon {
+    width: 2em;
+    height: 2em;
+  }
+
+  .subheadingBlueFormOverlay {
+    display: none;
+  }
+
+  .subheadingBlackFormIsw {
+    font-size: 0.6em;
+  }
+}

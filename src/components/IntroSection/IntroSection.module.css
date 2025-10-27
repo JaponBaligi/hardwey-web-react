@@ -1,0 +1,555 @@
+/* IntroSection.module.css - EXACT copy of static CSS styles */
+
+/* CSS Variables */
+:root {
+  --white: white;
+  --mita-blue: #bbdbfa;
+  --black: black;
+  --mita-red: #d12d37;
+  --faded-black: rgba(0, 0, 0, .4);
+}
+
+/* Intro Section */
+.introSection {
+  z-index: 3;
+  width: 100%;
+  min-height: 100vh;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 24em;
+  padding-bottom: 24em;
+  display: flex;
+  position: relative;
+}
+
+.introHeadingContainer {
+  width: 65em;
+}
+
+.introHeadingContainer1 {
+  /* Additional styles if needed */
+}
+
+.introHeadingContainerSecond {
+  grid-column-gap: 1em;
+  grid-row-gap: 1em;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.heading1 {
+  color: var(--white);
+  text-align: center;
+  text-transform: uppercase;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-family: Helveticanowdisplay, sans-serif;
+  font-size: 9em;
+  font-weight: 800;
+  line-height: 1em;
+}
+
+.heading1Intro {
+  font-size: 10em;
+  line-height: .85em;
+}
+
+.artistHeading {
+  color: var(--mita-blue);
+}
+
+.introHeadingMob {
+  display: none;
+  color: var(--white);
+  text-align: center;
+  text-transform: uppercase;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-family: Helveticanowdisplay, sans-serif;
+  font-size: 4em;
+  font-weight: 800;
+  line-height: 1em;
+}
+
+.heading2 {
+  color: var(--white);
+  text-align: center;
+  text-transform: uppercase;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-family: Helveticanowdisplay, sans-serif;
+  font-size: 6em;
+  font-weight: 800;
+  line-height: 1em;
+}
+
+.heading2Intro {
+  z-index: 5;
+  font-size: 3.85em;
+}
+
+.introSubFlex {
+  grid-column-gap: 1em;
+  grid-row-gap: 1em;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.introSubFlexIntro {
+  width: 48em;
+}
+
+.introSubFlex {
+  width: 58.8em;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0.4em;
+  display: flex;
+  position: relative;
+}
+
+.subheading {
+  z-index: 20;
+  color: var(--white);
+  text-align: center;
+  text-transform: uppercase;
+  font-family: Helveticanowdisplay, sans-serif;
+  font-size: 1em;
+  font-weight: 800;
+  line-height: 1em;
+  position: relative;
+}
+
+.subheadingMobile {
+  display: none;
+}
+
+.subheadingIslm {
+  font-style: italic;
+}
+
+.subheadingLeft {
+  position: absolute;
+  top: 0%;
+  bottom: 0%;
+  left: 15%;
+  right: auto;
+  transform: translate3d(-7vw, 0, 0);
+  filter: blur(5px);
+  opacity: 0.5;
+  transition: transform 1.2s ease-out 0.3s, filter 0.5s ease-out, opacity 1.2s ease-out;
+}
+
+.subheadingRight {
+  position: absolute;
+  top: 0%;
+  bottom: 0%;
+  left: auto;
+  right: 15%;
+  transform: translate3d(7vw, 0, 0);
+  filter: blur(5px);
+  opacity: 0.5;
+  transition: transform 1.2s ease-out 0.3s, filter 0.5s ease-out, opacity 1.2s ease-out;
+}
+
+.introSubFlex.animated .subheadingRight,
+.introSubFlex.animated .subheadingLeft {
+  transform: translate3d(0, 0, 0);
+  filter: blur(0);
+  opacity: 1;
+}
+
+.subheadingDesktop {
+  display: block;
+}
+
+.textWrap {
+  grid-column-gap: 1em;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.textWrap {
+  grid-column-gap: 1em;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.dateContainer {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.sprayWrapper {
+  position: relative;
+}
+
+.jsonContain {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 140%;
+  height: 160%;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 1;
+}
+
+.lottieAnimation {
+  width: 100%;
+  height: 100%;
+}
+
+/* Make the spray more visible with color adjustment */
+.lottieAnimation svg {
+  filter: none;
+  opacity: 1;
+}
+
+.lottieAnimation img {
+  opacity: 1 !important;
+}
+
+/* Date spray effect */
+.dateSpray {
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+}
+
+.sprayChar {
+  display: inline-block;
+  position: relative;
+}
+
+@keyframes fadeInChar {
+  to {
+    opacity: 1;
+  }
+}
+
+.introBodyContain {
+  position: absolute;
+  bottom: 1em;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  text-align: center;
+}
+
+.bodyTextContain {
+  display: block;
+  margin: 0 auto;
+}
+
+.bodyTextContainWide {
+  width: 65em;
+}
+
+.bodyTextContainIntro {
+  /* Additional styles if needed */
+}
+
+.bodyCopy {
+  color: var(--white);
+  text-align: center;
+  text-transform: uppercase;
+  margin-bottom: 0;
+  font-family: Helveticanowdisplay, sans-serif;
+  font-size: 1.1em;
+  font-weight: 300;
+  line-height: 1.2em;
+}
+
+.bodyCopyLam {
+  /* Additional styles if needed */
+}
+
+.introVideoContainer {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.bodyCaps {
+  color: var(--white);
+  text-align: center;
+  text-transform: uppercase;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-family: Helveticanowdisplay, sans-serif;
+  font-size: 1em;
+  font-weight: 300;
+  line-height: 1.2em;
+}
+
+.bodyCapsVid {
+  /* Additional styles if needed */
+}
+
+.bodyCapsDesk {
+  display: block;
+}
+
+.bodyCapsMob {
+  display: none;
+}
+
+.bodyCapsL {
+  font-size: .8em;
+}
+
+.playControls {
+  position: relative;
+  cursor: pointer;
+}
+
+.videoImgContainer {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/9;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.videoImg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.videoImgOverlay {
+  z-index: 2;
+}
+
+.controlsFlex {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.playFlex {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.playCircle {
+  width: 60px;
+  height: 60px;
+  background: var(--mita-blue);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.playCircle:hover {
+  background: #3a8bef;
+  transform: scale(1.1);
+}
+
+.playIcon {
+  width: 24px;
+  height: 24px;
+  filter: brightness(0) invert(1);
+}
+
+.vidArrow {
+  width: 20px;
+  height: 20px;
+}
+
+/* MITA Logo Container */
+.mitaLogoContain {
+  justify-content: center;
+  align-items: center;
+  padding-top: 3em;
+  display: flex;
+  position: absolute;
+  top: 0%;
+  bottom: auto;
+  left: 0%;
+  right: 0%;
+}
+
+.mitaIdentContain {
+  width: 8em;
+  height: 3.6em;
+  max-width: none;
+  perspective: 100px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  position: relative;
+}
+
+.mitaIdent {
+  position: relative;
+  animation: spinContinuously 3s linear infinite;
+  transform-style: preserve-3d;
+}
+
+/* Spinning Animation - Counter-clockwise */
+@keyframes spinContinuously {
+  from {
+    transform: rotateY(360deg);
+  }
+  to {
+    transform: rotateY(0deg);
+  }
+}
+
+/* Responsive Design - Tablet */
+@media screen and (max-width: 991px) {
+  .introSection {
+    padding-bottom: 0;
+    overflow: hidden;
+  }
+
+  .introHeadingContainer {
+    width: 90vw;
+  }
+
+  .bodyTextContainWide {
+    width: 90vw;
+  }
+
+  .introSubFlex {
+    width: 100%;
+    margin-top: 5px;
+  }
+
+  .mitaIdentContain {
+    width: 12vw;
+    height: 6vw;
+  }
+
+  .mitaIdent {
+    width: 5vw;
+  }
+}
+
+/* Responsive Design - Mobile */
+@media screen and (max-width: 767px) {
+  .introSection {
+    min-height: auto;
+    align-items: flex-start;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .introHeadingMob {
+    display: block;
+  }
+
+  .heading1Intro {
+    display: none;
+  }
+
+  .subheadingMobile {
+    display: block;
+  }
+
+  .subheadingDesktop {
+    display: none;
+  }
+
+  .subheadingLeft,
+  .subheadingRight {
+    display: none;
+  }
+
+  .bodyCapsDesk {
+    display: none;
+  }
+
+  .bodyCapsMob {
+    display: block;
+  }
+
+  .playCircle {
+    width: 50px;
+    height: 50px;
+  }
+
+  .playIcon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .controlsFlex {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .playFlex {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .introSubFlex {
+    width: 100%;
+    margin-top: 5px;
+  }
+
+  .introSubFlexIntro {
+    width: 100%;
+    justify-content: flex-start;
+    padding-left: 15px;
+  }
+
+  .introBodyContain {
+    position: relative;
+    bottom: auto;
+    margin-top: 2em;
+  }
+}
+
+/* Responsive Design - Small Mobile */
+@media screen and (max-width: 479px) {
+  .introSection {
+    padding: 0.5rem;
+  }
+
+  .playCircle {
+    width: 45px;
+    height: 45px;
+  }
+
+  .playIcon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .mitaLogoContain {
+    width: 100%;
+    padding-top: 40px;
+    padding-bottom: 120px;
+    position: relative;
+  }
+
+  .mitaIdentContain {
+    width: 30vw;
+    height: 14vw;
+  }
+
+  .mitaIdent {
+    width: 9vw;
+  }
+}

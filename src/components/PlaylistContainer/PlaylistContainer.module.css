@@ -1,0 +1,346 @@
+/* PlaylistContainer Component Styles */
+/* Based on original hardwey.css playlist container styles */
+
+.discContainers {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  align-items: center;
+}
+
+.playlistContainer {
+  width: 16vw;
+  height: 16vw;
+  min-width: 120px;
+  min-height: 120px;
+  max-width: 200px;
+  max-height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: auto;
+  bottom: 0.5vw;
+  left: auto;
+  right: 0.5vw;
+  text-decoration: none;
+  cursor: pointer;
+  opacity: 0;
+  transform: scale(0.8) rotate(-5deg);
+  transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.playlistContainerVisible {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
+
+.playlistContainer404 {
+  width: 20vh;
+  height: 20vh;
+  position: relative;
+  bottom: 0;
+  right: 0;
+}
+
+.playlistContainer:hover {
+  transform: scale(1.05) rotate(2deg);
+}
+
+.discFill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.discImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.playlistContainer:hover .discImg {
+  transform: scale(1.1);
+}
+
+.discOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 5;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.discOverlayVisible {
+  opacity: 1;
+}
+
+.discArrow {
+  width: 3em;
+  height: auto;
+  filter: brightness(0) invert(1);
+  transition: transform 0.3s ease;
+}
+
+.playlistContainer:hover .discArrow {
+  transform: scale(1.1);
+}
+
+.playlistInfo {
+  position: absolute;
+  bottom: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--color-background-dark);
+  color: var(--color-text-inverse);
+  padding: var(--spacing-sm);
+  border-radius: var(--border-radius-md);
+  text-align: center;
+  min-width: 200px;
+  opacity: 0;
+  transform: translateX(-50%) translateY(10px);
+  transition: all 0.3s ease;
+  pointer-events: none;
+  z-index: 10;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.playlistInfoVisible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.playlistTitle {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-inverse);
+  margin: 0 0 var(--spacing-xs) 0;
+  line-height: 1.3;
+}
+
+.playlistDescription {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-normal);
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--spacing-xs) 0;
+  line-height: 1.4;
+}
+
+.spotifyBadge {
+  background-color: var(--color-accent-green);
+  color: var(--color-text-inverse);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius-sm);
+  margin-top: var(--spacing-xs);
+}
+
+.spotifyText {
+  font-family: var(--font-family-primary);
+  font-size: 10px;
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* Responsive Design */
+@media (max-width: 991px) {
+  .playlistContainer {
+    width: 22vw;
+    height: 22vw;
+    min-width: 100px;
+    min-height: 100px;
+  }
+
+  .playlistContainer404 {
+    width: 25vh;
+    height: 25vh;
+  }
+}
+
+@media (max-width: 767px) {
+  .playlistContainer {
+    width: 28vw;
+    height: 28vw;
+    min-width: 80px;
+    min-height: 80px;
+    position: relative;
+    bottom: 0;
+    right: 0;
+    margin-top: var(--spacing-xl);
+  }
+
+  .playlistContainer404 {
+    width: 30vh;
+    height: 30vh;
+    margin-top: var(--spacing-lg);
+  }
+
+  .playlistInfo {
+    position: static;
+    transform: none;
+    margin-top: var(--spacing-md);
+    opacity: 1;
+    background-color: transparent;
+    color: var(--color-text-primary);
+    box-shadow: none;
+    padding: 0;
+    min-width: auto;
+  }
+
+  .playlistTitle {
+    font-size: var(--font-size-base);
+    color: var(--color-text-primary);
+  }
+
+  .playlistDescription {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+  }
+
+  .spotifyBadge {
+    background-color: var(--color-accent-green);
+    color: var(--color-text-inverse);
+    margin-top: var(--spacing-sm);
+  }
+}
+
+@media (max-width: 479px) {
+  .playlistContainer {
+    width: 30vw;
+    height: 30vw;
+    min-width: 70px;
+    min-height: 70px;
+  }
+
+  .playlistContainer404 {
+    width: 35vh;
+    height: 35vh;
+  }
+
+  .discArrow {
+    width: 2em;
+  }
+
+  .playlistTitle {
+    font-size: var(--font-size-sm);
+  }
+
+  .playlistDescription {
+    font-size: var(--font-size-xs);
+  }
+
+  .spotifyText {
+    font-size: 9px;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .discFill {
+    box-shadow: 0 0 0 2px var(--color-border);
+  }
+
+  .discOverlay {
+    background-color: rgba(0, 0, 0, 0.9);
+  }
+
+  .playlistInfo {
+    border: 1px solid var(--color-border);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .playlistContainer,
+  .discImg,
+  .discArrow,
+  .playlistInfo {
+    transition: none;
+  }
+
+  .playlistContainer:hover {
+    transform: none;
+  }
+
+  .playlistContainer:hover .discImg {
+    transform: none;
+  }
+
+  .playlistContainer:hover .discArrow {
+    transform: none;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .playlistInfo {
+    background-color: var(--color-background-primary);
+    color: var(--color-text-primary);
+  }
+
+  .playlistTitle {
+    color: var(--color-text-primary);
+  }
+
+  .playlistDescription {
+    color: var(--color-text-secondary);
+  }
+}
+
+/* Print styles */
+@media print {
+  .playlistContainer {
+    position: static;
+    width: 150px;
+    height: 150px;
+    margin: var(--spacing-md);
+    break-inside: avoid;
+  }
+
+  .discOverlay {
+    display: none;
+  }
+
+  .playlistInfo {
+    position: static;
+    opacity: 1;
+    transform: none;
+    background-color: transparent;
+    color: var(--color-text-primary);
+    box-shadow: none;
+    margin-top: var(--spacing-sm);
+  }
+
+  .playlistTitle {
+    color: var(--color-text-primary);
+  }
+
+  .playlistDescription {
+    color: var(--color-text-secondary);
+  }
+
+  .spotifyBadge {
+    background-color: transparent;
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-text-primary);
+  }
+}
