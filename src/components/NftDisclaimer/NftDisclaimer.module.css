@@ -283,6 +283,14 @@
   transform: translateX(0);
 }
 
+.nftFaqFlex {
+  width: 100%;
+  flex-direction: column;
+  padding-top: 0;
+  display: flex;
+  position: relative;
+}
+
 .nftImageContainer {
   width: 21vw;
   height: 21vw;

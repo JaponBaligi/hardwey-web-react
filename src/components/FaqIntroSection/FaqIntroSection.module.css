@@ -1,0 +1,159 @@
+/* FAQ Intro Section Styles */
+
+.faqIntroContain {
+  width: 100%;
+  grid-column-gap: 1vw;
+  grid-row-gap: 1vw;
+  border-top: 1px solid rgba(0, 0, 0, 0.15);
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  padding-top: 1vw;
+  display: flex;
+}
+
+.faqItGraphic {
+  width: 17vw;
+  height: 8vw;
+  background-image: url('https://assets-global.website-files.com/64f45f425cb2cbb837b6f9b8/654eacc566a89991469532d0_faq-it-graphic.svg');
+  background-position: 0%;
+  background-repeat: no-repeat;
+  background-size: contain;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-left: 4vw;
+  padding-right: 4vw;
+  display: flex;
+}
+
+.faqTitle {
+  color: var(--black);
+  margin-top: -0.3vw;
+  font-size: 11vw;
+  font-weight: 800;
+}
+
+.faqFlex {
+  grid-column-gap: 0.5vw;
+  grid-row-gap: 0.5vw;
+  align-items: flex-start;
+  display: flex;
+}
+
+.faqSubMobile {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5vw;
+}
+
+.starsFlex {
+  grid-column-gap: 0.1vw;
+  grid-row-gap: 0.1vw;
+  justify-content: flex-start;
+  align-items: center;
+  display: flex;
+}
+
+.asterix {
+  width: 3vw;
+  height: 3vw;
+}
+
+.subheading {
+  font-family: 'Helveticanowdisplay', sans-serif;
+  font-size: 1em;
+  font-weight: 800;
+  line-height: 1em;
+  position: relative;
+  text-transform: uppercase;
+}
+
+.subheadingBlack {
+  color: var(--black);
+  text-align: center;
+}
+
+.subheadingIsfaq {
+  display: block;
+}
+
+.playlistWrapper {
+  grid-column-gap: 3vw;
+  grid-row-gap: 3vw;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 5vh;
+}
+
+/* Responsive Design */
+@media (max-width: 991px) {
+  .faqIntroContain {
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 5em;
+  }
+
+  .faqItGraphic {
+    display: none;
+  }
+
+  .faqTitle {
+    margin-top: 0;
+    font-size: 15vw;
+    line-height: 15vw;
+  }
+
+  .starsFlex {
+    grid-column-gap: 1px;
+    grid-row-gap: 1px;
+  }
+
+  .asterix {
+    width: 15px;
+    height: 15px;
+  }
+}
+
+@media (max-width: 767px) {
+  .faqIntroContain {
+    margin-top: 80px;
+  }
+
+  .faqSubMobile {
+    grid-column-gap: 20px;
+    grid-row-gap: 20px;
+    flex-direction: column;
+    margin-top: 20px;
+    display: flex;
+  }
+
+  .subheadingIsfaq {
+    display: block;
+  }
+}
+
+@media (max-width: 480px) {
+  .faqIntroContain {
+    border-top-style: none;
+    margin-top: 0;
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+
+  .faqTitle {
+    font-size: 31vw;
+    line-height: 31vw;
+  }
+
+  .faqSubMobile {
+    grid-column-gap: 10px;
+    grid-row-gap: 10px;
+  }
+
+  .discContainers {
+    grid-column-gap: 2vw;
+    grid-row-gap: 2vw;
+    margin-top: 0;
+  }
+}

@@ -4,6 +4,7 @@
  */
 
 import React, { useEffect, useRef, useState } from 'react';
+import { FaqIntroSection } from '@/components/FaqIntroSection/FaqIntroSection';
 import styles from './NftDisclaimer.module.css';
 
 interface NftDisclaimerProps {
@@ -128,6 +129,11 @@ export const NftDisclaimer: React.FC<NftDisclaimerProps> = ({ className = '' }) 
             srcSet="/assets/img/mona-image2-p-500.jpg 500w, /assets/img/mona-image2-p-800.jpg 800w, /assets/img/mona-image2.jpg 1004w"
           />
         </div>
+      </div>
+
+      {/* FAQ Intro Section */}
+      <div id="faq-it" className={styles.nftFaqFlex}>
+        <FaqIntroSection />
       </div>
     </section>
   );

@@ -104,15 +104,6 @@ export const PlaylistContainer: React.FC<PlaylistContainerProps> = ({
               srcSet="/assets/img/Playlist500x.png 500w, /assets/img/playlist800px.png 800w, /assets/img/playlist1151px.png 1151w"
             />
           </div>
-
-          {/* Playlist Info Overlay */}
-          <div className={`${styles.playlistInfo} ${isHovered ? styles.playlistInfoVisible : ''}`}>
-            <h4 className={styles.playlistTitle}>{playlist.title}</h4>
-            <p className={styles.playlistDescription}>{playlist.description}</p>
-            <div className={styles.spotifyBadge}>
-              <span className={styles.spotifyText}>Listen on Spotify</span>
-            </div>
-          </div>
         </a>
       ))}
     </div>

@@ -15,7 +15,6 @@ import { TickerAnimation } from '@/components/TickerAnimation/TickerAnimation';
 import { InvestmentIntroSection } from '@/components/InvestmentIntroSection/InvestmentIntroSection';
 import { NftDisclaimer } from '@/components/NftDisclaimer/NftDisclaimer';
 import { FaqSection } from '@/components/FaqSection/FaqSection';
-import { PlaylistContainer } from '@/components/PlaylistContainer/PlaylistContainer';
 import { CookieConsent } from '@/components/CookieConsent/CookieConsent';
 import { FoundersSection } from '@/components/FoundersSection/FoundersSection';
 import { ErrorPage } from '@/components/ErrorPage/ErrorPage';
@@ -113,7 +112,6 @@ function App() {
                     <InvestmentIntroSection />
                     <NftDisclaimer />
                     <FaqSection />
-                    <PlaylistContainer />
                     <FoundersSection />
                   </>
                 } />
