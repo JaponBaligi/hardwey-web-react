@@ -2,33 +2,34 @@
 /* Based on original hardwey.css NFT disclaimer section styles */
 
 .nftSection {
-  position: relative;
   z-index: 14;
   width: 100%;
-  display: flex;
+  grid-row-gap: 1.2vw;
+  background-color: #d12d37 !important;
   flex-direction: column;
-  gap: 1.2vw;
-  background-color: var(--color-accent-red);
   padding: 1vw 1vw 1em;
+  display: flex;
+  position: relative;
   overflow: hidden;
 }
 
 .nftFlex {
-  display: flex;
   justify-content: space-between;
-  align-items: center;
-  gap: var(--spacing-lg);
+  display: flex;
 }
 
 .nftText {
-  color: var(--color-text-primary);
+  color: var(--black);
   text-align: center;
   letter-spacing: -1.05vw;
   text-transform: uppercase;
-  margin: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  margin-left: auto;
+  margin-right: auto;
   font-family: var(--font-family-heading);
   font-size: 29.6vw;
-  font-weight: var(--font-weight-bold);
+  font-weight: 700;
   line-height: 20vw;
   opacity: 0;
   transform: translateX(-50px);
@@ -67,32 +68,51 @@
   transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
+.imageFullGif {
+  width: 26.5vw;
+  height: 21.1vw;
+  position: relative;
+}
+
 .imageVisible {
   opacity: 1;
   transform: scale(1) rotate(0deg);
 }
 
+.nftGif {
+  opacity: 0;
+  transform: translateX(-50px);
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.nftGifVisible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
 .nftDividerFlex {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   gap: var(--spacing-md);
   width: 100%;
+  position: relative;
 }
 
 .divider {
+  width: 100%;
   height: 1px;
-  background-color: var(--color-text-primary);
-  flex: 1;
+  background-color: rgba(255, 255, 255, 0.12);
+  margin-bottom: 1vw;
 }
 
 .dividerNft {
-  background-color: var(--color-text-primary);
+  background-color: rgba(0, 0, 0, 0.15);
+  margin-bottom: 0;
 }
 
 .dividerShort {
-  width: 20%;
-  flex: none;
+  width: 95%;
 }
 
 .dividerMobile {
@@ -113,12 +133,14 @@
 }
 
 .subheadingNft {
-  color: var(--color-text-primary);
+  color: var(--black);
+  text-align: left;
+  margin-top: 0;
+  margin-bottom: 1em;
 }
 
 .subheadingWere {
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-bold);
+  margin-bottom: 0;
 }
 
 .subheadingVisible {
@@ -140,7 +162,43 @@
   transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
+.valueMusicText {
+  z-index: 20;
+  color: var(--white);
+  text-align: left;
+  text-transform: uppercase;
+  font-family: 'Helveticanowdisplay', sans-serif;
+  font-size: 1.2em;
+  font-weight: 800;
+  line-height: 1em;
+  position: relative;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  margin-bottom: 0.2em;
+}
+
+.resonateText {
+  color: var(--white);
+  text-align: left;
+  text-transform: uppercase;
+  margin-bottom: 0;
+  font-family: 'Helveticanowdisplay', sans-serif;
+  font-size: 0.8em;
+  font-weight: 300;
+  line-height: 1.2em;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
 .nftContentVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.nftContentVisible .valueMusicText,
+.nftContentVisible .resonateText {
   opacity: 1;
   transform: translateY(0);
 }
@@ -163,7 +221,7 @@
 }
 
 .bodyCopyBlack {
-  color: var(--color-text-primary);
+  color: var(--black);
 }
 
 .bodyCopyCam {
@@ -174,14 +232,30 @@
   animation: fadeInUp 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s both;
 }
 
+.nftStarTop {
+  width: 12vw;
+  height: 9vw;
+  max-width: 100px;
+  max-height: 75px;
+  margin-bottom: var(--spacing-md);
+  opacity: 0;
+  transform: scale(0.5) rotate(-10deg);
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.4s;
+}
+
+.valueText {
+  margin-bottom: var(--spacing-md);
+}
+
 .nftStar {
   width: 10vw;
   height: 7vw;
-  max-width: 80px;
-  max-height: 60px;
+  max-width: none;
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 0%;
+  bottom: auto;
+  left: 0%;
+  right: auto;
   opacity: 0;
   transform: scale(0.5) rotate(-10deg);
   transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.4s;
@@ -195,13 +269,18 @@
 .notTemp {
   width: 76vw;
   height: 25vw;
-  background-image: url('/assets/svg/not-svg.svg');
+  background-image: url('https://assets-global.website-files.com/64f45f425cb2cbb837b6f9b8/6510100a109f7d930dd06744_not-svg.svg');
   background-position: 100%;
   background-repeat: no-repeat;
   background-size: contain;
   opacity: 0;
   transform: translateX(50px);
   transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.6s;
+}
+
+.notTempVisible {
+  opacity: 1;
+  transform: translateX(0);
 }
 
 .nftImageContainer {
@@ -258,12 +337,15 @@
     width: 80vw;
     height: 30vw;
   }
+
+  .imageFullGif {
+    display: none;
+  }
 }
 
 @media (max-width: 767px) {
   .nftSection {
-    gap: var(--spacing-lg);
-    padding: var(--spacing-lg) var(--spacing-md) var(--spacing-xl);
+    padding-bottom: 0;
   }
 
   .nftFlex {
@@ -305,18 +387,24 @@
   }
 
   .nftImageContainerMobile {
+    width: 100%;
+    height: 90vw;
+    margin-top: 40px;
     display: block;
-    width: 60vw;
-    height: 60vw;
-    max-width: 300px;
-    max-height: 300px;
-    margin-top: var(--spacing-lg);
   }
 
-  .notTemp {
-    width: 90vw;
-    height: 35vw;
-    max-height: 200px;
+  .imageFullNft {
+    display: none;
+  }
+
+  .imageFullGif {
+    display: none;
+  }
+  
+  .nftText {
+    margin-left: 0;
+    font-size: 37vw;
+    line-height: 28vw;
   }
 
   .subheading {
@@ -324,7 +412,17 @@
   }
 
   .subheadingWere {
-    font-size: var(--font-size-lg);
+    font-size: 15px;
+    line-height: 18px;
+  }
+  
+  .dividerShort {
+    width: 42%;
+  }
+  
+  .dividerMobile {
+    display: block;
+    width: 42%;
   }
 
   .bodyCopy {
@@ -372,6 +470,7 @@
     max-height: 150px;
   }
 
+
   .subheading {
     font-size: var(--font-size-sm);
   }
@@ -386,6 +485,10 @@
 
   .bodyCopyCam {
     font-size: 10px;
+  }
+
+  .nftDividerFlex::before {
+    width: calc(100% - 5em);
   }
 }
 
@@ -414,7 +517,8 @@
   .nftContent,
   .bodyCopy,
   .nftStar,
-  .notTemp {
+  .notTemp,
+  .nftGif {
     transition: opacity 0.3s ease;
     transform: none;
   }
@@ -424,7 +528,8 @@
   .subheadingVisible,
   .nftContentVisible,
   .bodyVisible,
-  .starVisible {
+  .starVisible,
+  .nftGifVisible {
     transform: none;
   }
 }

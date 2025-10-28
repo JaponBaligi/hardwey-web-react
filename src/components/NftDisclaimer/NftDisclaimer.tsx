@@ -74,10 +74,10 @@ export const NftDisclaimer: React.FC<NftDisclaimerProps> = ({ className = '' }) 
       {/* Second Row: Content with "NOT" graphic */}
       <div className={styles.nftFlex}>
         <div className={`${styles.nftContent} ${isVisible ? styles.nftContentVisible : ''}`}>
-          <h4 className={`${styles.subheading} ${styles.subheadingNft} ${isVisible ? styles.subheadingVisible : ''}`}>
+          <h4 className={`${styles.valueMusicText} ${isVisible ? styles.subheadingVisible : ''}`}>
             We value mu$ic more than pixels
           </h4>
-          <p className={`${styles.bodyCopy} ${styles.bodyCopyLeft} ${styles.bodyCopyBlack} ${isVisible ? styles.bodyVisible : ''}`}>
+          <p className={`${styles.resonateText} ${isVisible ? styles.bodyVisible : ''}`}>
             We're building something that resonates with everyone. Not just "PR".
           </p>
           <img
@@ -87,7 +87,7 @@ export const NftDisclaimer: React.FC<NftDisclaimerProps> = ({ className = '' }) 
             loading="lazy"
           />
         </div>
-        <div className={styles.notTemp}></div>
+        <div className={`${styles.notTemp} ${isVisible ? styles.notTempVisible : ''}`}></div>
       </div>
 
       {/* Full Width Divider */}
@@ -95,16 +95,24 @@ export const NftDisclaimer: React.FC<NftDisclaimerProps> = ({ className = '' }) 
 
       {/* Third Row: "NFTs" with mobile content */}
       <div className={styles.nftFlex}>
-        <div className={`${styles.nftText} ${styles.nftTextLeft} ${isVisible ? styles.nftTextVisible : ''}`}>
-          N<span className={styles.extraGap}>F</span>Ts
+        <img
+          src="/assets/img/fav.gif"
+          alt=""
+          className={`${styles.imageFull} ${styles.imageFullGif} ${styles.nftGif} ${isVisible ? styles.nftGifVisible : ''}`}
+          loading="lazy"
+        />
+        <div className={`${styles.nftText} ${isVisible ? styles.nftTextVisible : ''}`}>
+          N<span className={styles.extraGap}>F</span>
+          <br />
+          Ts
         </div>
         
         {/* Mobile Content */}
         <div className={`${styles.nftContent} ${styles.nftContentMobile} ${isVisible ? styles.nftContentVisible : ''}`}>
-          <h4 className={`${styles.subheading} ${styles.subheadingNft} ${isVisible ? styles.subheadingVisible : ''}`}>
+          <h4 className={`${styles.valueMusicText} ${isVisible ? styles.subheadingVisible : ''}`}>
             We value mu$ic more than pixels
           </h4>
-          <p className={`${styles.bodyCopy} ${styles.bodyCopyLeft} ${styles.bodyCopyBlack} ${styles.bodyCopyCam} ${isVisible ? styles.bodyVisible : ''}`}>
+          <p className={`${styles.resonateText} ${isVisible ? styles.bodyVisible : ''}`}>
             we're building something that resonates with everyone. Not just crypto bros.
           </p>
         </div>
