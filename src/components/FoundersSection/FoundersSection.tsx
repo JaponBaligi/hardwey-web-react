@@ -27,14 +27,18 @@ export const FoundersSection: React.FC<FoundersSectionProps> = ({
 }) => {
   const [currentFounder, setCurrentFounder] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isTextAnimated, setIsTextAnimated] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && autoPlay) {
-          startAnimation();
+        if (entry.isIntersecting) {
+          if (autoPlay) {
+            startAnimation();
+          }
+          setIsTextAnimated(true);
         }
       },
       { threshold: 0.1 }
@@ -131,14 +135,14 @@ export const FoundersSection: React.FC<FoundersSectionProps> = ({
               {founders.length > 1 ? 'The Founders' : 'The Founder'}
             </h2>
             
-            <div className={styles.missionFlex}>
-              <div className={`${styles.subheading} ${styles.subheadingDesktop}`}>
+            <div className={`${styles.missionFlex} ${isTextAnimated ? styles.missionFlexAnimated : styles.missionFlexInitial}`}>
+              <div className={`${styles.subheading} ${styles.subheadingDesktop} ${styles.subheadingLeft} ${isTextAnimated ? styles.subheadingLeftAnimated : styles.subheadingLeftInitial}`}>
                 long
               </div>
               <div className={`${styles.subheading} ${styles.subheadingDesktop}`}>
                 story
               </div>
-              <div className={`${styles.subheading} ${styles.subheadingDesktop}`}>
+              <div className={`${styles.subheading} ${styles.subheadingDesktop} ${styles.subheadingRight} ${isTextAnimated ? styles.subheadingRightAnimated : styles.subheadingRightInitial}`}>
                 short
               </div>
               <div className={`${styles.subheading} ${styles.subheadingMobile}`}>
@@ -152,8 +156,11 @@ export const FoundersSection: React.FC<FoundersSectionProps> = ({
             {/* Quote */}
             <div className={styles.quoteContainer}>
               <h4 className={styles.heading5}>
-                "{founders[currentFounder]?.quote}" {founders[currentFounder]?.name?.toUpperCase()}
+                "{founders[currentFounder]?.quote}"
               </h4>
+              <div className={styles.founderNameLarge}>
+                {founders[currentFounder]?.name?.toUpperCase()}
+              </div>
             </div>
 
             {/* Bio */}

@@ -23,6 +23,7 @@ const NftDisclaimer = lazy(() => import('@/components/NftDisclaimer/NftDisclaime
 const FaqSection = lazy(() => import('@/components/FaqSection/FaqSection').then(m => ({ default: m.FaqSection })));
 const CookieConsent = lazy(() => import('@/components/CookieConsent/CookieConsent').then(m => ({ default: m.CookieConsent })));
 const FoundersSection = lazy(() => import('@/components/FoundersSection/FoundersSection').then(m => ({ default: m.FoundersSection })));
+const JoinUsSection = lazy(() => import('@/components/JoinUsSection/JoinUsSection').then(m => ({ default: m.JoinUsSection })));
 const ErrorPage = lazy(() => import('@/components/ErrorPage/ErrorPage').then(m => ({ default: m.ErrorPage })));
 const WebGLAnimation = lazy(() => import('@/components/WebGLAnimation/WebGLAnimation').then(m => ({ default: m.WebGLAnimation })));
 const MoreFaqPage = lazy(() => import('@/pages/MoreFaqPage'));
@@ -118,6 +119,7 @@ function App() {
                       <NftDisclaimer />
                       <FaqSection />
                       <FoundersSection />
+                      <JoinUsSection />
                     </Suspense>
                   </>
                 } />
