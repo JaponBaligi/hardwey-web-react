@@ -3,29 +3,31 @@
  * React + TypeScript application for music investment platform
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Navigation } from '@/components/Navigation/Navigation';
 import { MobileMenu } from '@/components/MobileMenu/MobileMenu';
 import { LoadingScreen } from '@/components/LoadingScreen/LoadingScreen';
 import { HeroSection } from '@/components/HeroSection/HeroSection';
-import { IntroSection } from '@/components/IntroSection/IntroSection';
-import { SharesSection } from '@/components/SharesSection/SharesSection';
-import { TickerAnimation } from '@/components/TickerAnimation/TickerAnimation';
-import { InvestmentIntroSection } from '@/components/InvestmentIntroSection/InvestmentIntroSection';
-import { NftDisclaimer } from '@/components/NftDisclaimer/NftDisclaimer';
-import { FaqSection } from '@/components/FaqSection/FaqSection';
-import { CookieConsent } from '@/components/CookieConsent/CookieConsent';
-import { FoundersSection } from '@/components/FoundersSection/FoundersSection';
-import { ErrorPage } from '@/components/ErrorPage/ErrorPage';
-import { WebGLAnimation } from '@/components/WebGLAnimation/WebGLAnimation';
 import { useSmoothScroll } from '@/hooks/useSmoothScroll';
 import { useModal } from '@/hooks/useModal';
 import { features } from '@/utils/env';
-import MoreFaqPage from '@/pages/MoreFaqPage';
-import PrivacyPolicy from '@/pages/PrivacyPolicy';
-import TermsOfService from '@/pages/TermsOfService';
 import styles from './App.module.css';
+
+// Lazy load components to reduce initial bundle size
+const IntroSection = lazy(() => import('@/components/IntroSection/IntroSection').then(m => ({ default: m.IntroSection })));
+const SharesSection = lazy(() => import('@/components/SharesSection/SharesSection').then(m => ({ default: m.SharesSection })));
+const TickerAnimation = lazy(() => import('@/components/TickerAnimation/TickerAnimation').then(m => ({ default: m.TickerAnimation })));
+const InvestmentIntroSection = lazy(() => import('@/components/InvestmentIntroSection/InvestmentIntroSection').then(m => ({ default: m.InvestmentIntroSection })));
+const NftDisclaimer = lazy(() => import('@/components/NftDisclaimer/NftDisclaimer').then(m => ({ default: m.NftDisclaimer })));
+const FaqSection = lazy(() => import('@/components/FaqSection/FaqSection').then(m => ({ default: m.FaqSection })));
+const CookieConsent = lazy(() => import('@/components/CookieConsent/CookieConsent').then(m => ({ default: m.CookieConsent })));
+const FoundersSection = lazy(() => import('@/components/FoundersSection/FoundersSection').then(m => ({ default: m.FoundersSection })));
+const ErrorPage = lazy(() => import('@/components/ErrorPage/ErrorPage').then(m => ({ default: m.ErrorPage })));
+const WebGLAnimation = lazy(() => import('@/components/WebGLAnimation/WebGLAnimation').then(m => ({ default: m.WebGLAnimation })));
+const MoreFaqPage = lazy(() => import('@/pages/MoreFaqPage'));
+const PrivacyPolicy = lazy(() => import('@/pages/PrivacyPolicy'));
+const TermsOfService = lazy(() => import('@/pages/TermsOfService'));
 
 /**
  * Main App component with routing and layout
@@ -82,7 +84,9 @@ function App() {
         {/* WebGL Animation Background */}
         {features.webglAnimation && (
           <div className={styles.webglBackground}>
-            <WebGLAnimation />
+            <Suspense fallback={null}>
+              <WebGLAnimation />
+            </Suspense>
           </div>
         )}
 
@@ -106,13 +110,15 @@ function App() {
                 <Route path="/" element={
                   <>
                     <HeroSection />
-                    <IntroSection />
-                    <SharesSection />
-                    <TickerAnimation />
-                    <InvestmentIntroSection />
-                    <NftDisclaimer />
-                    <FaqSection />
-                    <FoundersSection />
+                    <Suspense fallback={<div>Loading...</div>}>
+                      <IntroSection />
+                      <SharesSection />
+                      <TickerAnimation />
+                      <InvestmentIntroSection />
+                      <NftDisclaimer />
+                      <FaqSection />
+                      <FoundersSection />
+                    </Suspense>
                   </>
                 } />
 

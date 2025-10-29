@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useRef, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { FAQ_ITEMS } from '@/utils/constants';
 import type { FaqItem } from '@/types';
 import styles from './FaqSection.module.css';
@@ -102,14 +103,14 @@ export const FaqSection: React.FC<FaqSectionProps> = ({
               aria-controls={`faq-panel-${item.id}`}
               aria-label={`Toggle FAQ: ${item.question}`}
             >
-              {/* FAQ Number */}
+              {/* FAQ Number - Absolutely positioned */}
               <div className={styles.faqNumber}>
                 {String(index + 1).padStart(2, '0')}
               </div>
 
               {/* FAQ Title Flex */}
               <div className={styles.faqTitleFlex}>
-                <h3 className={styles.heading3}>
+                <h3 className={`${styles.heading3} ${styles.heading3IsFaq}`}>
                   {item.question}
                 </h3>
                 <p className={styles.faqSupportTxt}>
@@ -127,8 +128,7 @@ export const FaqSection: React.FC<FaqSectionProps> = ({
                 />
               </div>
 
-              {/* Hover Color Overlay */}
-              <div className={styles.faqHoverColour}></div>
+{/* Hover overlay removed for simpler design */}
             </button>
 
             {/* Accordion Pane */}
@@ -161,6 +161,39 @@ export const FaqSection: React.FC<FaqSectionProps> = ({
             </div>
           </div>
         ))}
+
+        {/* More Questions Button */}
+        <Link
+          to="/more-faq-it"
+          className={`${styles.accordionItem} ${styles.accordionItemIsButton} ${isVisible ? styles.accordionItemVisible : ''}`}
+          style={{ animationDelay: `${faqItems.length * 0.1}s` }}
+        >
+          <div className={styles.accordionTabButton}>
+            <div className={styles.faqNumber}>+10</div>
+            <div className={`${styles.faqTitleFlex} ${styles.faqTitleFlexIsNormal}`}>
+              <img
+                src="https://assets-global.website-files.com/64f45f425cb2cbb837b6f9b8/651005bf084d0dfd92bfc232_moreq.svg"
+                alt="More Questions"
+                className={styles.faqLarge}
+                loading="lazy"
+              />
+              <img
+                src="https://assets-global.website-files.com/64f45f425cb2cbb837b6f9b8/6510063a0f42653485288e95_clickme.svg"
+                alt="Click me"
+                className={styles.faqSmall}
+                loading="lazy"
+              />
+            </div>
+            <div className={styles.arrowDivWrapper}>
+              <img
+                src="/assets/svg/arrow-red.svg"
+                alt=""
+                className={styles.arrowDiv}
+                loading="lazy"
+              />
+            </div>
+          </div>
+        </Link>
       </div>
     </section>
   );

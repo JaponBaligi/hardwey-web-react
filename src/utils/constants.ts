@@ -120,6 +120,20 @@ export const FAQ_ITEMS = [
     answer: 'We\'re setting up a market where buying and selling shares takes just a few clicks. If the value of your shares rises, you can sell them to make a profit. Plus, every so often, artists may pay out dividends to their investors.',
     additionalInfo: ['', ''],
   },
+  {
+    id: 'will-i-have-to-pay',
+    question: 'Will I have to pay to be on HARDWEY?',
+    subtitle: 'Joking?Right?',
+    answer: 'You won\'t find us on your monthly subscription bill next to Netflix and Spotify. We charge a small % fee per transaction. If you don\'t use HARDWEY, HARDWEY won\'t use you :)',
+    additionalInfo: ['', ''],
+  },
+  {
+    id: 'can-i-invest-5-million',
+    question: 'Can I invest $5 million?',
+    subtitle: 'Damn, call us',
+    answer: 'Feeling generous today, huh? If so, please get in touch with our head of high-net-worth clients (HNWC), MRS. CENKER, at THISISJOKE@ABSOLUTELY.COM',
+    additionalInfo: ['', ''],
+  },
 ] as const;
 
 // Playlist data

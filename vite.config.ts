@@ -23,4 +23,16 @@ export default defineConfig({
       '@/assets': path.resolve(__dirname, './src/assets'),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'lottie': ['lottie-web'],
+          'smooth-scroll': ['lenis'],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 1000, // Increase limit to 1000 KB
+  },
 })

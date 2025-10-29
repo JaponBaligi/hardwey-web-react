@@ -5,11 +5,11 @@
   position: relative;
   z-index: 15;
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 0.25em;
+  grid-row-gap: 0.25em;
   background-color: var(--black);
+  flex-direction: column;
   padding: 0.25em;
+  display: flex;
 }
 
 .collectionList {
@@ -33,27 +33,105 @@
   transform: translateY(0);
 }
 
+.accordionItemIsButton {
+  height: 6.3em;
+  background-color: #d12d37;
+  text-decoration: none;
+  display: block;
+  border: none !important;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.accordionItemIsButton.accordionItemVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.accordionItemIsButton .accordionTabButton {
+  background-color: #d12d37 !important;
+  border: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  cursor: pointer;
+}
+
+.accordionItemIsButton .faqNumber {
+  color: var(--black);
+  z-index: 5;
+}
+
+.accordionItemIsButton .faqTitleFlexIsNormal {
+  z-index: 5;
+  position: relative;
+}
+
+.accordionItemIsButton .faqLarge,
+.accordionItemIsButton .faqSmall {
+  display: block;
+}
+
+.accordionItemIsButton .arrowDivWrapper {
+  z-index: 10;
+}
+
+.accordionItemIsButton .arrowDiv {
+  filter: brightness(0) !important;
+  transform: rotateZ(90deg) !important;
+}
+
+.accordionItemIsButton:hover .arrowDiv,
+.accordionItemIsButton:hover .accordionTabButton .arrowDiv {
+  filter: brightness(0) !important;
+  transform: rotateZ(270deg) !important;
+}
+
+.accordionItemIsButton:hover {
+  text-decoration: none;
+}
+
+.accordionItemIsButton:hover .accordionTabButton {
+  background-color: #d12d37 !important;
+  transform: translateY(-2px);
+}
+
 .accordionItem:hover {
   box-shadow: 4px 4px 25px rgba(0, 0, 0, 0.2);
 }
 
 .accordionTabButton {
-  width: 100%;
-  height: 6.3em;
-  background-color: var(--mita-red);
-  border: none;
   cursor: pointer;
   display: flex;
+  justify-content: flex-start;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 1.5em;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  padding-left: 1em;
+  padding-right: 1em;
   position: relative;
-  transition: all 0.3s ease;
-  text-decoration: none;
+  width: 100%;
+  background-color: var(--black);
+  border-top: 2px solid var(--mita-red);
+  border-bottom: 2px solid var(--mita-red);
+  border-left: none;
+  border-right: none;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+  min-height: 6em;
+}
+
+/* Ensure content is above the overlay (except faqNumber and arrowDivWrapper which are absolutely positioned) */
+.accordionTabButton > *:not(.faqHoverColour):not(.faqNumber):not(.arrowDivWrapper) {
+  position: relative;
+  z-index: 1;
 }
 
 .accordionTabButton:hover {
-  background-color: var(--black);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
 .accordionTabButton:focus-visible {
@@ -62,141 +140,193 @@
 }
 
 .accordionTabButtonActive {
-  background-color: var(--black);
+  background-color: var(--mita-red);
+  border-top: 2px solid var(--mita-red);
+  border-bottom: 2px solid var(--mita-red);
+  border-left: none;
+  border-right: none;
+}
+
+.accordionTabButtonActive .faqNumber {
+  color: var(--black);
+}
+
+.accordionTabButtonActive .heading3 {
+  color: var(--black);
+}
+
+.accordionTabButtonActive .faqSupportTxt {
+  color: var(--black);
 }
 
 .faqNumber {
+  z-index: 5;
+  position: absolute;
+  top: 0.2em;
+  bottom: auto;
+  left: 0.2em;
+  color: var(--mita-red);
+  text-align: left;
+  text-transform: uppercase;
+  margin-top: 0;
+  margin-bottom: 0;
   font-family: 'Helveticanowdisplay', sans-serif;
-  font-size: 1.5em;
+  font-size: 3em;
   font-weight: 700;
-  color: var(--white);
-  min-width: 60px;
-  text-align: center;
-  transition: transform 0.3s ease;
+  line-height: 1em;
+  transition: color 0.3s ease;
 }
 
 .faqTitleFlex {
-  flex: 1;
+  z-index: 5;
+  position: relative;
+  grid-column-gap: 1em;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-left: 6em;
+  margin-right: auto;
   display: flex;
-  flex-direction: column;
-  gap: 0.25em;
-  margin-left: 1.5em;
-  text-align: left;
+  flex-direction: row;
+  flex: 1;
+  gap: 1em;
+}
+
+.faqTitleFlexIsNormal {
+  mix-blend-mode: normal;
+  justify-content: flex-start;
+  gap: 2em;
+  align-items: center;
 }
 
 .heading3 {
   font-family: 'Helveticanowdisplay', sans-serif;
-  font-size: 1.25em;
-  font-weight: 600;
-  color: var(--white);
+  font-size: 4em;
+  font-weight: 700;
+  color: var(--mita-red);
   margin: 0;
-  line-height: 1.3;
-  transition: transform 0.3s ease;
+  line-height: 1.2;
+  transition: color 0.3s ease;
+  text-transform: uppercase;
+  text-align: left;
 }
 
+
 .faqSupportTxt {
-  font-family: 'Helveticanowdisplay', sans-serif;
-  font-size: 0.875em;
-  font-weight: 400;
+  transform-origin: 0%;
   color: var(--white);
-  margin: 0;
-  opacity: 0.8;
-  transition: transform 0.3s ease;
+  text-align: right;
+  text-transform: uppercase;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-family: 'Helveticanowdisplay', sans-serif;
+  font-size: 0.9em;
+  font-weight: 500;
+  line-height: 1.3;
+  transition: transform 0.3s ease, color 0.3s ease;
+  align-self: flex-start;
+  flex-shrink: 0;
 }
 
 .arrowDivWrapper {
-  position: absolute;
-  top: 0.6em;
-  right: 0.5em;
-  width: 2em;
-  height: 2em;
-  display: flex;
-  align-items: center;
+  z-index: 10;
+  width: 3em;
+  height: 3em;
   justify-content: center;
-  z-index: 5;
-  mix-blend-mode: difference;
+  align-items: center;
+  display: flex;
+  position: absolute !important;
+  top: auto !important;
+  right: 0.5em !important;
+  bottom: 0.5em !important;
+  left: auto !important;
+  flex-shrink: 0;
 }
 
 .arrowDiv {
-  width: 20px;
-  height: 20px;
-  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  transform: translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(90deg) skew(0, 0);
-  filter: invert(1);
+  width: 40px;
+  height: 40px;
+  transition: transform 0.3s ease, filter 0.3s ease;
+  transform: rotateZ(90deg);
+  filter: none;
 }
 
 .arrowDivActive {
-  transform: translate3d(0, 0, 0) scale3d(1.2, 1.2, 1) rotateX(0) rotateY(0) rotateZ(270deg) skew(0, 0);
+  transform: rotateZ(135deg);
 }
 
 .faqHoverColour {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: var(--mita-red);
-  opacity: 0;
-  transform-origin: 50% 100%;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
-}
-
-.accordionTabButton:hover .faqHoverColour {
-  opacity: 1;
+  /* Removed hover overlay for simpler design */
+  display: none;
 }
 
 .accordionTabButton:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-}
-
-.accordionTabButton:hover .faqNumber {
-  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(211, 45, 55, 0.3);
+  background-color: var(--mita-red);
 }
 
 .accordionTabButton:hover .heading3 {
-  transform: scale(0.95);
+  color: var(--black);
 }
 
-.accordionTabButton:hover .faqSupportTxt {
-  transform: scale(0.9);
+.accordionTabButton:hover .faqNumber {
+  color: var(--black);
 }
 
-.accordionTabButton:hover .arrowDiv img {
-  transform: translate3d(0, 0, 0) scale3d(1.3, 1.3, 1) rotateX(0) rotateY(0) rotateZ(90deg) skew(0, 0) !important;
+.accordionTabButton:hover .arrowDiv {
+  filter: brightness(0);
+  transform: rotateZ(135deg) scale(1.3);
 }
 
-.accordionItem .accordionTabButton.active .arrowDiv img[style*="transform"] {
-  transform: translate3d(0, 0, 0) scale3d(1.2, 1.2, 1) rotateX(0) rotateY(0) rotateZ(270deg) skew(0, 0) !important;
+/* Override for More Questions button */
+.accordionItemIsButton .accordionTabButton:hover .arrowDiv {
+  filter: brightness(0) !important;
+  transform: rotateZ(225deg) !important;
 }
 
-.accordionItem .accordionTabButton.active:hover .arrowDiv img[style*="transform"] {
-  transform: translate3d(0, 0, 0) scale3d(1.2, 1.2, 1) rotateX(0) rotateY(0) rotateZ(270deg) skew(0, 0) !important;
+/* Active state - when accordion is open, arrow should be rotated and black */
+.accordionTabButtonActive .arrowDiv {
+  transform: rotateZ(180deg);
+  filter: brightness(0);
+}
+
+/* Active state arrow transform on hover */
+.accordionTabButtonActive:hover .arrowDiv {
+  transform: rotateZ(135deg);
+  filter: brightness(0);
 }
 
 .accordionPane {
-  background-color: rgba(0, 0, 0, 0);
+  background-color: var(--mita-red) !important;
   overflow: hidden;
-  transition: height 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  mix-blend-mode: difference;
+  transition: height 0.3s ease-in-out;
+  width: 100%;
 }
 
 .accordionPaneContent {
-  padding: 2em 1.5em;
   border-bottom-right-radius: 10px;
   border-bottom-left-radius: 10px;
-  background-color: var(--black);
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin-bottom: 0;
+  padding: 6em 22vw 2em 8.5vw;
+  display: flex;
+  background-color: var(--mita-red) !important;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .faqAnswer {
-  font-family: 'Helveticanowdisplay', sans-serif;
-  font-size: 1.125em;
-  font-weight: 400;
-  line-height: 1.6;
-  color: var(--mita-red);
+  color: var(--black);
+  text-align: left;
   text-transform: uppercase;
-  margin: 0 0 1em 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-family: 'Helveticanowdisplay', sans-serif;
+  font-size: 1.4em;
+  font-weight: 400;
+  line-height: 1em;
 }
 
 .faqSecondaryFlex {
@@ -210,26 +340,90 @@
   font-size: 1em;
   font-weight: 400;
   line-height: 1.5;
-  color: var(--mita-red);
+  color: var(--black);
   margin: 0;
+}
+
+.faqLarge {
+  z-index: 500;
+  width: 40em;
+  height: 3.6em;
+  max-width: none;
+  transition: transform 0.3s ease;
+  display: block;
+  transform: scale(1);
+  flex-shrink: 0;
+}
+
+.faqSmall {
+  z-index: 500;
+  width: 5em;
+  height: 1em;
+  max-width: none;
+  transition: transform 0.3s ease;
+  display: block;
+  transform: scale(1);
+  flex-shrink: 0;
+}
+
+.accordionItemIsButton:hover .faqLarge {
+  transform: scale(0.25) translateX(-4em);
+}
+
+.accordionItemIsButton:hover .faqSmall {
+  transform: scale(5) translateX(-1em);
+}
+
+.accordionItemIsButton:hover .faqTitleFlexIsNormal {
+  gap: 0;
 }
 
 /* Responsive Design */
 @media (max-width: 991px) {
-  .faqSection {
-    padding: 4px;
-  }
-
   .accordionItem {
     margin-bottom: 0;
   }
 
-  .accordionTabButton {
+  .accordionItem.isButton,
+  .accordionItemIsButton {
     height: auto;
-    padding: 1.5em 1em;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5em;
+    padding-bottom: 10px;
+  }
+
+  .faqTitleFlexIsNormal {
+    margin-left: 10px;
+  }
+
+  .faqLarge {
+    width: 54vw;
+    height: auto;
+  }
+
+  .faqSmall {
+    width: 9vw;
+    height: auto;
+  }
+
+  .arrowDivWrapper {
+    width: 3em;
+    height: 3em;
+    top: auto !important;
+    bottom: 0.5em !important;
+    left: auto !important;
+    right: 0.5em !important;
+  }
+
+  .accordionPane {
+    width: 100%;
+  }
+
+  .accordionPaneContent {
+    padding: 60px 80px 15px 15px;
+  }
+
+  .accordionTabButton {
+    padding-top: 10px;
+    padding-bottom: 10px;
   }
 
   .faqNumber {
@@ -237,120 +431,103 @@
   }
 
   .faqTitleFlex {
-    margin-left: 0;
-    width: 100%;
-    gap: 0.25em;
+    grid-column-gap: 30px;
+    grid-row-gap: 30px;
+    flex-direction: column;
+    margin-left: 15px;
   }
 
-  .heading3 {
-    font-size: 1.125em;
-    line-height: 1.2;
+  .faqTitleFlex.isNormal {
+    margin-left: 10px;
   }
 
   .faqSupportTxt {
-    font-size: 0.75em;
-  }
-
-  .arrowDivWrapper {
-    position: absolute;
-    top: 0.5em;
-    right: 0.5em;
-    width: 30px;
-    height: 30px;
-  }
-
-  .arrowDiv {
-    width: 16px;
-    height: 16px;
-  }
-
-  .accordionPaneContent {
-    padding: 1.5em 1em 0.5em;
+    font-size: 14px;
+    line-height: 14px;
   }
 
   .faqAnswer {
-    font-size: 1em;
-    margin-bottom: 0.5em;
-  }
-
-  .bodyCopy {
-    font-size: 0.875em;
+    font-size: 16px;
+    line-height: 18px;
   }
 }
 
 @media (max-width: 767px) {
   .accordionTabButton {
-    padding: 1em 0.5em;
-    min-height: 80px;
+    width: 100%;
+    padding-top: 20px;
+    padding-bottom: 20px;
   }
 
-  .heading3 {
-    font-size: 1em;
-    line-height: 1.1;
+  .accordionItem.isButton,
+  .accordionItemIsButton {
+    padding-bottom: 0;
   }
 
-  .faqSupportTxt {
-    font-size: 10px;
+  .faqTitleFlex,
+  .faqTitleFlexIsNormal {
+    margin-left: 0;
+  }
+
+  .faqLarge {
+    width: 60vw;
+  }
+
+  .faqSmall {
+    width: 16vw;
+    height: 5vw;
   }
 
   .arrowDivWrapper {
-    width: 25px;
-    height: 25px;
+    width: 2.5em;
+    height: 2.5em;
+    top: auto !important;
+    right: 0.5em !important;
+    left: auto !important;
+    bottom: 0.5em !important;
   }
 
   .arrowDiv {
-    width: 14px;
-    height: 14px;
+    width: 36px;
+    height: 36px;
   }
 
   .accordionPaneContent {
-    padding: 1em 0.5em;
+    padding-bottom: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
   }
 
-  .faqAnswer {
-    font-size: 0.875em;
-    line-height: 1.4;
+  .accordionTabButton {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 15px;
   }
 
-  .bodyCopy {
-    font-size: 0.75em;
+  .faqTitleFlex,
+  .faqTitleFlex.isNormal {
+    margin-left: 0;
+  }
+
+  .faqSupportTxt {
+    font-size: 12px;
   }
 }
 
-@media (max-width: 480px) {
-  .accordionTabButton {
-    padding: 0.5em;
-    min-height: 70px;
-  }
-
-  .heading3 {
-    font-size: 0.875em;
+@media (max-width: 479px) {
+  .faqTitleFlex,
+  .faqTitleFlex.isNormal {
+    margin-left: 0;
   }
 
   .faqSupportTxt {
-    font-size: 9px;
+    font-size: 11px;
+    line-height: 1.2;
   }
 
-  .arrowDivWrapper {
-    width: 20px;
-    height: 20px;
-  }
-
-  .arrowDiv {
-    width: 12px;
-    height: 12px;
-  }
-
-  .accordionPaneContent {
-    padding: 0.5em;
-  }
-
-  .faqAnswer {
-    font-size: 0.75em;
-  }
-
-  .bodyCopy {
-    font-size: 10px;
+  .imageSection {
+    padding-top: 400px;
+    padding-bottom: 400px;
   }
 }
 
@@ -399,7 +576,7 @@
   }
 
   .accordionPaneContent {
-    background-color: var(--black);
+    background-color: var(--mita-red);
   }
 }
 
@@ -439,7 +616,7 @@
   }
 
   .accordionPaneContent {
-    background-color: transparent;
+    background-color: var(--mita-red);
     padding: 0.5em;
   }
 
