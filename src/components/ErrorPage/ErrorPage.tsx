@@ -139,26 +139,6 @@ export const ErrorPage: React.FC<ErrorPageProps> = ({
           </button>
         )}
 
-        {/* Additional Help Links */}
-        <div className={styles.helpLinks}>
-          <button
-            className={styles.helpLink}
-            onClick={() => navigate('/faq')}
-            aria-label="Visit FAQ page for help"
-            type="button"
-          >
-            FAQ
-          </button>
-          <span className={styles.helpSeparator}>•</span>
-          <button
-            className={styles.helpLink}
-            onClick={() => navigate('/contact')}
-            aria-label="Contact support"
-            type="button"
-          >
-            Contact Support
-          </button>
-        </div>
       </div>
 
       {/* Decorative Elements */}

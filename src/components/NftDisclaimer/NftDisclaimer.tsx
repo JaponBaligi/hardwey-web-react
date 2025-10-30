@@ -103,9 +103,7 @@ export const NftDisclaimer: React.FC<NftDisclaimerProps> = ({ className = '' }) 
           loading="lazy"
         />
         <div className={`${styles.nftText} ${isVisible ? styles.nftTextVisible : ''}`}>
-          N<span className={styles.extraGap}>F</span>
-          <br />
-          Ts
+          N<span className={styles.extraGap}>F</span>Ts
         </div>
         
         {/* Mobile Content */}

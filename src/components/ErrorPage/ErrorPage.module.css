@@ -3,7 +3,7 @@
 
 .errorPageContainer {
   min-height: 100vh;
-  background-color: var(--color-background-dark);
+  background-color: rgba(20, 20, 20, 1);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -34,8 +34,8 @@
   height: 100%;
   background: radial-gradient(
     circle at center,
-    rgba(0, 0, 0, 0.3) 0%,
-    rgba(0, 0, 0, 0.8) 100%
+    rgba(0, 0, 0, 0.2) 0%,
+    rgba(0, 0, 0, 0.6) 100%
   );
   z-index: 2;
 }
@@ -45,7 +45,7 @@
   z-index: 10;
   max-width: 100%;
   width: 100%;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(30, 30, 30, 0.9);
   padding: 3em 2em;
   border-radius: 10px;
   opacity: 0;
@@ -112,7 +112,7 @@
 }
 
 .backButtonText {
-  color: var(--color-accent-red);
+  color: var(--mita-red);
   text-align: center;
   text-transform: uppercase;
   font-family: var(--font-family-heading);
@@ -121,7 +121,7 @@
   margin: 0;
   z-index: 5;
   position: relative;
-  transition: all 0.3s ease;
+  transition: color 0.3s ease;
 }
 
 .backButtonHover {
@@ -144,8 +144,7 @@
 }
 
 .backButton:hover .backButtonText {
-  color: var(--color-text-inverse);
-  mix-blend-mode: difference;
+  color: var(--white);
 }
 
 .arrowDivWrapper {
@@ -161,52 +160,23 @@
   transform: translateX(5px);
 }
 
+.arrowDivWrapper:hover .arrowDiv,
+.backButton:hover .arrowDiv {
+  transform: rotate(225deg);
+}
+
 .arrowDiv {
   width: 100%;
   height: 100%;
   object-fit: contain;
   transition: filter 0.3s ease;
+  transform: rotate(45deg);
 }
 
 .arrowDivInvert {
   filter: invert(1);
 }
 
-.helpLinks {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-md);
-  margin-top: var(--spacing-lg);
-  opacity: 0.7;
-}
-
-.helpLink {
-  background: none;
-  border: none;
-  color: var(--color-text-inverse);
-  font-family: var(--font-family-primary);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  text-decoration: underline;
-  cursor: pointer;
-  transition: color 0.3s ease;
-  padding: var(--spacing-xs);
-}
-
-.helpLink:hover {
-  color: var(--color-accent-blue);
-}
-
-.helpLink:focus-visible {
-  outline: 2px solid var(--color-accent-blue);
-  outline-offset: 2px;
-}
-
-.helpSeparator {
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-sm);
-}
 
 .decorativeElements {
   position: absolute;
@@ -289,14 +259,6 @@
     margin-left: 0.8em;
   }
 
-  .helpLinks {
-    flex-direction: column;
-    gap: var(--spacing-sm);
-  }
-
-  .helpSeparator {
-    display: none;
-  }
 }
 
 @media (max-width: 480px) {
@@ -382,19 +344,19 @@
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
   .errorPageContainer {
-    background-color: var(--color-background-darker);
+    background-color: rgba(25, 25, 25, 1);
   }
 
   .errorContent {
-    background-color: rgba(0, 0, 0, 0.9);
+    background-color: rgba(35, 35, 35, 0.9);
     border-color: rgba(255, 255, 255, 0.2);
   }
 
   .patternOverlay {
     background: radial-gradient(
       circle at center,
-      rgba(0, 0, 0, 0.4) 0%,
-      rgba(0, 0, 0, 0.9) 100%
+      rgba(0, 0, 0, 0.25) 0%,
+      rgba(0, 0, 0, 0.7) 100%
     );
   }
 }
@@ -441,10 +403,6 @@
   outline-offset: 2px;
 }
 
-.helpLink:focus-visible {
-  outline: 2px solid var(--color-accent-blue);
-  outline-offset: 2px;
-}
 
 /* Error code specific styles */
 .errorPageContainer.error404 .errorTitle {
@@ -472,6 +430,3 @@
   animation-delay: 0.3s;
 }
 
-.helpLinks {
-  animation-delay: 0.4s;
-}

@@ -4,6 +4,7 @@
  */
 
 import React, { useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { SOCIAL_LINKS } from '@/utils/constants';
 import type { SocialLink } from '@/types';
 import styles from './MobileMenu.module.css';
@@ -25,6 +26,8 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
   onClose,
   onJoinUsClick,
 }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
   // Handle escape key to close menu
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
@@ -70,6 +73,37 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
     }
   };
 
+  const handleNavLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, hash: string) => {
+    // If we're not on the home page, navigate to home page with hash
+    if (location.pathname !== '/') {
+      e.preventDefault();
+      navigate('/', { state: { scrollTo: hash } });
+      // Wait for navigation to complete, then scroll to the element
+      setTimeout(() => {
+        const element = document.querySelector(hash);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 300);
+    } else {
+      // If we're on the home page, handle scrolling explicitly
+      e.preventDefault();
+      
+      // For HARDWEY link, scroll to the top (homepage starting point)
+      if (hash === '#hardwey') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        // For other links, scroll to the section
+        const element = document.querySelector(hash);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    }
+    // Close menu after navigation
+    onClose();
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -80,89 +114,97 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
       aria-modal="true"
       aria-label="Mobile navigation menu"
     >
-      <div className={styles.mobileMenuContent}>
-        {/* Close Button */}
-        <button
-          type="button"
-          className={styles.closeButton}
-          onClick={onClose}
-          aria-label="Close mobile menu"
+      {/* Background Watermark */}
+      <div className={styles.watermark}>HARDWEY</div>
+
+      {/* Close Button */}
+      <button
+        type="button"
+        className={styles.closeButton}
+        onClick={onClose}
+        aria-label="Close mobile menu"
+      >
+        [CLOSE]
+      </button>
+
+      {/* Main Navigation Items */}
+      <nav className={styles.mobileNav}>
+        <a 
+          href="#hardwey" 
+          className={styles.navLink} 
+          onClick={(e) => handleNavLinkClick(e, '#hardwey')}
         >
-          <div className={styles.closeIcon}>
-            <span className={styles.closeLine}></span>
-            <span className={styles.closeLine}></span>
-          </div>
-        </button>
+          HARDWEY
+        </a>
+        <a 
+          href="#faq-it" 
+          className={styles.navLink} 
+          onClick={(e) => handleNavLinkClick(e, '#faq-it')}
+        >
+          FAQ IT
+        </a>
+        <a 
+          href="#founders" 
+          className={styles.navLink} 
+          onClick={(e) => handleNavLinkClick(e, '#founders')}
+        >
+          FOUNDERS
+        </a>
+      </nav>
 
-        {/* Navigation Items */}
-        <nav className={styles.mobileNav}>
-          <div className={styles.navSection}>
-            <h3 className={styles.navSectionTitle}>Social</h3>
-            <div className={styles.socialLinks}>
-              {SOCIAL_LINKS.map((link) => (
-                <a
-                  key={link.platform}
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.socialLink}
-                  onClick={() => handleSocialClick(link)}
-                  aria-label={link.label}
-                >
-                  <span className={styles.socialPlatform}>
-                    {link.platform === 'instagram' && 'Instagram'}
-                    {link.platform === 'tiktok' && 'TikTok'}
-                    {link.platform === 'twitter' && 'Twitter'}
-                    {link.platform === 'linkedin' && 'LinkedIn'}
-                  </span>
-                  <span className={styles.socialHandle}>
-                    {link.platform === 'instagram' && '@hardweymusicgroup'}
-                    {link.platform === 'tiktok' && '@hardweymusicgroup'}
-                    {link.platform === 'twitter' && '@hardweyllc'}
-                    {link.platform === 'linkedin' && '/company/hardwey'}
-                  </span>
-                </a>
-              ))}
-            </div>
-          </div>
-
-          <div className={styles.navSection}>
-            <h3 className={styles.navSectionTitle}>Navigation</h3>
-            <div className={styles.navLinks}>
-              <a href="#hardwey" className={styles.navLink} onClick={onClose}>
-                HARDWEY
-              </a>
-              <a href="#faq-it" className={styles.navLink} onClick={onClose}>
-                FAQ It
-              </a>
-              <a href="#founders" className={styles.navLink} onClick={onClose}>
-                Founders
-              </a>
-            </div>
-          </div>
-
-          <div className={styles.navSection}>
-            <button
-              type="button"
-              className={styles.joinUsButton}
-              onClick={handleJoinUsClick}
-            >
-              <div className={styles.buttonArrow}>
-                <img
-                  src="/assets/svg/arrow-blue.svg"
-                  alt=""
-                  className={styles.buttonArrowImg}
-                />
-                <img
-                  src="/assets/svg/arrow-blue.svg"
-                  alt=""
-                  className={`${styles.buttonArrowImg} ${styles.buttonArrowImgSecond}`}
-                />
-              </div>
-              <span className={styles.joinUsText}>Join Us</span>
-            </button>
-          </div>
-        </nav>
+      {/* Social Links */}
+      <div className={styles.socialLinks}>
+        <a
+          href="https://www.instagram.com/hardweymusicgroup/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.socialLink}
+          onClick={() => {
+            const link = SOCIAL_LINKS.find(l => l.platform === 'instagram');
+            if (link) {
+              handleSocialClick(link);
+            } else {
+              onClose();
+            }
+          }}
+          aria-label="Instagram"
+        >
+          IG
+        </a>
+        <a
+          href="https://www.tiktok.com/@hardweymusicgroup"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.socialLink}
+          onClick={() => {
+            const link = SOCIAL_LINKS.find(l => l.platform === 'tiktok');
+            if (link) {
+              handleSocialClick(link);
+            } else {
+              onClose();
+            }
+          }}
+          aria-label="TikTok"
+        >
+          TT
+        </a>
+        <a
+          href="https://www.linkedin.com/company/hardwey"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.socialLink}
+          onClick={() => {
+            const link = SOCIAL_LINKS.find(l => l.platform === 'linkedin');
+            if (link) {
+              handleSocialClick(link);
+            } else {
+              onClose();
+            }
+          }}
+          aria-label="LinkedIn"
+        >
+          IN
+        </a>
       </div>
     </div>
   );

@@ -91,7 +91,7 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ className = '' }) =>
           invest in <span className={styles.artistHeading}>artists</span>
         </h1>
         <h1 className={styles.introHeadingMob}>
-          Invest in artists,<br />it hits different.
+          Invest in artists,<br /><span className={styles.subheadingMobileText}>it hits different.</span>
         </h1>
       </div>
 

@@ -3,8 +3,9 @@
 
 .pageContainer {
   min-height: 100vh;
-  background-color: var(--color-background-dark);
-  padding: var(--spacing-lg);
+  background-color: var(--black);
+  padding: 0.25em;
+  padding-top: calc(0.25em + 100px);
   position: relative;
 }
 
@@ -19,38 +20,7 @@
 }
 
 .backButton {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  background: none;
-  border: none;
-  color: var(--color-text-inverse);
-  font-family: var(--font-family-primary);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  cursor: pointer;
-  transition: color 0.3s ease;
-  padding: var(--spacing-xs);
-}
-
-.backButton:hover {
-  color: var(--color-accent-blue);
-}
-
-.backButton:focus-visible {
-  outline: 2px solid var(--color-accent-blue);
-  outline-offset: 2px;
-}
-
-.backArrow {
-  width: 1em;
-  height: 1em;
-  transform: rotate(180deg);
-  transition: transform 0.3s ease;
-}
-
-.backButton:hover .backArrow {
-  transform: rotate(180deg) translateX(-2px);
+  display: none;
 }
 
 .headerContent {
@@ -92,11 +62,9 @@
 }
 
 .contentWrapper {
-  background-color: rgba(255, 255, 255, 0.05);
-  border-radius: var(--border-radius-lg);
+  background-color: transparent;
   padding: var(--spacing-xl);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
+  border: none;
 }
 
 .introSection {
@@ -234,9 +202,8 @@
   max-width: 800px;
   margin: var(--spacing-xl) auto 0;
   display: flex;
-  gap: var(--spacing-md);
   justify-content: center;
-  flex-wrap: wrap;
+  align-items: center;
 }
 
 .actionButton {
@@ -272,7 +239,8 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .pageContainer {
-    padding: var(--spacing-md);
+    padding: 0.25em;
+    padding-top: calc(0.25em + 100px);
   }
 
   .pageHeader {
@@ -335,7 +303,8 @@
 
 @media (max-width: 480px) {
   .pageContainer {
-    padding: var(--spacing-sm);
+    padding: 0.25em;
+    padding-top: calc(0.25em + 100px);
   }
 
   .pageTitle {

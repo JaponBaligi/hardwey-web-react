@@ -4,7 +4,6 @@
  */
 
 import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import type { FaqItem } from '@/types';
 import styles from './MoreFaqPage.module.css';
 
@@ -19,8 +18,8 @@ interface MoreFaqPageProps {
 export const MoreFaqPage: React.FC<MoreFaqPageProps> = ({
   className = '',
 }) => {
-  const navigate = useNavigate();
-  const [openItems, setOpenItems] = useState<Set<string>>(new Set());
+  const [openItem, setOpenItem] = useState<number | null>(null);
+  const accordionRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [isVisible, setIsVisible] = useState(false);
   const pageRef = useRef<HTMLDivElement>(null);
 
@@ -136,41 +135,47 @@ export const MoreFaqPage: React.FC<MoreFaqPageProps> = ({
     return () => observer.disconnect();
   }, []);
 
-  const toggleItem = (itemId: string) => {
-    setOpenItems(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(itemId)) {
-        newSet.delete(itemId);
-      } else {
-        newSet.add(itemId);
-      }
-      return newSet;
-    });
+  const handleToggle = (index: number) => {
+    const accordionPane = accordionRefs.current[index];
+    if (!accordionPane) return;
+
+    const isCurrentlyOpen = openItem === index;
+
+    if (isCurrentlyOpen) {
+      // Close the current item
+      accordionPane.style.height = '0px';
+      setOpenItem(null);
+    } else {
+      // Close all other items first
+      accordionRefs.current.forEach((ref, refIndex) => {
+        if (ref && refIndex !== index) {
+          ref.style.height = '0px';
+        }
+      });
+
+      // Open the selected item
+      const naturalHeight = accordionPane.scrollHeight + 'px';
+      accordionPane.style.height = '0px';
+      setOpenItem(index);
+
+      // Animate to natural height
+      requestAnimationFrame(() => {
+        accordionPane.style.height = naturalHeight;
+      });
+    }
   };
 
-  const handleBackToHome = () => {
-    navigate('/', { replace: true });
+  const handleKeyDown = (event: React.KeyboardEvent, index: number) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      handleToggle(index);
+    }
   };
 
   return (
     <div ref={pageRef} className={`${styles.pageContainer} ${className}`}>
       {/* Header */}
       <div className={styles.pageHeader}>
-        <button
-          className={styles.backButton}
-          onClick={handleBackToHome}
-          aria-label="Back to home"
-          type="button"
-        >
-          <img
-            src="/assets/svg/arrow-black.svg"
-            alt=""
-            className={styles.backArrow}
-            loading="lazy"
-          />
-          Back to Home
-        </button>
-
         <div className={styles.headerContent}>
           <h1 className={styles.pageTitle}>More FAQ It</h1>
           <p className={styles.pageSubtitle}>
@@ -180,94 +185,100 @@ export const MoreFaqPage: React.FC<MoreFaqPageProps> = ({
       </div>
 
       {/* FAQ Content */}
-      <div className={`${styles.faqContainer} ${isVisible ? styles.faqContainerVisible : ''}`}>
+      <div className={`${styles.collectionList} ${isVisible ? styles.collectionListVisible : ''}`}>
         {extendedFaqItems.map((item, index) => (
           <div
             key={item.id}
-            className={`${styles.faqItem} ${openItems.has(item.id) ? styles.faqItemOpen : ''}`}
+            role="listitem"
+            className={`${styles.accordionItem} ${isVisible ? styles.accordionItemVisible : ''}`}
             style={{ animationDelay: `${index * 0.1}s` }}
           >
             <button
-              className={styles.faqButton}
-              onClick={() => toggleItem(item.id)}
-              aria-expanded={openItems.has(item.id)}
-              aria-controls={`faq-content-${item.id}`}
               type="button"
+              className={`${styles.accordionTabButton} ${openItem === index ? styles.accordionTabButtonActive : ''}`}
+              onClick={() => handleToggle(index)}
+              onKeyDown={(e) => handleKeyDown(e, index)}
+              aria-expanded={openItem === index}
+              aria-controls={`faq-panel-${item.id}`}
+              aria-label={`Toggle FAQ: ${item.question}`}
             >
+              {/* FAQ Number - Absolutely positioned */}
               <div className={styles.faqNumber}>
-                {String(index + 1).padStart(2, '0')}
+                {String(index + 6).padStart(2, '0')}
               </div>
-              
-              <div className={styles.faqContent}>
-                <h3 className={styles.faqQuestion}>
+
+              {/* FAQ Title Flex */}
+              <div className={styles.faqTitleFlex}>
+                <h3 className={`${styles.heading3} ${styles.heading3IsFaq}`}>
                   {item.question}
                 </h3>
-                <p className={styles.faqSubtitle}>
+                <p className={styles.faqSupportTxt}>
                   {item.subtitle}
                 </p>
               </div>
 
-              <div className={styles.faqArrow}>
+              {/* Arrow Wrapper */}
+              <div className={styles.arrowDivWrapper}>
                 <img
-                  src="/assets/svg/arrow-black.svg"
+                  src="/assets/svg/arrow-red.svg"
                   alt=""
-                  className={styles.arrowIcon}
+                  className={`${styles.arrowDiv} ${openItem === index ? styles.arrowDivActive : ''}`}
                   loading="lazy"
                 />
               </div>
-
-              <div className={styles.faqHover} />
             </button>
 
+            {/* Accordion Pane */}
             <div
-              id={`faq-content-${item.id}`}
-              className={`${styles.faqAnswer} ${openItems.has(item.id) ? styles.faqAnswerOpen : ''}`}
+              ref={(el) => {
+                if (el) accordionRefs.current[index] = el;
+              }}
+              id={`faq-panel-${item.id}`}
+              className={styles.accordionPane}
+              style={{ height: '0px' }}
+              aria-hidden={openItem !== index}
             >
-              <div className={styles.answerContent}>
-                <p className={styles.answerText}>
+              <div className={styles.accordionPaneContent}>
+                <p className={styles.faqAnswer}>
                   {item.answer}
                 </p>
-                
-                {item.additionalInfo && item.additionalInfo.length > 0 && (
-                  <ul className={styles.additionalInfo}>
-                    {item.additionalInfo.map((info, infoIndex) => (
-                      info && (
-                        <li key={infoIndex} className={styles.additionalItem}>
-                          {info}
-                        </li>
-                      )
-                    ))}
-                  </ul>
-                )}
+                <div className={styles.faqSecondaryFlex}>
+                  {item.additionalInfo && item.additionalInfo.length > 0 && item.additionalInfo[0] && (
+                    <p className={styles.bodyCopy}>
+                      {item.additionalInfo[0]}
+                    </p>
+                  )}
+                  {item.additionalInfo && item.additionalInfo.length > 1 && item.additionalInfo[1] && (
+                    <p className={styles.bodyCopy}>
+                      {item.additionalInfo[1]}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Contact Section */}
-      <div className={styles.contactSection}>
-        <h2 className={styles.contactTitle}>Still have questions?</h2>
-        <p className={styles.contactText}>
-          Our team is here to help. Reach out to us anytime.
-        </p>
-        <div className={styles.contactButtons}>
+      {/* Image Section with Contact */}
+      <section className={styles.imageSection}>
+        <img
+          src="https://assets-global.website-files.com/64f45f425cb2cbb837b6f9b8/652ce8621b4433a6c86c936b_1.%20COLOR%20TREATMENT%20%2B%20NOISE%20(FAV).jpg"
+          alt=""
+          className={styles.imageFull}
+          loading="lazy"
+        />
+        <div className={styles.bodyTextContain}>
+          <h4 className={styles.heading2Image}>More questions? We've got more answers</h4>
           <a
             href="mailto:hello@hardweyllc.com"
-            className={styles.contactButton}
+            className={styles.emailButton}
             aria-label="Email us for support"
           >
-            Email Support
+            don't be shy, it's okay to send mail
           </a>
-          <button
-            className={styles.contactButton}
-            onClick={handleBackToHome}
-            type="button"
-          >
-            Back to Home
-          </button>
         </div>
-      </div>
+      </section>
     </div>
   );
 };

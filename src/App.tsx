@@ -1,8 +1,3 @@
-/**
- * HARDWEY Music Group - Main App Component
- * React + TypeScript application for music investment platform
- */
-
 import { useState, useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Navigation } from '@/components/Navigation/Navigation';
@@ -14,7 +9,6 @@ import { useModal } from '@/hooks/useModal';
 import { features } from '@/utils/env';
 import styles from './App.module.css';
 
-// Lazy load components to reduce initial bundle size
 const IntroSection = lazy(() => import('@/components/IntroSection/IntroSection').then(m => ({ default: m.IntroSection })));
 const SharesSection = lazy(() => import('@/components/SharesSection/SharesSection').then(m => ({ default: m.SharesSection })));
 const TickerAnimation = lazy(() => import('@/components/TickerAnimation/TickerAnimation').then(m => ({ default: m.TickerAnimation })));
@@ -22,6 +16,7 @@ const InvestmentIntroSection = lazy(() => import('@/components/InvestmentIntroSe
 const NftDisclaimer = lazy(() => import('@/components/NftDisclaimer/NftDisclaimer').then(m => ({ default: m.NftDisclaimer })));
 const FaqSection = lazy(() => import('@/components/FaqSection/FaqSection').then(m => ({ default: m.FaqSection })));
 const CookieConsent = lazy(() => import('@/components/CookieConsent/CookieConsent').then(m => ({ default: m.CookieConsent })));
+const FredAgainSection = lazy(() => import('@/components/FredAgainSection/FredAgainSection').then(m => ({ default: m.FredAgainSection })));
 const FoundersSection = lazy(() => import('@/components/FoundersSection/FoundersSection').then(m => ({ default: m.FoundersSection })));
 const JoinUsSection = lazy(() => import('@/components/JoinUsSection/JoinUsSection').then(m => ({ default: m.JoinUsSection })));
 const ErrorPage = lazy(() => import('@/components/ErrorPage/ErrorPage').then(m => ({ default: m.ErrorPage })));
@@ -118,6 +113,7 @@ function App() {
                       <InvestmentIntroSection />
                       <NftDisclaimer />
                       <FaqSection />
+                      <FredAgainSection />
                       <FoundersSection />
                       <JoinUsSection />
                     </Suspense>

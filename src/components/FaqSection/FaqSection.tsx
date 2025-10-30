@@ -164,7 +164,7 @@ export const FaqSection: React.FC<FaqSectionProps> = ({
 
         {/* More Questions Button */}
         <Link
-          to="/more-faq-it"
+          to="/more-faq"
           className={`${styles.accordionItem} ${styles.accordionItemIsButton} ${isVisible ? styles.accordionItemVisible : ''}`}
           style={{ animationDelay: `${faqItems.length * 0.1}s` }}
         >

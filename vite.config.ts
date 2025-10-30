@@ -32,6 +32,17 @@ export default defineConfig({
           'smooth-scroll': ['lenis'],
         },
       },
+      onwarn(warning, warn) {
+        // Suppress eval warnings from lottie-web (known safe usage in animation library)
+        if (
+          warning.code === 'EVAL' &&
+          warning.loc?.file?.includes('lottie-web')
+        ) {
+          return;
+        }
+        // Use default warning handler for all other warnings
+        warn(warning);
+      },
     },
     chunkSizeWarningLimit: 1000, // Increase limit to 1000 KB
   },

@@ -29,6 +29,7 @@ export const FaqIntroSection: React.FC<FaqIntroSectionProps> = ({ className = ''
             <img src="/assets/svg/form-star.svg" loading="lazy" alt="" className={styles.asterix} />
             <img src="/assets/svg/form-star.svg" loading="lazy" alt="" className={styles.asterix} />
             <img src="/assets/svg/form-star.svg" loading="lazy" alt="" className={styles.asterix} />
+            
           </div>
         </div>
       </div>

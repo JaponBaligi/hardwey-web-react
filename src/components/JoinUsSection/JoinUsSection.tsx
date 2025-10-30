@@ -3,7 +3,8 @@
  * Recreates the "Join Us" footer section from the static site
  */
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import styles from './JoinUsSection.module.css';
 
 interface JoinUsSectionProps {
@@ -31,26 +32,7 @@ export const JoinUsSection: React.FC<JoinUsSectionProps> = ({
     email: '',
     artist: '',
   });
-  const [isAnimated, setIsAnimated] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
-  const headingLettersRef = useRef<HTMLDivElement[]>([]);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsAnimated(true);
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -239,10 +221,10 @@ This is a pre-registration submission from the Hardwey Music website.`;
           </div>
           <div className={styles.footerLinks}>
             <div className={styles.footerLegals}>
-              <a href="/terms-of-service.html" target="_blank" rel="noopener noreferrer" className={styles.hyperlink}>Terms of Service</a>
+              <Link to="/terms-of-service" className={styles.hyperlink}>Terms of Service</Link>
             </div>
             <div className={styles.footerLegals}>
-              <a href="/privacy-policy.html" target="_blank" rel="noopener noreferrer" className={styles.hyperlink}>Privacy Policy</a>
+              <Link to="/privacy-policy" className={styles.hyperlink}>Privacy Policy</Link>
             </div>
           </div>
         </div>

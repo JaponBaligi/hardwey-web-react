@@ -1,0 +1,204 @@
+/* FredAgainSection Component Styles */
+/* Matches the original image-section styling from hardwey.css */
+
+.imageSection {
+  z-index: 12;
+  width: 100%;
+  background-color: var(--black);
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 40em;
+  padding-bottom: 40em;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+
+.imageFull {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 1;
+}
+
+.bodyTextContain {
+  z-index: 5;
+  width: 36em;
+  grid-row-gap: 1em;
+  flex-direction: column;
+  align-items: center;
+  display: flex;
+  position: relative;
+}
+
+.bodyTextContainWide {
+  width: 60em;
+}
+
+.bodyTextContainFa {
+  width: 54em;
+}
+
+.heading2 {
+  font-family: var(--font-family-heading);
+  font-weight: var(--font-weight-bold);
+  color: var(--white);
+  text-transform: uppercase;
+  line-height: 0.9;
+  margin: 0;
+  text-align: center;
+}
+
+.heading2Image {
+  z-index: 5;
+  font-size: 4.2em;
+  line-height: 0.9em;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.8s ease 0.2s;
+}
+
+.heading2Visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hifCreditsContainer {
+  z-index: 6;
+  width: 100%;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  display: flex;
+  position: absolute;
+  top: auto;
+  bottom: 6em;
+  left: 0%;
+  right: 0%;
+}
+
+.subheading {
+  font-family: var(--font-family-primary);
+  font-size: var(--body-font-size);
+  font-weight: var(--font-weight-normal);
+  line-height: 1.4;
+  margin: 0 0 1.5em 0;
+}
+
+.subheadingLight {
+  color: var(--white);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.8s ease 0.4s;
+}
+
+.subheadingVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hifIdentsFlex {
+  grid-column-gap: 2.5em;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.identLogo {
+  height: auto;
+  object-fit: contain;
+  max-width: 150px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.8s ease;
+}
+
+.hifIdentsFlex img:nth-child(1) {
+  transition-delay: 0.5s;
+}
+
+.hifIdentsFlex img:nth-child(2) {
+  transition-delay: 0.6s;
+}
+
+.hifIdentsFlex img:nth-child(3) {
+  transition-delay: 0.7s;
+}
+
+.identLogoVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.divBlock3 {
+  z-index: 4;
+  width: 100%;
+  height: 30em;
+  background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), var(--black));
+  position: absolute;
+  top: auto;
+  bottom: 0%;
+  left: 0%;
+  right: 0%;
+}
+
+/* Responsive Styles */
+@media screen and (max-width: 991px) {
+  .imageSection {
+    padding-top: 500px;
+    padding-bottom: 500px;
+  }
+
+  .bodyTextContain {
+    width: 50vw;
+  }
+
+  .bodyTextContainWide {
+    width: 90%;
+  }
+
+  .bodyTextContainFa {
+    width: 90vw;
+  }
+
+  .heading2Image {
+    font-size: 9vw;
+    line-height: 7.5vw;
+  }
+
+  .hifIdentsFlex {
+    grid-column-gap: 1.5em;
+  }
+
+  .identLogo {
+    max-width: 120px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .imageSection {
+    padding-top: 400px;
+    padding-bottom: 400px;
+  }
+
+  .heading2Image {
+    font-size: 13vw;
+    line-height: 11vw;
+  }
+
+  .hifIdentsFlex {
+    grid-column-gap: 20px;
+  }
+
+  .identLogo {
+    max-width: 100px;
+  }
+}
+
+

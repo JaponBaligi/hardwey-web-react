@@ -4,7 +4,6 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
 import styles from './PrivacyPolicy.module.css';
 
 interface PrivacyPolicyProps {
@@ -18,7 +17,6 @@ interface PrivacyPolicyProps {
 export const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({
   className = '',
 }) => {
-  const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(false);
   const pageRef = useRef<HTMLDivElement>(null);
 
@@ -39,29 +37,11 @@ export const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({
     return () => observer.disconnect();
   }, []);
 
-  const handleBackToHome = () => {
-    navigate('/', { replace: true });
-  };
 
   return (
     <div ref={pageRef} className={`${styles.pageContainer} ${className}`}>
       {/* Header */}
       <div className={styles.pageHeader}>
-        <button
-          className={styles.backButton}
-          onClick={handleBackToHome}
-          aria-label="Back to home"
-          type="button"
-        >
-          <img
-            src="/assets/svg/arrow-black.svg"
-            alt=""
-            className={styles.backArrow}
-            loading="lazy"
-          />
-          Back to Home
-        </button>
-
         <div className={styles.headerContent}>
           <h1 className={styles.pageTitle}>Privacy Policy</h1>
           <p className={styles.pageSubtitle}>
@@ -205,13 +185,6 @@ export const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({
 
       {/* Footer Actions */}
       <div className={styles.footerActions}>
-        <button
-          className={styles.actionButton}
-          onClick={handleBackToHome}
-          type="button"
-        >
-          Back to Home
-        </button>
         <a
           href="mailto:hello@hardweyllc.com"
           className={styles.actionButton}
