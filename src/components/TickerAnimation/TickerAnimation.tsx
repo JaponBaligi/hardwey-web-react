@@ -4,6 +4,8 @@
  */
 
 import React, { useEffect, useRef, useState } from 'react';
+import { useContent } from '@/hooks/useContent';
+import type { TickerSection as TickerContent } from '@/types/content';
 import styles from './TickerAnimation.module.css';
 
 interface TickerAnimationProps {
@@ -28,13 +30,17 @@ export const TickerAnimation: React.FC<TickerAnimationProps> = ({
   const [isPaused, setIsPaused] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
-  // Revenue stream items
-  const revenueStreams = [
-    'Music',
-    'Shows',
-    'Merch',
-    'More',
-  ];
+  // Default values for backward compatibility
+  const defaultWords = ['Music', 'Shows', 'Merch', 'More'];
+  const defaultBackgroundColor = '#bbdbfa';
+
+  const { data: content } = useContent<TickerContent>('ticker', {
+    backgroundColor: defaultBackgroundColor,
+    tickerWords: defaultWords,
+  });
+
+  const revenueStreams = content?.tickerWords || defaultWords;
+  const backgroundColor = content?.backgroundColor || defaultBackgroundColor;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -117,9 +123,11 @@ export const TickerAnimation: React.FC<TickerAnimationProps> = ({
     <section
       ref={tickerRef}
       className={`${styles.sectionContainer} ${styles.sectionContainerTicker} ${className}`}
+      style={{ backgroundColor }}
     >
       <div
         className={styles.tickerCamera}
+        style={{ backgroundColor }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >

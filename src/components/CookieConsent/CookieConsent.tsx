@@ -1,10 +1,9 @@
 /**
- * CookieConsent component with DOMPurify sanitization
- * Replaces the original Finsweet cookie consent with React implementation
+ * CookieConsent component - React refactor from static HTML/CSS
+ * Matches original design, animations, hovers, and functions
  */
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import DOMPurify from 'dompurify';
 import styles from './CookieConsent.module.css';
 
 interface CookieConsentProps {
@@ -12,7 +11,6 @@ interface CookieConsentProps {
   onDecline?: () => void;
   className?: string;
   privacyPolicyUrl?: string;
-  termsOfServiceUrl?: string;
   showDeclineButton?: boolean;
   autoHide?: boolean;
   hideDelay?: number;
@@ -26,34 +24,19 @@ interface CookiePreferences {
 }
 
 /**
- * Cookie consent banner with DOMPurify sanitization and GDPR compliance
- * @param onAccept - Callback when user accepts cookies
- * @param onDecline - Callback when user declines cookies
- * @param className - Additional CSS classes
- * @param privacyPolicyUrl - URL to privacy policy page
- * @param termsOfServiceUrl - URL to terms of service page
- * @param showDeclineButton - Whether to show decline button
- * @param autoHide - Whether to auto-hide after delay
- * @param hideDelay - Delay in milliseconds before auto-hide
+ * Cookie consent banner matching static design with animations and hover effects
  */
 export const CookieConsent: React.FC<CookieConsentProps> = ({
   onAccept,
   onDecline,
   className = '',
   privacyPolicyUrl = '/privacy-policy',
-  termsOfServiceUrl = '/terms-of-service',
   showDeclineButton = true,
   autoHide = false,
   hideDelay = 5000,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [preferences, setPreferences] = useState<CookiePreferences>({
-    necessary: true,
-    analytics: false,
-    marketing: false,
-    functional: false,
-  });
   const bannerRef = useRef<HTMLDivElement>(null);
 
   // Check if user has already made a choice
@@ -66,7 +49,6 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
   }, []);
 
   const handleDecline = useCallback(() => {
-    // Set only necessary cookies
     const necessaryOnly: CookiePreferences = {
       necessary: true,
       analytics: false,
@@ -74,11 +56,9 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
       functional: false,
     };
 
-    setPreferences(necessaryOnly);
     localStorage.setItem('cookie-consent', JSON.stringify(necessaryOnly));
     localStorage.setItem('cookie-consent-timestamp', Date.now().toString());
 
-    // Track consent decline
     if (typeof window !== 'undefined' && window.gtag) {
       window.gtag('consent', 'update', {
         analytics_storage: 'denied',
@@ -87,19 +67,16 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
       });
     }
 
-    // Call callback
     if (onDecline) {
       onDecline();
     }
 
-    // Hide banner with animation
     setIsAnimating(false);
     setTimeout(() => {
       setIsVisible(false);
     }, 300);
   }, [onDecline]);
 
-  // Auto-hide functionality
   useEffect(() => {
     if (autoHide && isVisible) {
       const timer = setTimeout(() => {
@@ -110,17 +87,7 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
     }
   }, [autoHide, hideDelay, isVisible, handleDecline]);
 
-  // Sanitize HTML content with DOMPurify
-  const sanitizeContent = (content: string): string => {
-    return DOMPurify.sanitize(content, {
-      ALLOWED_TAGS: ['a', 'strong', 'em', 'span', 'br'],
-      ALLOWED_ATTR: ['href', 'target', 'rel', 'class'],
-      ALLOW_DATA_ATTR: false,
-    });
-  };
-
   const handleAccept = () => {
-    // Set all cookies as accepted
     const allAccepted: CookiePreferences = {
       necessary: true,
       analytics: true,
@@ -128,11 +95,9 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
       functional: true,
     };
 
-    setPreferences(allAccepted);
     localStorage.setItem('cookie-consent', JSON.stringify(allAccepted));
     localStorage.setItem('cookie-consent-timestamp', Date.now().toString());
 
-    // Track consent acceptance
     if (typeof window !== 'undefined' && window.gtag) {
       window.gtag('consent', 'update', {
         analytics_storage: 'granted',
@@ -141,54 +106,15 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
       });
     }
 
-    // Call callback
     if (onAccept) {
       onAccept();
     }
 
-    // Hide banner with animation
     setIsAnimating(false);
     setTimeout(() => {
       setIsVisible(false);
     }, 300);
   };
-
-  const handlePreferenceChange = (category: keyof CookiePreferences) => {
-    setPreferences(prev => ({
-      ...prev,
-      [category]: !prev[category],
-    }));
-  };
-
-  const handleSavePreferences = () => {
-    localStorage.setItem('cookie-consent', JSON.stringify(preferences));
-    localStorage.setItem('cookie-consent-timestamp', Date.now().toString());
-
-    // Update Google Analytics consent
-    if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('consent', 'update', {
-        analytics_storage: preferences.analytics ? 'granted' : 'denied',
-        ad_storage: preferences.marketing ? 'granted' : 'denied',
-        functionality_storage: preferences.functional ? 'granted' : 'denied',
-      });
-    }
-
-    // Hide banner with animation
-    setIsAnimating(false);
-    setTimeout(() => {
-      setIsVisible(false);
-    }, 300);
-  };
-
-  // Generate sanitized privacy policy link
-  const privacyPolicyLink = sanitizeContent(
-    `<a href="${privacyPolicyUrl}" target="_blank" rel="noopener noreferrer" class="${styles.privacyLink}">Privacy Policy</a>`
-  );
-
-  // Generate sanitized terms of service link
-  const termsOfServiceLink = sanitizeContent(
-    `<a href="${termsOfServiceUrl}" target="_blank" rel="noopener noreferrer" class="${styles.termsLink}">Terms of Service</a>`
-  );
 
   if (!isVisible) return null;
 
@@ -199,139 +125,98 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
       role="banner"
       aria-label="Cookie consent banner"
     >
-      {/* Cookie Text Content */}
+      {/* Cookie Text Content - matches static structure */}
       <div className={styles.cookieTextContain}>
         <h4 className={styles.cookieSubhead}>We use Cookies</h4>
         <div className={styles.flexBlock}>
-          <div className={styles.subheading}>
-            For more info, check our{' '}
-            <span
-              dangerouslySetInnerHTML={{ __html: privacyPolicyLink }}
+          <div className={`${styles.subheading} ${styles.isPrivacy}`}>
+            For more info, check our
+          </div>
+          <a 
+            href={privacyPolicyUrl} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className={styles.cookiePrivacyFlex}
+          >
+            <div className={styles.privacyUnderlineFlex}>
+              <div className={`${styles.subheading} ${styles.isPrivLink}`}>
+                Privacy Policy
+              </div>
+              <div className={styles.privUnderline}></div>
+            </div>
+            <img 
+              src="/assets/svg/arrow-black.svg" 
+              loading="lazy" 
+              alt="" 
+              className={styles.image3}
             />
-            {termsOfServiceUrl && (
-              <>
-                {' '}and{' '}
-                <span
-                  dangerouslySetInnerHTML={{ __html: termsOfServiceLink }}
-                />
-              </>
-            )}
-          </div>
-        </div>
-
-        {/* Cookie Categories */}
-        <div className={styles.cookieCategories}>
-          <div className={styles.cookieCategory}>
-            <label className={styles.categoryLabel}>
-              <input
-                type="checkbox"
-                checked={preferences.necessary}
-                disabled
-                className={styles.categoryCheckbox}
-                aria-label="Necessary cookies (required)"
-              />
-              <span className={styles.categoryName}>Necessary</span>
-              <span className={styles.categoryDescription}>
-                Required for basic website functionality
-              </span>
-            </label>
-          </div>
-
-          <div className={styles.cookieCategory}>
-            <label className={styles.categoryLabel}>
-              <input
-                type="checkbox"
-                checked={preferences.analytics}
-                onChange={() => handlePreferenceChange('analytics')}
-                className={styles.categoryCheckbox}
-                aria-label="Analytics cookies"
-              />
-              <span className={styles.categoryName}>Analytics</span>
-              <span className={styles.categoryDescription}>
-                Help us understand how visitors interact with our website
-              </span>
-            </label>
-          </div>
-
-          <div className={styles.cookieCategory}>
-            <label className={styles.categoryLabel}>
-              <input
-                type="checkbox"
-                checked={preferences.marketing}
-                onChange={() => handlePreferenceChange('marketing')}
-                className={styles.categoryCheckbox}
-                aria-label="Marketing cookies"
-              />
-              <span className={styles.categoryName}>Marketing</span>
-              <span className={styles.categoryDescription}>
-                Used to deliver relevant advertisements
-              </span>
-            </label>
-          </div>
-
-          <div className={styles.cookieCategory}>
-            <label className={styles.categoryLabel}>
-              <input
-                type="checkbox"
-                checked={preferences.functional}
-                onChange={() => handlePreferenceChange('functional')}
-                className={styles.categoryCheckbox}
-                aria-label="Functional cookies"
-              />
-              <span className={styles.categoryName}>Functional</span>
-              <span className={styles.categoryDescription}>
-                Enable enhanced functionality and personalization
-              </span>
-            </label>
-          </div>
+          </a>
         </div>
       </div>
 
-      {/* Action Buttons */}
-      <div className={styles.actionButtons}>
-        <button
+      {/* Action Buttons - matches static structure with div-block-10 */}
+      <div className={styles.divBlock10}>
+        <div 
+          className={styles.cookieAcceptDiv}
           onClick={handleAccept}
-          className={`${styles.cookieAccept} ${styles.acceptButton}`}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              handleAccept();
+            }
+          }}
           aria-label="Accept all cookies"
         >
-          Accept All
-          <img
-            src="/assets/svg/arrow-black.svg"
-            alt=""
-            className={styles.acceptArrow}
-            loading="lazy"
-          />
-        </button>
-
-        {showDeclineButton && (
-          <button
-            onClick={handleDecline}
-            className={`${styles.cookieAccept} ${styles.declineButton}`}
-            aria-label="Decline non-necessary cookies"
-          >
-            Decline
+          <div className={`${styles.cookieAccept} ${styles.isBm}`}>Accept</div>
+          <div className={styles.buttonArrow}>
             <img
               src="/assets/svg/arrow-black.svg"
-              alt=""
-              className={styles.acceptArrow}
               loading="lazy"
+              alt=""
+              className={styles.buttonArrowImg}
             />
-          </button>
-        )}
+            <img
+              src="/assets/svg/arrow-black.svg"
+              loading="lazy"
+              alt=""
+              className={styles.buttonArrowImg2}
+            />
+          </div>
+        </div>
 
-        <button
-          onClick={handleSavePreferences}
-          className={`${styles.cookieAccept} ${styles.saveButton}`}
-          aria-label="Save cookie preferences"
-        >
-          Save Preferences
-          <img
-            src="/assets/svg/arrow-black.svg"
-            alt=""
-            className={styles.acceptArrow}
-            loading="lazy"
-          />
-        </button>
+        {showDeclineButton && (
+          <div 
+            className={styles.cookieDeclineDiv}
+            onClick={handleDecline}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleDecline();
+              }
+            }}
+            aria-label="Decline non-necessary cookies"
+          >
+            <div className={styles.cookieAccept}>Decline</div>
+            <div className={styles.buttonArrow}>
+              <img
+                src="/assets/svg/arrow-black.svg"
+                loading="lazy"
+                alt=""
+                className={styles.buttonArrowImg}
+              />
+              <img
+                src="/assets/svg/arrow-black.svg"
+                loading="lazy"
+                alt=""
+                className={styles.buttonArrowImg2}
+              />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

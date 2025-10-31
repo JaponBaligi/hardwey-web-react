@@ -4,6 +4,8 @@
  */
 
 import React, { useEffect, useRef, useState } from 'react';
+import { useContent } from '@/hooks/useContent';
+import type { InvestmentIntroSection as InvestmentIntroContent } from '@/types/content';
 import styles from './InvestmentIntroSection.module.css';
 
 interface InvestmentIntroSectionProps {
@@ -18,6 +20,10 @@ interface InvestmentIntroSectionProps {
 export const InvestmentIntroSection: React.FC<InvestmentIntroSectionProps> = ({ className = '' }) => {
   const sectionRef = useRef<HTMLElement>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const { data: content } = useContent<InvestmentIntroContent>('investmentIntro', {
+    heading: "If you've never invested...",
+    subtitle: "This one's for you",
+  });
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -44,10 +50,10 @@ export const InvestmentIntroSection: React.FC<InvestmentIntroSectionProps> = ({ 
     >
       <div className={styles.textContainer}>
         <h4 className={`${styles.heading} ${isVisible ? styles.headingVisible : ''}`}>
-          If you've never invested...
+          {content?.heading || "If you've never invested..."}
         </h4>
         <p className={`${styles.subtitle} ${isVisible ? styles.subtitleVisible : ''}`}>
-          This one's for you
+          {content?.subtitle || "This one's for you"}
         </p>
       </div>
     </section>

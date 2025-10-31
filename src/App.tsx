@@ -24,6 +24,7 @@ const WebGLAnimation = lazy(() => import('@/components/WebGLAnimation/WebGLAnima
 const MoreFaqPage = lazy(() => import('@/pages/MoreFaqPage'));
 const PrivacyPolicy = lazy(() => import('@/pages/PrivacyPolicy'));
 const TermsOfService = lazy(() => import('@/pages/TermsOfService'));
+const AdminApp = lazy(() => import('@/admin/AdminApp'));
 
 /**
  * Main App component with routing and layout
@@ -119,6 +120,9 @@ function App() {
                     </Suspense>
                   </>
                 } />
+
+            {/* Admin Panel */}
+            <Route path="/dfaqs" element={<AdminApp />} />
 
             {/* Static Pages */}
             <Route path="/more-faq" element={<MoreFaqPage />} />

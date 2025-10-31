@@ -24,7 +24,6 @@ interface MobileMenuProps {
 export const MobileMenu: React.FC<MobileMenuProps> = ({
   isOpen,
   onClose,
-  onJoinUsClick,
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -62,10 +61,6 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
     onClose();
   };
 
-  const handleJoinUsClick = () => {
-    onJoinUsClick();
-    onClose();
-  };
 
   const handleBackdropClick = (event: React.MouseEvent) => {
     if (event.target === event.currentTarget) {

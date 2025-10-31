@@ -5,7 +5,9 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { FOUNDERS } from '@/utils/constants';
+import { useContent } from '@/hooks/useContent';
 import type { Founder } from '@/types';
+import type { FoundersSectionType } from '@/types/content';
 import styles from './FoundersSection.module.css';
 
 interface FoundersSectionProps {
@@ -22,7 +24,7 @@ interface FoundersSectionProps {
  */
 export const FoundersSection: React.FC<FoundersSectionProps> = ({
   className = '',
-  founders = FOUNDERS,
+  founders: propsFounders,
   autoPlay = true,
 }) => {
   const [currentFounder, setCurrentFounder] = useState(0);
@@ -30,6 +32,47 @@ export const FoundersSection: React.FC<FoundersSectionProps> = ({
   const [isTextAnimated, setIsTextAnimated] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
+
+  const defaultFounders = FOUNDERS.map(f => ({
+    id: f.id,
+    name: f.name,
+    role: f.role,
+    bio: f.bio,
+    quote: f.quote,
+    imageUrl: f.imageUrl,
+    imageSrcSet: '/assets/banner/founder.jpg 500w, /assets/banner/founder.jpg 1080w, /assets/banner/founder.jpg 1610w',
+    additionalInfo: f.additionalInfo ? [...f.additionalInfo] : [],
+  }));
+
+  const { data: content } = useContent<FoundersSectionType>('founders', {
+    founders: defaultFounders,
+    heading: 'The Founders',
+    headingSingular: 'The Founder',
+    animatedWords: ['long', 'story', 'short'],
+    animatedTextMobile: 'Long story short',
+  });
+
+  // Convert FounderItem[] to Founder[] format for component compatibility
+  const cmsFounders: Founder[] | undefined = content?.founders?.map(f => ({
+    id: f.id || `founder-${Date.now()}`,
+    name: f.name,
+    role: f.role,
+    bio: f.bio,
+    quote: f.quote,
+    imageUrl: f.imageUrl,
+    additionalInfo: f.additionalInfo || [],
+  }));
+
+  const founders = propsFounders || cmsFounders || FOUNDERS;
+  const heading = founders.length > 1 
+    ? (content?.heading || 'The Founders')
+    : (content?.headingSingular || 'The Founder');
+  const animatedWords = content?.animatedWords || ['long', 'story', 'short'];
+  const animatedTextMobile = content?.animatedTextMobile || 'Long story short';
+  
+  // Get current founder's imageSrcSet if available
+  const currentFounderData = content?.founders?.[currentFounder];
+  const imageSrcSet = currentFounderData?.imageSrcSet || '/assets/banner/founder.jpg 500w, /assets/banner/founder.jpg 1080w, /assets/banner/founder.jpg 1610w';
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -102,7 +145,7 @@ export const FoundersSection: React.FC<FoundersSectionProps> = ({
             className={`${styles.imageFull} ${styles.imageFounder}`}
             loading="eager"
             sizes="(max-width: 991px) 98vw, 49vw"
-            srcSet="/assets/banner/founder.jpg 500w, /assets/banner/founder.jpg 1080w, /assets/banner/founder.jpg 1610w"
+            srcSet={imageSrcSet}
             onLoad={handleImageLoad}
             onError={handleImageError}
             style={{ opacity: 0 }}
@@ -132,21 +175,29 @@ export const FoundersSection: React.FC<FoundersSectionProps> = ({
           {/* Header */}
           <div className={styles.headerContainer}>
             <h2 className={styles.heading2}>
-              {founders.length > 1 ? 'The Founders' : 'The Founder'}
+              {heading}
             </h2>
             
             <div className={`${styles.missionFlex} ${isTextAnimated ? styles.missionFlexAnimated : styles.missionFlexInitial}`}>
-              <div className={`${styles.subheading} ${styles.subheadingDesktop} ${styles.subheadingLeft} ${isTextAnimated ? styles.subheadingLeftAnimated : styles.subheadingLeftInitial}`}>
-                long
-              </div>
-              <div className={`${styles.subheading} ${styles.subheadingDesktop}`}>
-                story
-              </div>
-              <div className={`${styles.subheading} ${styles.subheadingDesktop} ${styles.subheadingRight} ${isTextAnimated ? styles.subheadingRightAnimated : styles.subheadingRightInitial}`}>
-                short
-              </div>
+              {animatedWords.length > 0 && (
+                <>
+                  <div className={`${styles.subheading} ${styles.subheadingDesktop} ${styles.subheadingLeft} ${isTextAnimated ? styles.subheadingLeftAnimated : styles.subheadingLeftInitial}`}>
+                    {animatedWords[0]}
+                  </div>
+                  {animatedWords.length > 1 && (
+                    <div className={`${styles.subheading} ${styles.subheadingDesktop}`}>
+                      {animatedWords[1]}
+                    </div>
+                  )}
+                  {animatedWords.length > 2 && (
+                    <div className={`${styles.subheading} ${styles.subheadingDesktop} ${styles.subheadingRight} ${isTextAnimated ? styles.subheadingRightAnimated : styles.subheadingRightInitial}`}>
+                      {animatedWords[2]}
+                    </div>
+                  )}
+                </>
+              )}
               <div className={`${styles.subheading} ${styles.subheadingMobile}`}>
-                Long story short
+                {animatedTextMobile}
               </div>
             </div>
           </div>

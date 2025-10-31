@@ -1,9 +1,6 @@
-/**
- * HeroSection component - EXACT copy of static HTML structure
- * Recreates the original hero section with pixel-perfect accuracy
- */
-
 import React, { useEffect, useRef } from 'react';
+import { useContent } from '@/hooks/useContent';
+import type { HeroSection as HeroContent } from '@/types/content';
 import styles from './HeroSection.module.css';
 
 interface HeroSectionProps {
@@ -18,6 +15,38 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ className = '' }) => {
   const sectionRef = useRef<HTMLElement>(null);
   const backgroundRef = useRef<HTMLImageElement>(null);
   const logoRef = useRef<HTMLDivElement>(null);
+
+  // Default values matching current hardcoded content for backward compatibility
+  const defaultLogo = '/assets/img/hardweybannertext.png';
+  const defaultBackgroundImage = '/assets/banner/artistlarge1.jpg';
+  const defaultBackgroundImageSrcSet = '/assets/banner/artistlarge%201-p-500.jpg 500w, /assets/banner/artistlarge1-p-800.jpg 800w, /assets/banner/artistlarge1-p-1080.jpg 1080w, /assets/banner/artistlarge1-p-1600.jpg 1600w, /assets/banner/artistlarge1-p-2000.jpg 2000w, /assets/banner/artistlarge1.jpg 2457w';
+  const defaultMotifs = [
+    '/assets/svg/new-wave24.svg',
+    '/assets/svg/restricted-change-ident.svg',
+    '/assets/svg/international-blue.svg',
+    '/assets/svg/hardweyrights.svg',
+    '/assets/svg/star-ident-blue.svg'
+  ];
+
+  const { data: content } = useContent<HeroContent>('hero', {
+    logoUrl: defaultLogo,
+    backgroundImage: defaultBackgroundImage,
+    backgroundImageSrcSet: defaultBackgroundImageSrcSet,
+    mitaText: 'Music is the answer™',
+    subtitle: 'A movement in music. Redefining the rules.',
+    leftIdentifier: '/assets/svg/investident-hero.svg',
+    rightIdentifier: '/assets/svg/barcode-ident.svg',
+    motifs: defaultMotifs,
+  });
+
+  const logoUrl = content?.logoUrl || defaultLogo;
+  const backgroundImage = content?.backgroundImage || defaultBackgroundImage;
+  const backgroundImageSrcSet = content?.backgroundImageSrcSet || defaultBackgroundImageSrcSet;
+  const mitaText = content?.mitaText || 'Music is the answer™';
+  const subtitle = content?.subtitle || 'A movement in music. Redefining the rules.';
+  const leftIdentifier = content?.leftIdentifier || '/assets/svg/investident-hero.svg';
+  const rightIdentifier = content?.rightIdentifier || '/assets/svg/barcode-ident.svg';
+  const motifs = content?.motifs || defaultMotifs;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -97,7 +126,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ className = '' }) => {
       {/* Hero Logo Div */}
       <div ref={logoRef} className={styles.heroLogoDiv}>
         <img 
-          src="/assets/img/hardweybannertext.png" 
+          src={logoUrl} 
           loading="lazy" 
           alt="Hardwey LOGO" 
           className={styles.heroLogo}
@@ -107,68 +136,86 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ className = '' }) => {
       {/* Hero Base Container */}
       <div className={styles.heroBaseContainer}>
         {/* Outer Identifiers */}
-        <img 
-          src="/assets/svg/investident-hero.svg" 
-          loading="lazy" 
-          alt="" 
-          className={`${styles.outerIdent} ${styles.outerIdentLeft}`}
-        />
-        <img 
-          src="/assets/svg/barcode-ident.svg" 
-          loading="lazy" 
-          alt="" 
-          className={styles.outerIdent}
-        />
+        {leftIdentifier && (
+          <img 
+            src={leftIdentifier} 
+            loading="lazy" 
+            alt="" 
+            className={`${styles.outerIdent} ${styles.outerIdentLeft}`}
+          />
+        )}
+        {rightIdentifier && (
+          <img 
+            src={rightIdentifier} 
+            loading="lazy" 
+            alt="" 
+            className={styles.outerIdent}
+          />
+        )}
 
         {/* Mobile MITA Text */}
         <h2 className={`${styles.mitaHeroText} ${styles.mitaHeroTextMobile}`}>
-          Music is the answer™
+          {mitaText}
         </h2>
 
         {/* Hero Idents Flex */}
         <div className={styles.heroIdentsFlex}>
-          <img 
-            src="/assets/svg/new-wave24.svg" 
-            loading="lazy" 
-            alt="" 
-            className={`${styles.motif} ${styles.motif2k23}`}
-          />
-          <img 
-            src="/assets/svg/restricted-change-ident.svg" 
-            loading="lazy" 
-            alt="" 
-            className={`${styles.motif} ${styles.motifRestricted}`}
-          />
+          {motifs.length > 0 && (
+            <>
+              <img 
+                src={motifs[0]} 
+                loading="lazy" 
+                alt="" 
+                className={`${styles.motif} ${styles.motif2k23}`}
+              />
+              {motifs.length > 1 && (
+                <img 
+                  src={motifs[1]} 
+                  loading="lazy" 
+                  alt="" 
+                  className={`${styles.motif} ${styles.motifRestricted}`}
+                />
+              )}
+            </>
+          )}
           
           {/* Desktop MITA Text */}
           <h2 className={`${styles.mitaHeroText} ${styles.mitaHeroTextDesktop}`}>
-            Music is the answer™
+            {mitaText}
           </h2>
           
-          <img 
-            src="/assets/svg/international-blue.svg" 
-            loading="lazy" 
-            alt="" 
-            className={`${styles.motif} ${styles.motifGlobal}`}
-          />
-          <img 
-            src="/assets/svg/hardweyrights.svg" 
-            loading="lazy" 
-            alt="" 
-            className={`${styles.motif} ${styles.motifRights}`}
-          />
-          <img 
-            src="/assets/svg/star-ident-blue.svg" 
-            loading="lazy" 
-            alt="" 
-            className={`${styles.motif} ${styles.motifStars}`}
-          />
+          {motifs.length > 2 && (
+            <>
+              <img 
+                src={motifs[2]} 
+                loading="lazy" 
+                alt="" 
+                className={`${styles.motif} ${styles.motifGlobal}`}
+              />
+              {motifs.length > 3 && (
+                <img 
+                  src={motifs[3]} 
+                  loading="lazy" 
+                  alt="" 
+                  className={`${styles.motif} ${styles.motifRights}`}
+                />
+              )}
+              {motifs.length > 4 && (
+                <img 
+                  src={motifs[4]} 
+                  loading="lazy" 
+                  alt="" 
+                  className={`${styles.motif} ${styles.motifStars}`}
+                />
+              )}
+            </>
+          )}
         </div>
 
         {/* Fixed Width Text Container */}
         <div className={`${styles.fixedWidthTextContainer} ${styles.fixedWidthTextContainerHh}`}>
           <h5 className={`${styles.bodyCaps} ${styles.bodyCapsBlue}`}>
-            A movement in music. Redefining the rules.
+            {subtitle}
           </h5>
         </div>
       </div>
@@ -179,11 +226,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ className = '' }) => {
       {/* Background Image */}
       <img 
         ref={backgroundRef}
-        src="/assets/banner/artistlarge1.jpg" 
+        src={backgroundImage} 
         loading="lazy" 
         sizes="100vw" 
         alt="" 
-        srcSet="/assets/banner/artistlarge%201-p-500.jpg 500w, /assets/banner/artistlarge1-p-800.jpg 800w, /assets/banner/artistlarge1-p-1080.jpg 1080w, /assets/banner/artistlarge1-p-1600.jpg 1600w, /assets/banner/artistlarge1-p-2000.jpg 2000w, /assets/banner/artistlarge1.jpg 2457w" 
+        srcSet={backgroundImageSrcSet} 
         className={styles.image}
       />
     </section>

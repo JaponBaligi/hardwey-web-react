@@ -5,6 +5,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useContent } from '@/hooks/useContent';
+import type { ErrorPageSection } from '@/types/content';
 import styles from './ErrorPage.module.css';
 
 interface ErrorPageProps {
@@ -66,9 +68,48 @@ export const ErrorPage: React.FC<ErrorPageProps> = ({
     }
   };
 
-  const defaultContent = getDefaultContent();
-  const finalTitle = title || defaultContent.title;
-  const finalDescription = description || defaultContent.description;
+  const { data: content } = useContent<ErrorPageSection>('errorPage', {
+    error404: {
+      title: '404 NOT FOUND',
+      description: 'You dive too deep so you discovered an unexplored place, congrats! Let me assist you the explored places granny you forgot your pills again...'
+    },
+    error500: {
+      title: '500 SERVER ERROR',
+      description: 'Oops! Something went wrong on our end. Our team has been notified and is working to fix this issue.'
+    },
+    error403: {
+      title: '403 FORBIDDEN',
+      description: 'Access denied. You don\'t have permission to view this page.'
+    },
+    defaultError: {
+      title: 'ERROR',
+      description: 'An unexpected error occurred. Please try again later.'
+    },
+    backButtonText: 'Back to Home',
+    backgroundPatternImage: '/assets/img/Green eye.gif',
+    arrowIcon: '/assets/svg/arrow-red.svg',
+  });
+
+  // Get content for specific error code
+  const getErrorContent = () => {
+    switch (errorCode) {
+      case 404:
+        return content?.error404 || getDefaultContent();
+      case 500:
+        return content?.error500 || getDefaultContent();
+      case 403:
+        return content?.error403 || getDefaultContent();
+      default:
+        return content?.defaultError || getDefaultContent();
+    }
+  };
+
+  const errorContent = getErrorContent();
+  const finalTitle = title || errorContent.title || getDefaultContent().title;
+  const finalDescription = description || errorContent.description || getDefaultContent().description;
+  const finalBackButtonText = backButtonText || content?.backButtonText || 'Back to Home';
+  const backgroundPatternImage = content?.backgroundPatternImage || '/assets/img/Green eye.gif';
+  const arrowIcon = content?.arrowIcon || '/assets/svg/arrow-red.svg';
 
   useEffect(() => {
     // Trigger entrance animation
@@ -94,7 +135,7 @@ export const ErrorPage: React.FC<ErrorPageProps> = ({
     <div className={`${styles.errorPageContainer} ${className}`}>
       {/* Animated Background Pattern */}
       {showBackgroundPattern && (
-        <div className={styles.backgroundPattern}>
+        <div className={styles.backgroundPattern} style={{ backgroundImage: `url(${backgroundPatternImage})` }}>
           <div className={styles.patternOverlay} />
         </div>
       )}
@@ -119,18 +160,18 @@ export const ErrorPage: React.FC<ErrorPageProps> = ({
             onKeyDown={handleKeyDown}
             onMouseEnter={() => setButtonHovered(true)}
             onMouseLeave={() => setButtonHovered(false)}
-            aria-label={`${backButtonText} - Navigate to homepage`}
+            aria-label={`${finalBackButtonText} - Navigate to homepage`}
             type="button"
           >
             <span className={styles.backButtonText}>
-              {backButtonText}
+              {finalBackButtonText}
             </span>
             <div className={`${styles.backButtonHover} ${buttonHovered ? styles.backButtonHoverActive : ''}`} />
             
             {/* Arrow Icon */}
             <div className={styles.arrowDivWrapper}>
               <img
-                src="/assets/svg/arrow-red.svg"
+                src={arrowIcon}
                 alt=""
                 className={`${styles.arrowDiv} ${buttonHovered ? styles.arrowDivInvert : ''}`}
                 loading="lazy"

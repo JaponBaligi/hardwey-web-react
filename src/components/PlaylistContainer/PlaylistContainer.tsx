@@ -1,8 +1,3 @@
-/**
- * PlaylistContainer component with Spotify links
- * Replaces the original playlist container with React implementation
- */
-
 import React, { useState, useRef, useEffect } from 'react';
 import { PLAYLISTS } from '@/utils/constants';
 import type { PlaylistItem } from '@/types';

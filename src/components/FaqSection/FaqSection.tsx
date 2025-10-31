@@ -6,7 +6,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FAQ_ITEMS } from '@/utils/constants';
-import type { FaqItem } from '@/types';
+import { useContent } from '@/hooks/useContent';
+import type { FaqItem } from '@/types/content';
+import type { FaqSectionType } from '@/types/content';
 import styles from './FaqSection.module.css';
 
 interface FaqSectionProps {
@@ -21,11 +23,27 @@ interface FaqSectionProps {
  */
 export const FaqSection: React.FC<FaqSectionProps> = ({
   className = '',
-  faqItems = FAQ_ITEMS,
+  faqItems: propsFaqItems,
 }) => {
   const [openItem, setOpenItem] = useState<number | null>(null);
   const accordionRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [isVisible, setIsVisible] = useState(false);
+
+  // Convert FAQ_ITEMS const to FaqItem[] for type compatibility
+  const defaultFaqItems: FaqItem[] = FAQ_ITEMS.map(item => ({
+    id: String(item.id),
+    question: String(item.question),
+    subtitle: String(item.subtitle),
+    answer: String(item.answer),
+    additionalInfo: Array.isArray(item.additionalInfo) ? [...item.additionalInfo] : ['', ''],
+  }));
+
+  const { data: content } = useContent<FaqSectionType>('faq', {
+    faqItems: defaultFaqItems,
+  });
+
+  // Use CMS content if available, fallback to props, then to defaults
+  const faqItems = propsFaqItems || content?.faqItems || defaultFaqItems;
 
   useEffect(() => {
     const observer = new IntersectionObserver(

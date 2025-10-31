@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useContent } from '@/hooks/useContent';
+import type { JoinUsModalType } from '@/types/content';
 import styles from './JoinUsModal.module.css';
 
 interface JoinUsModalProps {
@@ -93,6 +95,22 @@ This is a pre-registration submission from the Hardwey Music.`;
     }
   };
 
+  const { data: content } = useContent<JoinUsModalType>('joinUs', {
+    heading: 'Join us',
+    movementText: [
+      { text: 'A movement', isAbsolute: false },
+      { text: 'in', isAbsolute: true },
+      { text: 'music', isAbsolute: false }
+    ],
+    formDescription: "Type your name, email and an emerging artist you'd invest in below to Pre-register for Join Us...",
+    namePlaceholder: 'Your name...',
+    emailPlaceholder: 'Your email...',
+    artistPlaceholder: 'Your artist...',
+    artistLabel: "Name an emerging artist you'd invest in",
+    submitButtonText: 'Pre-Register',
+    submitReassurance: "Don't worry, we won't spam you",
+  });
+
   if (!shouldRender) return null;
 
   return (
@@ -120,17 +138,26 @@ This is a pre-registration submission from the Hardwey Music.`;
             </div>
           </div>
         </div>
-        <h3 className={styles.footerHeadingWhite}>Join us</h3>
+        <h3 className={styles.footerHeadingWhite}>{content?.heading || 'Join us'}</h3>
         <div className={styles.horizontalFlexCmNs}>
-          <div className={styles.subheadingBlackNmIsw}>A movement</div>
-          <div className={styles.subheadingBlackAbsoluteNmIsw}>in</div>
-          <div className={styles.subheadingBlackNmIsw}>music</div>
+          {(content?.movementText || [
+            { text: 'A movement', isAbsolute: false },
+            { text: 'in', isAbsolute: true },
+            { text: 'music', isAbsolute: false }
+          ]).map((item, index) => (
+            <div
+              key={index}
+              className={item.isAbsolute ? styles.subheadingBlackAbsoluteNmIsw : styles.subheadingBlackNmIsw}
+            >
+              {item.text}
+            </div>
+          ))}
         </div>
       </div>
       <div className={styles.overlayFormWrap}>
         <div className={styles.formExplainerDiv}>
           <p className={styles.bodyCopyBlackLeftFormWhite}>
-            Type your name, email and an emerging artist you'd invest in below to Pre-register for Join Us...
+            {content?.formDescription || "Type your name, email and an emerging artist you'd invest in below to Pre-register for Join Us..."}
           </p>
         </div>
         <div className={styles.footerFormContainerOverlay}>
@@ -139,7 +166,7 @@ This is a pre-registration submission from the Hardwey Music.`;
               <input
                 type="text"
                 name="name"
-                placeholder="Your name..."
+                placeholder={content?.namePlaceholder || 'Your name...'}
                 value={formData.name}
                 onChange={handleInputChange}
                 className={styles.formFieldTp}
@@ -151,7 +178,7 @@ This is a pre-registration submission from the Hardwey Music.`;
               <input
                 type="email"
                 name="email"
-                placeholder="Your email..."
+                placeholder={content?.emailPlaceholder || 'Your email...'}
                 value={formData.email}
                 onChange={handleInputChange}
                 className={styles.formFieldTp}
@@ -163,18 +190,18 @@ This is a pre-registration submission from the Hardwey Music.`;
               <input
                 type="text"
                 name="artist"
-                placeholder="Your artist..."
+                placeholder={content?.artistPlaceholder || 'Your artist...'}
                 value={formData.artist}
                 onChange={handleInputChange}
                 className={styles.formFieldTpArt}
               />
               <label className={styles.subheadingBlackFormIsw}>
-                Name an emerging artist you'd invest in
+                {content?.artistLabel || "Name an emerging artist you'd invest in"}
               </label>
             </div>
             <div className={styles.submitDivOverlay}>
               <button type="submit" className={styles.submitButtonFormBlue}>
-                <div className={styles.submitButtonText}>Pre-Register</div>
+                <div className={styles.submitButtonText}>{content?.submitButtonText || 'Pre-Register'}</div>
                 <div className={styles.buttonArrow}>
                   <img
                     src="/assets/svg/arrow-black.svg"
@@ -192,7 +219,7 @@ This is a pre-registration submission from the Hardwey Music.`;
               </button>
               <div className={styles.buttonTextDiv}>
                 <div className={styles.subheadingBlueFormOverlay}>
-                  Don't worry, we won't spam you
+                  {content?.submitReassurance || "Don't worry, we won't spam you"}
                 </div>
               </div>
             </div>

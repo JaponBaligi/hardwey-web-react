@@ -5,6 +5,8 @@
  */
 
 import React, { useEffect, useRef, useState } from 'react';
+import { useContent } from '@/hooks/useContent';
+import type { FredAgainSection as FredAgainContent } from '@/types/content';
 import styles from './FredAgainSection.module.css';
 
 interface FredAgainSectionProps {
@@ -18,6 +20,28 @@ interface FredAgainSectionProps {
 export const FredAgainSection: React.FC<FredAgainSectionProps> = ({ className = '' }) => {
   const sectionRef = useRef<HTMLElement>(null);
   const [isVisible, setIsVisible] = useState(false);
+  
+  // Default values matching current hardcoded content for backward compatibility
+  const defaultBackgroundImage = 'https://assets-global.website-files.com/64f45f425cb2cbb837b6f9b8/652ce8621b4433a6c86c936b_1.%20COLOR%20TREATMENT%20%2B%20NOISE%20(FAV).jpg';
+  const defaultBackgroundImageSrcSet = 'https://assets-global.website-files.com/64f45f425cb2cbb837b6f9b8/652ce8621b4433a6c86c936b_1.%20COLOR%20TREATMENT%20%2B%20NOISE%20(FAV)-p-500.jpg 500w, https://assets-global.website-files.com/64f45f425cb2cbb837b6f9b8/652ce8621b4433a6c86c936b_1.%20COLOR%20TREATMENT%20%2B%20NOISE%20(FAV)-p-800.jpg 800w, https://assets-global.website-files.com/64f45f425cb2cbb837b6f9b8/652ce8621b4433a6c86c936b_1.%20COLOR%20TREATMENT%20%2B%20NOISE%20(FAV)-p-1080.jpg 1080w, https://assets-global.website-files.com/64f45f425cb2cbb837b6f9b8/652ce8621b4433a6c86c936b_1.%20COLOR%20TREATMENT%20%2B%20NOISE%20(FAV)-p-1600.jpg 1600w, https://assets-global.website-files.com/64f45f425cb2cbb837b6f9b8/652ce8621b4433a6c86c936b_1.%20COLOR%20TREATMENT%20%2B%20NOISE%20(FAV)-p-2000.jpg 2000w, https://assets-global.website-files.com/64f45f425cb2cbb837b6f9b8/652ce8621b4433a6c86c936b_1.%20COLOR%20TREATMENT%20%2B%20NOISE%20(FAV).jpg 2858w';
+  const defaultLogos = [
+    '/assets/img/hardweybannertext.png',
+    'https://assets-global.website-files.com/64f45f425cb2cbb837b6f9b8/64fde2e125f96a17e11dbc64_HIF-ident2.svg'
+  ];
+  
+  const { data: content } = useContent<FredAgainContent>('fredAgain', {
+    heading: 'Imagine you invested in Fred Again.. in 2020',
+    subheading: "Braggin' rights now come with returns",
+    backgroundImage: defaultBackgroundImage,
+    backgroundImageSrcSet: defaultBackgroundImageSrcSet,
+    logoUrls: defaultLogos,
+  });
+  
+  const backgroundImage = content?.backgroundImage || defaultBackgroundImage;
+  const backgroundImageSrcSet = content?.backgroundImageSrcSet || defaultBackgroundImageSrcSet;
+  const heading = content?.heading || 'Imagine you invested in Fred Again.. in 2020';
+  const subheading = content?.subheading || "Braggin' rights now come with returns";
+  const logoUrls = content?.logoUrls || defaultLogos;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -43,10 +67,10 @@ export const FredAgainSection: React.FC<FredAgainSectionProps> = ({ className = 
     >
       {/* Background Image */}
       <img
-        src="https://assets-global.website-files.com/64f45f425cb2cbb837b6f9b8/652ce8621b4433a6c86c936b_1.%20COLOR%20TREATMENT%20%2B%20NOISE%20(FAV).jpg"
+        src={backgroundImage}
         loading="lazy"
         sizes="100vw"
-        srcSet="https://assets-global.website-files.com/64f45f425cb2cbb837b6f9b8/652ce8621b4433a6c86c936b_1.%20COLOR%20TREATMENT%20%2B%20NOISE%20(FAV)-p-500.jpg 500w, https://assets-global.website-files.com/64f45f425cb2cbb837b6f9b8/652ce8621b4433a6c86c936b_1.%20COLOR%20TREATMENT%20%2B%20NOISE%20(FAV)-p-800.jpg 800w, https://assets-global.website-files.com/64f45f425cb2cbb837b6f9b8/652ce8621b4433a6c86c936b_1.%20COLOR%20TREATMENT%20%2B%20NOISE%20(FAV)-p-1080.jpg 1080w, https://assets-global.website-files.com/64f45f425cb2cbb837b6f9b8/652ce8621b4433a6c86c936b_1.%20COLOR%20TREATMENT%20%2B%20NOISE%20(FAV)-p-1600.jpg 1600w, https://assets-global.website-files.com/64f45f425cb2cbb837b6f9b8/652ce8621b4433a6c86c936b_1.%20COLOR%20TREATMENT%20%2B%20NOISE%20(FAV)-p-2000.jpg 2000w, https://assets-global.website-files.com/64f45f425cb2cbb837b6f9b8/652ce8621b4433a6c86c936b_1.%20COLOR%20TREATMENT%20%2B%20NOISE%20(FAV).jpg 2858w"
+        srcSet={backgroundImageSrcSet}
         alt="Fred Again concert image"
         className={styles.imageFull}
       />
@@ -54,30 +78,27 @@ export const FredAgainSection: React.FC<FredAgainSectionProps> = ({ className = 
       {/* Heading Container */}
       <div className={`${styles.bodyTextContain} ${styles.bodyTextContainWide} ${styles.bodyTextContainFa}`}>
         <h4 className={`${styles.heading2} ${styles.heading2Image} ${isVisible ? styles.heading2Visible : ''}`}>
-          Imagine you invested in Fred Again.. in 2020
+          {heading}
         </h4>
       </div>
 
       {/* Credits Container */}
       <div className={styles.hifCreditsContainer}>
         <p className={`${styles.subheading} ${styles.subheadingLight} ${isVisible ? styles.subheadingVisible : ''}`}>
-          Braggin' rights now come with returns
+          {subheading}
         </p>
         <div className={styles.hifIdentsFlex}>
-          <img
-            src="/assets/img/hardweybannertext.png"
-            width="150"
-            height="150"
-            loading="lazy"
-            alt="HARDWEY logo"
-            className={`${styles.identLogo} ${isVisible ? styles.identLogoVisible : ''}`}
-          />
-          <img
-            src="https://assets-global.website-files.com/64f45f425cb2cbb837b6f9b8/64fde2e125f96a17e11dbc64_HIF-ident2.svg"
-            loading="lazy"
-            alt="HIF ident logo"
-            className={`${styles.identLogo} ${isVisible ? styles.identLogoVisible : ''}`}
-          />
+          {logoUrls.map((logoUrl, idx) => (
+            <img
+              key={idx}
+              src={logoUrl}
+              width="150"
+              height="150"
+              loading="lazy"
+              alt={idx === 0 ? 'HARDWEY logo' : 'HIF ident logo'}
+              className={`${styles.identLogo} ${isVisible ? styles.identLogoVisible : ''}`}
+            />
+          ))}
         </div>
       </div>
 

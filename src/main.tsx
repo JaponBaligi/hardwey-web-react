@@ -1,8 +1,3 @@
-/**
- * HARDWEY Music Group - Application Entry Point
- * React + TypeScript + Vite application initialization
- */
-
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './styles/variables.css';

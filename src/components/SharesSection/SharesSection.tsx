@@ -4,6 +4,8 @@
  */
 
 import React, { useEffect, useRef, useState } from 'react';
+import { useContent } from '@/hooks/useContent';
+import type { SharesSection as SharesContent } from '@/types/content';
 import styles from './SharesSection.module.css';
 
 interface SharesSectionProps {
@@ -17,6 +19,27 @@ interface SharesSectionProps {
 export const SharesSection: React.FC<SharesSectionProps> = ({ className = '' }) => {
   const sectionRef = useRef<HTMLElement>(null);
   const [isAnimated, setIsAnimated] = useState(false);
+
+  // Default values matching current hardcoded content for backward compatibility
+  const defaultImageUrl = '/assets/img/BUY%20SHARES%20IMAGE.jpg';
+  const defaultImageSrcSet = '/assets/img/shares-500.jpg 500w, /assets/img/shares-800.jpg 800w, /assets/img/shares-800.jpg 1080w, /assets/img/BUY%20SHARES%20IMAGE.jpg 1440w';
+  const defaultSubheadingWords = ['A new way', 'to', 'Invest'];
+
+  const { data: content } = useContent<SharesContent>('shares', {
+    heading: "Buy shares in artists' brands",
+    subheadingMobile: 'A new way to invest',
+    subheadingWords: defaultSubheadingWords,
+    bodyCopy: "Artists build brands that generate revenue from their music, shows, merch and more. HARDWEY is the first app that allows you to invest in those brands and own a piece of their success.",
+    imageUrl: defaultImageUrl,
+    imageSrcSet: defaultImageSrcSet,
+  });
+
+  const heading = content?.heading || "Buy shares in artists' brands";
+  const subheadingMobile = content?.subheadingMobile || 'A new way to invest';
+  const subheadingWords = content?.subheadingWords || defaultSubheadingWords;
+  const bodyCopy = content?.bodyCopy || "Artists build brands that generate revenue from their music, shows, merch and more. HARDWEY is the first app that allows you to invest in those brands and own a piece of their success.";
+  const imageUrl = content?.imageUrl || defaultImageUrl;
+  const imageSrcSet = content?.imageSrcSet || defaultImageSrcSet;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -47,10 +70,10 @@ export const SharesSection: React.FC<SharesSectionProps> = ({ className = '' }) 
       <div className={styles.splitFlex}>
         {/* Image */}
         <img 
-          src="/assets/img/BUY%20SHARES%20IMAGE.jpg" 
+          src={imageUrl} 
           loading="eager" 
           sizes="(max-width: 991px) 98vw, 49vw" 
-          srcSet="/assets/img/shares-500.jpg 500w, /assets/img/shares-800.jpg 800w, /assets/img/shares-800.jpg 1080w, /assets/img/BUY%20SHARES%20IMAGE.jpg 1440w" 
+          srcSet={imageSrcSet} 
           alt="" 
           className={`${styles.imageFull} ${styles.imageFullIntro}`}
         />
@@ -59,29 +82,35 @@ export const SharesSection: React.FC<SharesSectionProps> = ({ className = '' }) 
         <div className={`${styles.splitColumn} ${styles.splitColumnTxt}`}>
           <div className={styles.divBlock4}>
             <h2 className={`${styles.heading2} ${styles.heading2Brands}`}>
-              Buy shares in artists' brands
+              {heading}
             </h2>
             
             {/* Intro Sub Flex Inline */}
             <div className={`${styles.introSubFlex} ${styles.introSubFlexInline} ${isAnimated ? styles.introSubFlexAnimated : styles.introSubFlexInitial}`}>
               <div className={`${styles.subheading} ${styles.subheadingMobile}`}>
-                A new way to invest
+                {subheadingMobile}
               </div>
-              <div className={`${styles.subheading} ${styles.subheadingLeft} ${isAnimated ? styles.subheadingLeftAnimated : styles.subheadingLeftInitial}`}>
-                A new way
-              </div>
-              <div className={`${styles.subheading} ${styles.subheadingDesktop}`}>
-                to
-              </div>
-              <div className={`${styles.subheading} ${styles.subheadingRight} ${isAnimated ? styles.subheadingRightAnimated : styles.subheadingRightInitial}`}>
-                Invest
-              </div>
+              {subheadingWords.length > 0 && (
+                <div className={`${styles.subheading} ${styles.subheadingLeft} ${isAnimated ? styles.subheadingLeftAnimated : styles.subheadingLeftInitial}`}>
+                  {subheadingWords[0]}
+                </div>
+              )}
+              {subheadingWords.length > 1 && (
+                <div className={`${styles.subheading} ${styles.subheadingDesktop}`}>
+                  {subheadingWords[1]}
+                </div>
+              )}
+              {subheadingWords.length > 2 && (
+                <div className={`${styles.subheading} ${styles.subheadingRight} ${isAnimated ? styles.subheadingRightAnimated : styles.subheadingRightInitial}`}>
+                  {subheadingWords[2]}
+                </div>
+              )}
             </div>
           </div>
 
           {/* Body Copy */}
           <p className={`${styles.bodyCopy} ${styles.bodyCopyLeft}`}>
-            Artists build brands that generate revenue from their music, shows, merch and more. HARDWEY is the first app that allows you to invest in those brands and own a piece of their success.
+            {bodyCopy}
           </p>
         </div>
       </div>

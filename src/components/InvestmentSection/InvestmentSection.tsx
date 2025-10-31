@@ -4,6 +4,8 @@
  */
 
 import React, { useEffect, useRef, useState } from 'react';
+import { useContent } from '@/hooks/useContent';
+import type { InvestmentSection as InvestmentContent } from '@/types/content';
 import styles from './InvestmentSection.module.css';
 
 interface InvestmentSectionProps {
@@ -17,6 +19,27 @@ interface InvestmentSectionProps {
 export const InvestmentSection: React.FC<InvestmentSectionProps> = ({ className = '' }) => {
   const sectionRef = useRef<HTMLElement>(null);
   const [isVisible, setIsVisible] = useState(false);
+
+  const defaultBackgroundImage = '/assets/img/BUY SHARES IMAGE.jpg';
+  const defaultAnimatedWords = ['it', 'hits', 'different'];
+
+  const { data: content } = useContent<InvestmentContent>('investment', {
+    backgroundImage: defaultBackgroundImage,
+    mainHeading: 'invest in artists',
+    animatedWords: defaultAnimatedWords,
+    comingSoonTitle: 'Coming soon',
+    dateText: '(?/?/2026)',
+    logoImage: '/assets/img/hardweymainlogo.jpg',
+    welcomeText: 'Welcome to HARDWEY',
+  });
+
+  const backgroundImage = content?.backgroundImage || defaultBackgroundImage;
+  const mainHeading = content?.mainHeading || 'invest in artists';
+  const animatedWords = content?.animatedWords || defaultAnimatedWords;
+  const comingSoonTitle = content?.comingSoonTitle || 'Coming soon';
+  const dateText = content?.dateText || '(?/?/2026)';
+  const logoImage = content?.logoImage || '/assets/img/hardweymainlogo.jpg';
+  const welcomeText = content?.welcomeText || 'Welcome to HARDWEY';
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -45,7 +68,7 @@ export const InvestmentSection: React.FC<InvestmentSectionProps> = ({ className 
         {/* Background Image */}
         <div className={styles.backgroundImage}>
           <img
-            src="/assets/img/BUY SHARES IMAGE.jpg"
+            src={backgroundImage}
             alt="Investment Background"
             className={styles.backgroundImg}
             loading="lazy"
@@ -56,23 +79,23 @@ export const InvestmentSection: React.FC<InvestmentSectionProps> = ({ className 
         <div className={styles.content}>
           {/* Main Heading */}
           <h1 className={`${styles.mainHeading} ${isVisible ? styles.mainHeadingVisible : ''}`}>
-            invest in artists
+            {mainHeading}
           </h1>
 
           {/* Animated Text */}
           <div className={`${styles.animatedText} ${isVisible ? styles.animatedTextVisible : ''}`}>
-            <span className={styles.word}>it</span>
-            <span className={styles.word}>hits</span>
-            <span className={styles.word}>different</span>
+            {animatedWords.map((word, index) => (
+              <span key={index} className={styles.word}>{word}</span>
+            ))}
           </div>
 
           {/* Coming Soon */}
           <div className={`${styles.comingSoon} ${isVisible ? styles.comingSoonVisible : ''}`}>
-            <h2 className={styles.comingSoonTitle}>Coming soon</h2>
+            <h2 className={styles.comingSoonTitle}>{comingSoonTitle}</h2>
             <div className={styles.launchDate}>
-              <h2 className={styles.dateText}>(?/?/2026)</h2>
+              <h2 className={styles.dateText}>{dateText}</h2>
               <img
-                src="/assets/img/hardweymainlogo.jpg"
+                src={logoImage}
                 alt="HARDWEY Logo"
                 className={styles.logoImg}
                 loading="lazy"
@@ -82,7 +105,7 @@ export const InvestmentSection: React.FC<InvestmentSectionProps> = ({ className 
 
           {/* Welcome Text */}
           <p className={`${styles.welcomeText} ${isVisible ? styles.welcomeTextVisible : ''}`}>
-            Welcome to HARDWEY
+            {welcomeText}
           </p>
         </div>
       </div>
