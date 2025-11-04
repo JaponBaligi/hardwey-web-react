@@ -52,9 +52,9 @@ export const Navigation: React.FC<NavigationProps> = ({
     setIsModalOpen(false);
   };
 
-  const handleModalSubmit = (data: { name: string; email: string; artist: string }) => {
-    console.log('Form submitted:', data);
-    // Here you would typically send the data to your backend
+  const handleModalSubmit = (_data: { name: string; email: string; artist: string }) => {
+    // Form submission handled by JoinUsModal which opens email client
+    // This callback is available for future tracking/logging if needed
   };
 
   const handleNavLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, hash: string) => {

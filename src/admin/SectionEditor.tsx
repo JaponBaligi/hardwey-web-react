@@ -25,21 +25,7 @@ export default function SectionEditor({ section }: { section: string }) {
     fetchSection(section)
       .then(({ data }) => {
         if (!ignore) {
-          if (section === 'privacyPolicy' || section === 'terms') {
-            console.log(`[SectionEditor] Raw ${section} data from server:`, data);
-            console.log(`[SectionEditor] Raw data keys:`, Object.keys(data || {}));
-            console.log(`[SectionEditor] Sections in raw data:`, data?.sections);
-            console.log(`[SectionEditor] Sections type:`, typeof data?.sections);
-            console.log(`[SectionEditor] Intro text in raw data:`, data?.introText);
-            console.log(`[SectionEditor] Intro text type:`, typeof data?.introText);
-            console.log(`[SectionEditor] Full raw data JSON:`, JSON.stringify(data, null, 2));
-          }
           const norm = normalize(data || {});
-          if (section === 'privacyPolicy' || section === 'terms') {
-            console.log(`[SectionEditor] Normalized ${section}:`, norm);
-            console.log(`[SectionEditor] Normalized sections:`, norm.sections);
-            console.log(`[SectionEditor] Normalized intro text:`, norm.introText);
-          }
           setData(norm);
           setServerData(norm);
           setRawJson(JSON.stringify(norm, null, 2));
@@ -166,7 +152,6 @@ export default function SectionEditor({ section }: { section: string }) {
       const hasOldFormat = d?.text && !d?.sections && !d?.introText && !d?.pageTitle;
       
       if (hasOldFormat) {
-        console.log('[SectionEditor] privacyPolicy has old format, loading template data');
         const template = getTemplateFor('privacyPolicy');
         d = template;
       }
@@ -210,7 +195,6 @@ export default function SectionEditor({ section }: { section: string }) {
       const hasOldFormat = d?.text && !d?.sections && !d?.introText && !d?.pageTitle;
       
       if (hasOldFormat) {
-        console.log('[SectionEditor] terms has old format, loading template data');
         const template = getTemplateFor('terms');
         d = template;
       }

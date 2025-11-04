@@ -32,6 +32,7 @@ export const JoinUsSection: React.FC<JoinUsSectionProps> = ({
     email: '',
     artist: '',
   });
+  const [showSuccess, setShowSuccess] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,22 +48,31 @@ export const JoinUsSection: React.FC<JoinUsSectionProps> = ({
     
     if (onSubmit) {
       onSubmit(formData);
+      setShowSuccess(true);
     } else {
-      // Default behavior: Create mailto link
+      // Default behavior: Create mailto link (matches HTML algorithm exactly)
       const emailBody = `Pre-Registration for Hardwey Music
 
 Name: ${formData.name}
 Email: ${formData.email}
 Artist: ${formData.artist}
 
-This is a pre-registration submission from the Hardwey Music website.`;
+This is a pre-registration submission from the Hardwey Music.`;
       
       const mailtoLink = `mailto:hello@hardweyllc.com?subject=Pre-registration for Hardwey Music Group&body=${encodeURIComponent(emailBody)}`;
       window.location.href = mailtoLink;
+      
+      // Show success message
+      setShowSuccess(true);
     }
     
     // Reset form
     setFormData({ name: '', email: '', artist: '' });
+    
+    // Auto-hide success message after 5 seconds
+    setTimeout(() => {
+      setShowSuccess(false);
+    }, 5000);
   };
 
   const headingLetters = ['J', 'O', 'I', 'N', 'U', 'S'];
@@ -207,6 +217,18 @@ This is a pre-registration submission from the Hardwey Music website.`;
               </div>
             </div>
           </form>
+          
+          {/* Success Message */}
+          {showSuccess && (
+            <div className={styles.formSuccess}>
+              <div>Thank you! Your submission has been received!</div>
+            </div>
+          )}
+          
+          {/* Error Message */}
+          <div className={styles.formFail} style={{ display: 'none' }}>
+            <div>Oops! Something went wrong while submitting the form.</div>
+          </div>
         </div>
 
         {/* Footer Links */}

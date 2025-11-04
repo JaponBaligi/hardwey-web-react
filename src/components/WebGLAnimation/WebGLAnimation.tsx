@@ -33,7 +33,6 @@ export function WebGLAnimation({ className = '', onLoad, onError }: WebGLAnimati
 
   useEffect(() => {
     if (!features.webglAnimation) {
-      console.log('WebGL animation disabled by feature flag');
       return;
     }
 

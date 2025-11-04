@@ -32,6 +32,7 @@ export const JoinUsModal: React.FC<JoinUsModalProps> = ({
   });
   const [isAnimating, setIsAnimating] = useState(false);
   const [shouldRender, setShouldRender] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -61,26 +62,32 @@ export const JoinUsModal: React.FC<JoinUsModalProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Call onSubmit callback if provided
-    if (onSubmit) {
-      onSubmit(formData);
-    } else {
-      // Fallback: Create mailto link with form data
-      const emailBody = `Pre-Registration for Hardwey Music
+    // Always create mailto link and open email client (matches HTML algorithm exactly)
+    const emailBody = `Pre-Registration for Hardwey Music
 
 Name: ${formData.name}
 Email: ${formData.email}
 Artist: ${formData.artist}
 
 This is a pre-registration submission from the Hardwey Music.`;
-      
-      const mailtoLink = `mailto:hello@hardweyllc.com?subject=Pre-registration for Hardwey Music Group&body=${encodeURIComponent(emailBody)}`;
-      window.location.href = mailtoLink;
+    
+    const mailtoLink = `mailto:hello@hardweyllc.com?subject=Pre-registration for Hardwey Music Group&body=${encodeURIComponent(emailBody)}`;
+    window.location.href = mailtoLink;
+    
+    // Call onSubmit callback if provided (for additional tracking/logging)
+    if (onSubmit) {
+      onSubmit(formData);
     }
     
-    // Reset form
-    setFormData({ name: '', email: '', artist: '' });
-    onClose();
+    // Show success message
+    setShowSuccess(true);
+    
+    // Reset form after a delay to show success message
+    setTimeout(() => {
+      setFormData({ name: '', email: '', artist: '' });
+      setShowSuccess(false);
+      onClose();
+    }, 2000);
   };
 
   const handleOverlayClick = (e: React.MouseEvent) => {
@@ -224,6 +231,18 @@ This is a pre-registration submission from the Hardwey Music.`;
               </div>
             </div>
           </form>
+          
+          {/* Success Message */}
+          {showSuccess && (
+            <div className={styles.formSuccess}>
+              <div>Thank you! Your submission has been received!</div>
+            </div>
+          )}
+          
+          {/* Error Message */}
+          <div className={styles.formFail} style={{ display: 'none' }}>
+            <div>Oops! Something went wrong while submitting the form.</div>
+          </div>
         </div>
       </div>
     </div>

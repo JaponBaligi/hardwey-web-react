@@ -545,3 +545,18 @@
     font-size: 0.6em;
   }
 }
+
+/* Form Success/Error Messages */
+.formSuccess {
+  text-align: center;
+  background-color: #ddd;
+  padding: 20px;
+  display: block;
+}
+
+.formFail {
+  background-color: #ffdede;
+  margin-top: 10px;
+  padding: 10px;
+  display: none;
+}

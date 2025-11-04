@@ -65,7 +65,6 @@ function App() {
 
   const handleJoinUsClick = () => {
     // This is now handled by the Navigation component internally
-    console.log('Join Us clicked');
   };
 
   const handleCloseMobileMenu = () => {
