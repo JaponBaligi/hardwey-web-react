@@ -176,7 +176,7 @@ export default function SectionEditor({ section }: { section: string }) {
       
       // Handle sections
       if (d?.sections && Array.isArray(d.sections)) {
-        sections = d.sections.map((s: any, idx: number) => ({
+        sections = d.sections.map((s: any) => ({
           title: typeof s?.title === 'string' ? s.title : '',
           paragraphs: Array.isArray(s?.paragraphs) ? s.paragraphs : [],
           lists: Array.isArray(s?.lists) ? s.lists : [],
@@ -220,7 +220,7 @@ export default function SectionEditor({ section }: { section: string }) {
       
       // Handle sections
       if (d?.sections && Array.isArray(d.sections)) {
-        sections = d.sections.map((s: any, idx: number) => ({
+        sections = d.sections.map((s: any) => ({
           title: typeof s?.title === 'string' ? s.title : '',
           paragraphs: Array.isArray(s?.paragraphs) ? s.paragraphs : [],
           lists: Array.isArray(s?.lists) ? s.lists : [],
