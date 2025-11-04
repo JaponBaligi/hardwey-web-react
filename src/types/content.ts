@@ -142,8 +142,16 @@ export interface ErrorPageSection extends BaseSection {
   arrowIcon?: UrlString;
 }
 
+export interface FaqIntroRecord {
+  id: string;
+  imageUrl: UrlString;
+  spotifyUrl: UrlString;
+}
+
 export interface FaqIntroSection extends BaseSection {
   starCount?: number;
+  records?: FaqIntroRecord[];
+  // Legacy fields for backward compatibility
   recordImage?: UrlString;
   recordCount?: number;
   spotifyUrl?: UrlString;
@@ -205,6 +213,31 @@ export interface TermsSection {
   footerButtonEmail?: string;
 }
 
+export interface PartnerItem {
+  id: string;
+  name: string;
+  title?: string;
+  description?: string;
+  imageUrl: UrlString;
+  imageSrcSet?: string;
+  websiteUrl?: UrlString;
+  socialLinks?: Array<{
+    platform: string;
+    url: UrlString;
+  }>;
+}
+
+export interface PartnersSectionType extends BaseSection {
+  pageTitle?: string;
+  pageSubtitle?: string;
+  partners?: PartnerItem[];
+}
+
+export interface CollaborativesSectionType extends BaseSection {
+  heading?: string;
+  collaboratives?: PartnerItem[];
+}
+
 export type SectionKey =
   | 'home'
   | 'hero'
@@ -223,7 +256,9 @@ export type SectionKey =
   | 'privacyPolicy'
   | 'terms'
   | 'errorPage'
-  | 'faqIntro';
+  | 'faqIntro'
+  | 'partners'
+  | 'collaboratives';
 
 export const SECTION_KEYS: SectionKey[] = [
   'home',
@@ -244,6 +279,8 @@ export const SECTION_KEYS: SectionKey[] = [
   'terms',
   'errorPage',
   'faqIntro',
+  'partners',
+  'collaboratives',
 ];
 
 export const SECTION_TEMPLATES: Record<SectionKey, any> = {
@@ -745,9 +782,26 @@ export const SECTION_TEMPLATES: Record<SectionKey, any> = {
   },
   faqIntro: {
     starCount: 7,
-    recordImage: '/assets/img/Playlist R&B Retro Nostalgia.png',
-    recordCount: 1,
-    spotifyUrl: 'https://open.spotify.com/',
+    records: [
+      {
+        id: 'record-1',
+        imageUrl: '/assets/img/Playlist R&B Retro Nostalgia.png',
+        spotifyUrl: 'https://open.spotify.com/',
+      }
+    ],
+    images: [],
+    links: []
+  },
+  partners: {
+    pageTitle: 'Our Partners',
+    pageSubtitle: 'Building the future of music investment together',
+    partners: [],
+    images: [],
+    links: []
+  },
+  collaboratives: {
+    heading: 'Collaboratives',
+    collaboratives: [],
     images: [],
     links: []
   },

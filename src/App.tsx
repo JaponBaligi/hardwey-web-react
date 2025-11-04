@@ -24,6 +24,7 @@ const WebGLAnimation = lazy(() => import('@/components/WebGLAnimation/WebGLAnima
 const MoreFaqPage = lazy(() => import('@/pages/MoreFaqPage'));
 const PrivacyPolicy = lazy(() => import('@/pages/PrivacyPolicy'));
 const TermsOfService = lazy(() => import('@/pages/TermsOfService'));
+const PartnersPage = lazy(() => import('@/pages/PartnersPage'));
 const AdminApp = lazy(() => import('@/admin/AdminApp'));
 
 /**
@@ -128,6 +129,7 @@ function App() {
             <Route path="/more-faq" element={<MoreFaqPage />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-of-service" element={<TermsOfService />} />
+            <Route path="/partners" element={<PartnersPage />} />
 
             {/* 404 Page */}
             <Route path="*" element={<ErrorPage />} />

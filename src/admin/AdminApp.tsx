@@ -52,25 +52,96 @@ export default function AdminApp() {
   if (!auth) return <Login onLoggedIn={load} />;
 
   return (
-    <div style={{ maxWidth: 1100, margin: '32px auto', padding: 12 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
-        <h2>Admin Panel</h2>
-        <button onClick={async () => { await logout(); setAuth(false); }}>Logout</button>
-      </div>
-      <div style={{ marginBottom: 8, color: '#888' }}>
-        Known sections: {SECTION_KEYS.join(', ')}
-      </div>
-      <div style={{ display: 'flex' }}>
-        <div>
-          <ContentList sections={sections} onSelect={setCurrent} onCreate={createSection} onDelete={removeSection} current={current} />
-          <div style={{ paddingTop: 8 }}>
-            <button onClick={syncKnownSections}>Add all known sections</button>
+    <>
+      <style>{`
+        .admin-container {
+          max-width: 1100px;
+          margin: 32px auto;
+          padding: 12px;
+        }
+        .admin-header {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 12px;
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+        .admin-main {
+          display: flex;
+          gap: 16px;
+        }
+        .admin-sidebar {
+          min-width: 200px;
+          flex-shrink: 0;
+        }
+        .admin-divider {
+          width: 1px;
+          background-color: #ddd;
+          flex-shrink: 0;
+        }
+        .admin-sections-list {
+          font-size: 14px;
+          overflow-x: auto;
+        }
+        .admin-editor-container {
+          flex: 1;
+          min-width: 0;
+        }
+        @media (max-width: 768px) {
+          .admin-container {
+            margin: 16px auto;
+            padding: 8px;
+          }
+          .admin-header {
+            flex-direction: column;
+            gap: 12px;
+            align-items: flex-start;
+          }
+          .admin-main {
+            flex-direction: column;
+          }
+          .admin-sidebar {
+            width: 100%;
+            margin-bottom: 16px;
+            min-width: unset;
+          }
+          .admin-divider {
+            display: none;
+          }
+          .admin-sections-list {
+            font-size: 12px;
+            white-space: nowrap;
+          }
+        }
+        @media (max-width: 480px) {
+          .admin-container {
+            padding: 8px;
+            margin: 8px;
+          }
+        }
+      `}</style>
+      <div className="admin-container">
+        <div className="admin-header">
+          <h2 style={{ margin: 0 }}>Admin Panel</h2>
+          <button onClick={async () => { await logout(); setAuth(false); }} style={{ padding: '8px 16px' }}>Logout</button>
+        </div>
+        <div style={{ marginBottom: 8, color: '#888' }}>
+          <div className="admin-sections-list">Known sections: {SECTION_KEYS.join(', ')}</div>
+        </div>
+        <div className="admin-main">
+          <div className="admin-sidebar">
+            <ContentList sections={sections} onSelect={setCurrent} onCreate={createSection} onDelete={removeSection} current={current} />
+            <div style={{ paddingTop: 8 }}>
+              <button onClick={syncKnownSections} style={{ fontSize: '14px', padding: '6px 12px' }}>Add all known sections</button>
+            </div>
+          </div>
+          <div className="admin-divider"></div>
+          <div className="admin-editor-container">
+            {current && <SectionEditor section={current} />}
           </div>
         </div>
-        <div style={{ width: 64, borderRight: '1px solid #ddd', flexShrink: 0 }}></div>
-        {current && <SectionEditor section={current} />}
       </div>
-    </div>
+    </>
   );
 }
 

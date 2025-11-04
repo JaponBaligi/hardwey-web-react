@@ -58,7 +58,14 @@ export async function fetchAllContent(): Promise<{ content: Record<string, unkno
 
 export async function fetchSection(section: string): Promise<{ section: string; data: any }> {
   const res = await fetch(`${API_BASE}/content/${encodeURIComponent(section)}`, { credentials: 'include' });
-  if (!res.ok) throw new Error('Failed to load section');
+  if (!res.ok) {
+    if (res.status === 401) {
+      throw new Error('401 Unauthorized - Please log in to the admin panel');
+    } else if (res.status === 404) {
+      throw new Error('404 Not found - Section does not exist yet');
+    }
+    throw new Error(`Failed to load section: ${res.status} ${res.statusText}`);
+  }
   return res.json();
 }
 
@@ -71,8 +78,11 @@ export async function updateSection(section: string, data: any) {
     body: JSON.stringify(data)
   });
   if (!res.ok) {
+    if (res.status === 401) {
+      throw new Error('401 Unauthorized - Please log in to the admin panel. Your session may have expired.');
+    }
     const e = await res.json().catch(() => ({}));
-    throw new Error(e.error || 'Update failed');
+    throw new Error(e.error || `Update failed: ${res.status} ${res.statusText}`);
   }
 }
 

@@ -5,7 +5,7 @@ import path from 'path';
 import Database from 'better-sqlite3';
 
 const SECTION_KEYS = [
-  'home','hero','intro','shares','ticker','investmentIntro','investment','nftDisclaimer','faq','fredAgain','founders','joinUs','footer','moreFaq','privacyPolicy','terms','errorPage','faqIntro'
+  'home','hero','intro','shares','ticker','investmentIntro','investment','nftDisclaimer','faq','fredAgain','founders','joinUs','footer','moreFaq','privacyPolicy','terms','errorPage','faqIntro','partners','collaboratives'
 ];
 const SECTION_TEMPLATES = {
   home: { text: 'Welcome to Hardwey LLC', images: [], links: [] },
@@ -149,7 +149,17 @@ const SECTION_TEMPLATES = {
   },
   joinUs: { text: 'Join us', formUrl: '', images: [], links: [] },
   footer: { text: 'Footer text', links: [{ label: 'Privacy', url: '/privacy-policy' }] },
-  moreFaq: { text: 'More FAQs', images: [], links: [] },
+  moreFaq: {
+    pageTitle: 'More FAQ It',
+    pageSubtitle: 'Everything you need to know about investing in artists',
+    faqItems: [],
+    imageUrl: 'https://assets-global.website-files.com/64f45f425cb2cbb837b6f9b8/652ce8621b4433a6c86c936b_1.%20COLOR%20TREATMENT%20%2B%20NOISE%20(FAV).jpg',
+    contactHeading: "More questions? We've got more answers",
+    contactButtonText: "don't be shy, it's okay to send mail",
+    contactEmail: 'hello@hardweyllc.com',
+    images: [],
+    links: []
+  },
   privacyPolicy: { text: 'Privacy policy content', images: [], links: [] },
   terms: { text: 'Terms of service content', images: [], links: [] },
   errorPage: {
@@ -177,9 +187,26 @@ const SECTION_TEMPLATES = {
   },
   faqIntro: {
     starCount: 7,
-    recordImage: '/assets/img/Playlist R&B Retro Nostalgia.png',
-    recordCount: 1,
-    spotifyUrl: 'https://open.spotify.com/',
+    records: [
+      {
+        id: 'record-1',
+        imageUrl: '/assets/img/Playlist R&B Retro Nostalgia.png',
+        spotifyUrl: 'https://open.spotify.com/'
+      }
+    ],
+    images: [],
+    links: []
+  },
+  partners: {
+    pageTitle: 'Our Partners',
+    pageSubtitle: 'Building the future of music investment together',
+    partners: [],
+    images: [],
+    links: []
+  },
+  collaboratives: {
+    heading: 'Collaboratives',
+    collaboratives: [],
     images: [],
     links: []
   },

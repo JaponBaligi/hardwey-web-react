@@ -145,6 +145,19 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
         >
           FOUNDERS
         </a>
+        <a 
+          href="/partners" 
+          className={styles.navLink} 
+          onClick={(e) => {
+            if (location.pathname !== '/partners') {
+              e.preventDefault();
+              navigate('/partners');
+            }
+            onClose();
+          }}
+        >
+          PARTNERS
+        </a>
       </nav>
 
       {/* Social Links */}

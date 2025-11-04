@@ -177,6 +177,18 @@ export const Navigation: React.FC<NavigationProps> = ({
         >
           FOUNDERS
         </a>
+        <a 
+          href="/partners" 
+          className={styles.navItem}
+          onClick={(e) => {
+            if (location.pathname !== '/partners') {
+              e.preventDefault();
+              navigate('/partners');
+            }
+          }}
+        >
+          PARTNERS
+        </a>
       </div>
 
       {/* Mobile Menu Button */}

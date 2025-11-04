@@ -6,7 +6,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import type { FaqItem } from '@/types';
 import { useContent } from '@/hooks/useContent';
-import type { MoreFaqPageSection } from '@/types/content';
+import type { MoreFaqPageSection, FaqSectionType } from '@/types/content';
 import { getTemplateFor } from '@/types/content';
 import styles from './MoreFaqPage.module.css';
 
@@ -28,6 +28,10 @@ export const MoreFaqPage: React.FC<MoreFaqPageProps> = ({
 
   const fallbackContent = getTemplateFor('moreFaq') as MoreFaqPageSection;
   const { data: content } = useContent<MoreFaqPageSection>('moreFaq', fallbackContent);
+
+  // Get main FAQ section to count items for numbering
+  const { data: mainFaqContent } = useContent<FaqSectionType>('faq', { faqItems: [] });
+  const mainFaqCount = mainFaqContent?.faqItems?.length || 0;
 
   // Extended FAQ items
   const extendedFaqItems: FaqItem[] = content?.faqItems || fallbackContent.faqItems || [];
@@ -118,7 +122,7 @@ export const MoreFaqPage: React.FC<MoreFaqPageProps> = ({
             >
               {/* FAQ Number - Absolutely positioned */}
               <div className={styles.faqNumber}>
-                {String(index + 6).padStart(2, '0')}
+                {String(index + mainFaqCount + 1).padStart(2, '0')}
               </div>
 
               {/* FAQ Title Flex */}
@@ -176,12 +180,14 @@ export const MoreFaqPage: React.FC<MoreFaqPageProps> = ({
 
       {/* Image Section with Contact */}
       <section className={styles.imageSection}>
-        <img
-          src={content?.imageUrl || fallbackContent.imageUrl || ''}
-          alt=""
-          className={styles.imageFull}
-          loading="lazy"
-        />
+        {(content?.imageUrl || fallbackContent.imageUrl) && (
+          <img
+            src={content?.imageUrl || fallbackContent.imageUrl}
+            alt=""
+            className={styles.imageFull}
+            loading="lazy"
+          />
+        )}
         <div className={styles.bodyTextContain}>
           <h4 className={styles.heading2Image}>
             {content?.contactHeading || fallbackContent.contactHeading}

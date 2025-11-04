@@ -16,18 +16,32 @@ interface FaqIntroSectionProps {
 export const FaqIntroSection: React.FC<FaqIntroSectionProps> = ({ className = '' }) => {
   const { data: content } = useContent<FaqIntroContent>('faqIntro', {
     starCount: 7,
-    recordImage: '/assets/img/Playlist R&B Retro Nostalgia.png',
-    recordCount: 1,
-    spotifyUrl: 'https://open.spotify.com/',
+    records: [{
+      id: 'record-1',
+      imageUrl: '/assets/img/Playlist R&B Retro Nostalgia.png',
+      spotifyUrl: 'https://open.spotify.com/',
+    }],
   });
 
   const starCount = content?.starCount ?? 7;
-  const recordImage = content?.recordImage || '/assets/img/Playlist R&B Retro Nostalgia.png';
-  const recordCount = content?.recordCount ?? 1;
-  const spotifyUrl = content?.spotifyUrl || 'https://open.spotify.com/';
-
-  // Generate playlist items based on record count and image
+  
+  // Use records array if available, otherwise fall back to legacy format
   const playlists = useMemo<PlaylistItem[]>(() => {
+    if (content?.records && Array.isArray(content.records) && content.records.length > 0) {
+      return content.records.map((record, index) => ({
+        id: record.id || `faq-record-${index + 1}`,
+        title: `Record ${index + 1}`,
+        description: '',
+        spotifyUrl: record.spotifyUrl || 'https://open.spotify.com/',
+        imageUrl: record.imageUrl || '/assets/img/Playlist R&B Retro Nostalgia.png',
+      }));
+    }
+    
+    // Legacy format support
+    const recordImage = content?.recordImage || '/assets/img/Playlist R&B Retro Nostalgia.png';
+    const recordCount = content?.recordCount ?? 1;
+    const spotifyUrl = content?.spotifyUrl || 'https://open.spotify.com/';
+    
     return Array.from({ length: recordCount }, (_, index) => ({
       id: `faq-record-${index + 1}`,
       title: `Record ${index + 1}`,
@@ -35,7 +49,7 @@ export const FaqIntroSection: React.FC<FaqIntroSectionProps> = ({ className = ''
       spotifyUrl: spotifyUrl,
       imageUrl: recordImage,
     }));
-  }, [recordCount, recordImage, spotifyUrl]);
+  }, [content?.records, content?.recordImage, content?.recordCount, content?.spotifyUrl]);
 
   return (
     <div className={`${styles.faqIntroContain} ${className}`}>
