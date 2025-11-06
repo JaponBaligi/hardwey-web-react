@@ -1,6 +1,6 @@
-import jwt from 'jsonwebtoken';
+const jwt = require('jsonwebtoken');
 
-export function requireAuth(req, res, next) {
+function requireAuth(req, res, next) {
   const token = req.cookies?.accessToken;
   if (!token) return res.status(401).json({ error: 'Unauthorized' });
   try {
@@ -12,4 +12,4 @@ export function requireAuth(req, res, next) {
   }
 }
 
-
+module.exports = { requireAuth };

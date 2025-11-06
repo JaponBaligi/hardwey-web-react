@@ -1,10 +1,10 @@
-import express from 'express';
-import multer from 'multer';
-import crypto from 'crypto';
-import path from 'path';
-import { requireAuth } from '../middleware/auth.js';
-import { requireCsrf } from '../middleware/csrf.js';
-import db from '../db/db.js';
+const express = require('express');
+const multer = require('multer');
+const crypto = require('crypto');
+const path = require('path');
+const { requireAuth } = require('../middleware/auth.js');
+const { requireCsrf } = require('../middleware/csrf.js');
+const db = require('../db/db.js');
 
 const router = express.Router();
 
@@ -138,6 +138,4 @@ function isValidContentPayload(obj) {
   return false;
 }
 
-export default router;
-
-
+module.exports = router;

@@ -1,9 +1,9 @@
-import express from 'express';
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import db from '../db/db.js';
-import { rateLimit } from 'express-rate-limit';
-import { requireCsrf } from '../middleware/csrf.js';
+const express = require('express');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const db = require('../db/db.js');
+const rateLimit = require('express-rate-limit');
+const { requireCsrf } = require('../middleware/csrf.js');
 
 const router = express.Router();
 
@@ -11,7 +11,9 @@ const loginLimiter = rateLimit({
   windowMs: parseInt(process.env.LOGIN_RATE_WINDOW_MS || '900000', 10),
   max: parseInt(process.env.LOGIN_RATE_MAX || '5', 10),
   standardHeaders: true,
-  legacyHeaders: false
+  legacyHeaders: false,
+  // Skip trust proxy validation since it's configured properly in server.js
+  validate: { trustProxy: false }
 });
 
 function cookieBase() {
@@ -74,6 +76,4 @@ router.get('/me', (req, res) => {
   }
 });
 
-export default router;
-
-
+module.exports = router;

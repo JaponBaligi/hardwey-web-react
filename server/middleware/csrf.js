@@ -1,6 +1,6 @@
-import express from 'express';
-import csurf from 'csurf';
-import cookieParser from 'cookie-parser';
+const express = require('express');
+const csurf = require('csurf');
+const cookieParser = require('cookie-parser');
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -21,10 +21,9 @@ router.get('/', csrfProtection, (req, res) => {
   res.json({ csrfToken: req.csrfToken() });
 });
 
-export function requireCsrf(req, res, next) {
+function requireCsrf(req, res, next) {
   return csrfProtection(req, res, next);
 }
 
-export default router;
-
-
+module.exports = router;
+module.exports.requireCsrf = requireCsrf;

@@ -1,7 +1,7 @@
-import fs from 'fs';
-import path from 'path';
+const fs = require('fs');
+const path = require('path');
 
-export function ensureUploadsDir(dir) {
+function ensureUploadsDir(dir) {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
   }
@@ -14,7 +14,7 @@ export function ensureUploadsDir(dir) {
   }
 }
 
-export function resolvePathSafe(base, target) {
+function resolvePathSafe(base, target) {
   const targetPath = path.resolve(base, target);
   if (!targetPath.startsWith(path.resolve(base))) {
     throw new Error('Path traversal detected');
@@ -22,4 +22,4 @@ export function resolvePathSafe(base, target) {
   return targetPath;
 }
 
-
+module.exports = { ensureUploadsDir, resolvePathSafe };

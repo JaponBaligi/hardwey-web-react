@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Backend for Hardwey content admin and public content API",
   "main": "server.js",
-  "type": "module",
   "scripts": {
     "start": "cross-env NODE_ENV=production node server.js",
     "dev": "cross-env NODE_ENV=development node server.js",

@@ -1,8 +1,8 @@
-import 'dotenv/config';
-import bcrypt from 'bcrypt';
-import fs from 'fs';
-import path from 'path';
-import Database from 'better-sqlite3';
+require('dotenv/config');
+const bcrypt = require('bcrypt');
+const fs = require('fs');
+const path = require('path');
+const Database = require('better-sqlite3');
 
 const SECTION_KEYS = [
   'home','hero','intro','shares','ticker','investmentIntro','investment','nftDisclaimer','faq','fredAgain','founders','joinUs','footer','moreFaq','privacyPolicy','terms','errorPage','faqIntro','partners','collaboratives'
