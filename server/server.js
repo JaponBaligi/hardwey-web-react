@@ -91,6 +91,26 @@ app.use('/auth', authRoutes);
 app.use('/api', contentRoutes);
 app.use('/', contentRoutes);
 
+// 404 handler for unmatched routes
+app.use((req, res) => {
+  res.status(404).json({ error: 'Not found' });
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error('Error:', err);
+  
+  // Don't leak error details in production
+  const isDev = process.env.NODE_ENV === 'development';
+  const message = isDev ? err.message : 'Internal server error';
+  const stack = isDev ? err.stack : undefined;
+  
+  res.status(err.status || 500).json({
+    error: message,
+    ...(stack && { stack })
+  });
+});
+
 console.log('Routes registered successfully');
 
 // Note: HTTPS redirect is handled by .htaccess, so we don't need it here
