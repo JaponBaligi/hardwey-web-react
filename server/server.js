@@ -38,24 +38,38 @@ app.use('/uploads', express.static(uploadsDir, {
   }
 }));
 
-app.use('/api/csrf', csrfRouter);
-app.use('/api/auth', authRoutes);
-app.use('/api', contentRoutes);
+app.use('/csrf', csrfRouter);
+app.use('/auth', authRoutes);
+app.use('/', contentRoutes);
 
-app.get('/api/health', (_req, res) => res.json({ ok: true }));
+app.get('/health', (_req, res) => res.json({ ok: true }));
 
-// HTTPS enforcement example when behind proxy
-// app.enable('trust proxy');
-// app.use((req, res, next) => {
-//   if (process.env.NODE_ENV === 'production' && req.headers['x-forwarded-proto'] !== 'https') {
-//     return res.redirect(301, 'https://' + req.headers.host + req.originalUrl);
-//   }
-//   next();
-// });
+// Enable trust proxy for Passenger/reverse proxy setups
+app.enable('trust proxy');
 
+// HTTPS enforcement when behind proxy
+if (process.env.NODE_ENV === 'production') {
+  app.use((req, res, next) => {
+    if (req.headers['x-forwarded-proto'] !== 'https') {
+      return res.redirect(301, 'https://' + req.headers.host + req.originalUrl);
+    }
+    next();
+  });
+}
+
+// For Passenger: export the app (Passenger will handle listening)
+// For standalone: listen on PORT
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
-  console.log(`API server running on port ${PORT}`);
-});
+if (typeof process.env.PASSENGER_APP_ENV === 'undefined') {
+  // Standalone mode (development/testing)
+  app.listen(PORT, () => {
+    console.log(`API server running on port ${PORT}`);
+  });
+} else {
+  // Passenger mode - Passenger will handle listening
+  console.log('Running in Passenger mode');
+}
+
+export default app;
 
 

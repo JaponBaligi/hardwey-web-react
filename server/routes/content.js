@@ -43,8 +43,9 @@ router.delete('/content/:section', requireAuth, requireCsrf, (req, res) => {
 });
 
 const maxBytes = parseInt(process.env.UPLOAD_MAX_BYTES || (5 * 1024 * 1024), 10);
+const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, path.join(process.cwd(), 'server', 'public', 'uploads')),
+  destination: (req, file, cb) => cb(null, uploadsDir),
   filename: (_req, file, cb) => {
     const ext = path.extname(file.originalname || '').toLowerCase();
     const name = crypto.randomBytes(16).toString('hex') + ext;
@@ -67,7 +68,7 @@ router.post('/uploads', requireAuth, requireCsrf, (req, res, next) => {
     }
     const file = req.file;
     if (!file) return res.status(400).json({ error: 'No file' });
-    const publicUrl = `/uploads/${file.filename}`;
+    const publicUrl = `/api/uploads/${file.filename}`;
     return res.json({ ok: true, url: publicUrl });
   });
 });

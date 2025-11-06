@@ -7,9 +7,9 @@
   RewriteCond %{HTTP:X-Forwarded-Proto} !https
   RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-  # Exclude backend, admin (now /dfaqs) and uploads from SPA rewrite
+  # Exclude backend API and uploads from SPA rewrite
+  # These will be handled by Passenger Node.js app at /api
   RewriteCond %{REQUEST_URI} ^/api(/|$) [OR]
-  RewriteCond %{REQUEST_URI} ^/dfaqs(/|$) [OR]
   RewriteCond %{REQUEST_URI} ^/uploads(/|$)
   RewriteRule ^ - [L]
 
@@ -70,19 +70,14 @@ DirectoryIndex index.html
   </FilesMatch>
 </IfModule>
 
-# Mark API/admin/upload requests and set no-cache via env
+# Mark API/upload requests and set no-cache via env
 SetEnvIf Request_URI "^/api(/|$)" IS_API=1
-SetEnvIf Request_URI "^/dfaqs(/|$)" IS_ADMIN=1
 SetEnvIf Request_URI "^/uploads(/|$)" IS_UPLOAD=1
 
 <IfModule mod_headers.c>
   Header set Cache-Control "no-cache, no-store, must-revalidate" env=IS_API
   Header set Pragma "no-cache" env=IS_API
   Header set Expires "0" env=IS_API
-
-  Header set Cache-Control "no-cache, no-store, must-revalidate" env=IS_ADMIN
-  Header set Pragma "no-cache" env=IS_ADMIN
-  Header set Expires "0" env=IS_ADMIN
 
   Header set Cache-Control "no-cache, no-store, must-revalidate" env=IS_UPLOAD
   Header set Pragma "no-cache" env=IS_UPLOAD
@@ -111,7 +106,7 @@ SetEnvIf Request_URI "^/uploads(/|$)" IS_UPLOAD=1
   Header always set Referrer-Policy "no-referrer-when-downgrade"
   Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
 
-  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: blob: https:; font-src 'self' data: https:; connect-src 'self' https:; frame-ancestors 'self'; object-src 'none'; base-uri 'self'; form-action 'self';"
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: blob: https:; font-src 'self' data: https:; connect-src 'self' https:; frame-ancestors 'self'; object-src 'none'; base-uri 'self'; form-action 'self';"
 
   <If "%{HTTPS} == 'on'">
     Header always set Strict-Transport-Security "max-age=604800"
