@@ -130,10 +130,24 @@ Visit `https://hardweyllc.com/dfaqs` to access the admin panel.
 
 ### App Shows "Started" but Returns 404
 
+**Important:** CloudLinux Passenger (used by cPanel) does NOT strip the `/api` prefix when routing to Express. Express receives the full path including `/api`.
+
+**Solution:** Routes must handle both `/api` and `/` prefixes. The `server.js` already includes routes for both:
+- `GET /api` and `GET /` → API info
+- `GET /api/health` and `GET /health` → Health check
+- Routes mount at both `/api` and `/`
+
+**Troubleshooting steps:**
+
 1. Verify Application URL is exactly `hardweyllc.com/api` (no trailing slash)
-2. Check app logs in cPanel for errors
-3. Test app directly: `cd /home/<cpaneluser>/api && node server.js`
-4. Ensure Passenger is enabled (contact hosting support if needed)
+2. cPanel automatically creates `.htaccess` in `/public_html/api/` directory - **DO NOT DELETE OR MODIFY**
+3. Check app logs in cPanel for errors
+4. Test endpoints:
+   - `https://hardweyllc.com/api` → Should return `{"message":"Hardwey API","version":"1.0.0"}`
+   - `https://hardweyllc.com/api/health` → Should return `{"ok":true}`
+   - `https://hardweyllc.com/api/csrf` → Should return CSRF token
+5. Verify the app shows "started" status in cPanel
+6. If routes still don't work, check logs to see what path Express receives - it should be `/api`, not `/`
 
 ### Database Errors
 

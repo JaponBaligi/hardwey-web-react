@@ -8,6 +8,12 @@ const db = require('../db/db.js');
 
 const router = express.Router();
 
+// Root route handler (fallback if not handled by main app)
+router.get('/', (req, res, next) => {
+  // Let Express continue to next handler if this router doesn't handle it
+  next();
+});
+
 router.get('/content', (_req, res) => {
   const rows = db.prepare('SELECT section, data FROM content ORDER BY section').all();
   const result = {};
