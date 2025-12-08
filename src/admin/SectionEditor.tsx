@@ -3,6 +3,7 @@ import { useSectionEditor } from './hooks/useSectionEditor';
 import { uploadImage } from './api';
 import { FredAgainEditor } from './editors/FredAgainEditor';
 import { HeroEditor } from './editors/HeroEditor';
+import { ErrorPageEditor } from './editors/ErrorPageEditor';
 import styles from './SectionEditor.module.css';
 
 export default function SectionEditor({ section }: { section: string }) {
@@ -70,146 +71,11 @@ export default function SectionEditor({ section }: { section: string }) {
         />
       )}
       {!jsonMode && section === 'errorPage' && (
-        <>
-          <div style={{ marginBottom: 16, padding: 12, backgroundColor: '#2a2a2a', borderRadius: 6, border: '1px solid #444' }}>
-            <h4 style={{ marginTop: 0, marginBottom: 12, color: '#fff' }}>404 Error Page</h4>
-            <div style={{ marginBottom: 12 }}>
-              <label style={{ display: 'block', marginBottom: 4, color: '#ccc' }}>Title</label>
-              <input 
-                type="text" 
-                value={data.error404?.title || ''} 
-                onChange={e => setData({ ...data, error404: { ...data.error404, title: e.target.value } })} 
-                style={{ width: '100%', padding: 8 }} 
-                placeholder="404 NOT FOUND"
-              />
-            </div>
-            <div style={{ marginBottom: 12 }}>
-              <label style={{ display: 'block', marginBottom: 4, color: '#ccc' }}>Description</label>
-              <textarea 
-                value={data.error404?.description || ''} 
-                onChange={e => setData({ ...data, error404: { ...data.error404, description: e.target.value } })} 
-                rows={3} 
-                style={{ width: '100%', padding: 8 }} 
-                placeholder="You dive too deep so you discovered an unexplored place..."
-              />
-            </div>
-          </div>
-
-          <div style={{ marginBottom: 16, padding: 12, backgroundColor: '#2a2a2a', borderRadius: 6, border: '1px solid #444' }}>
-            <h4 style={{ marginTop: 0, marginBottom: 12, color: '#fff' }}>500 Error Page</h4>
-            <div style={{ marginBottom: 12 }}>
-              <label style={{ display: 'block', marginBottom: 4, color: '#ccc' }}>Title</label>
-              <input 
-                type="text" 
-                value={data.error500?.title || ''} 
-                onChange={e => setData({ ...data, error500: { ...data.error500, title: e.target.value } })} 
-                style={{ width: '100%', padding: 8 }} 
-                placeholder="500 SERVER ERROR"
-              />
-            </div>
-            <div style={{ marginBottom: 12 }}>
-              <label style={{ display: 'block', marginBottom: 4, color: '#ccc' }}>Description</label>
-              <textarea 
-                value={data.error500?.description || ''} 
-                onChange={e => setData({ ...data, error500: { ...data.error500, description: e.target.value } })} 
-                rows={3} 
-                style={{ width: '100%', padding: 8 }} 
-                placeholder="Oops! Something went wrong on our end..."
-              />
-            </div>
-          </div>
-
-          <div style={{ marginBottom: 16, padding: 12, backgroundColor: '#2a2a2a', borderRadius: 6, border: '1px solid #444' }}>
-            <h4 style={{ marginTop: 0, marginBottom: 12, color: '#fff' }}>403 Error Page</h4>
-            <div style={{ marginBottom: 12 }}>
-              <label style={{ display: 'block', marginBottom: 4, color: '#ccc' }}>Title</label>
-              <input 
-                type="text" 
-                value={data.error403?.title || ''} 
-                onChange={e => setData({ ...data, error403: { ...data.error403, title: e.target.value } })} 
-                style={{ width: '100%', padding: 8 }} 
-                placeholder="403 FORBIDDEN"
-              />
-            </div>
-            <div style={{ marginBottom: 12 }}>
-              <label style={{ display: 'block', marginBottom: 4, color: '#ccc' }}>Description</label>
-              <textarea 
-                value={data.error403?.description || ''} 
-                onChange={e => setData({ ...data, error403: { ...data.error403, description: e.target.value } })} 
-                rows={3} 
-                style={{ width: '100%', padding: 8 }} 
-                placeholder="Access denied. You don't have permission to view this page."
-              />
-            </div>
-          </div>
-
-          <div style={{ marginBottom: 16, padding: 12, backgroundColor: '#2a2a2a', borderRadius: 6, border: '1px solid #444' }}>
-            <h4 style={{ marginTop: 0, marginBottom: 12, color: '#fff' }}>Default Error Page</h4>
-            <div style={{ marginBottom: 12 }}>
-              <label style={{ display: 'block', marginBottom: 4, color: '#ccc' }}>Title</label>
-              <input 
-                type="text" 
-                value={data.defaultError?.title || ''} 
-                onChange={e => setData({ ...data, defaultError: { ...data.defaultError, title: e.target.value } })} 
-                style={{ width: '100%', padding: 8 }} 
-                placeholder="ERROR"
-              />
-            </div>
-            <div style={{ marginBottom: 12 }}>
-              <label style={{ display: 'block', marginBottom: 4, color: '#ccc' }}>Description</label>
-              <textarea 
-                value={data.defaultError?.description || ''} 
-                onChange={e => setData({ ...data, defaultError: { ...data.defaultError, description: e.target.value } })} 
-                rows={3} 
-                style={{ width: '100%', padding: 8 }} 
-                placeholder="An unexpected error occurred. Please try again later."
-              />
-            </div>
-          </div>
-
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Back Button Text</label>
-            <input 
-              type="text" 
-              value={data.backButtonText || ''} 
-              onChange={e => setData({ ...data, backButtonText: e.target.value })} 
-              style={{ width: '100%', padding: 8 }} 
-              placeholder="Back to Home"
-            />
-          </div>
-
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Background Pattern Image URL</label>
-            <input 
-              type="text" 
-              value={data.backgroundPatternImage || ''} 
-              onChange={e => setData({ ...data, backgroundPatternImage: e.target.value })} 
-              style={{ width: '100%', padding: 8 }} 
-              placeholder="/assets/img/Green eye.gif"
-            />
-            {data.backgroundPatternImage && (
-              <div style={{ marginTop: 8 }}>
-                <img src={data.backgroundPatternImage} alt="Pattern Preview" style={{ maxWidth: '100%', maxHeight: 100, border: '1px solid #ccc' }} />
-              </div>
-            )}
-          </div>
-
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Arrow Icon URL</label>
-            <input 
-              type="text" 
-              value={data.arrowIcon || ''} 
-              onChange={e => setData({ ...data, arrowIcon: e.target.value })} 
-              style={{ width: '100%', padding: 8 }} 
-              placeholder="/assets/svg/arrow-red.svg"
-            />
-            {data.arrowIcon && (
-              <div style={{ marginTop: 8 }}>
-                <img src={data.arrowIcon} alt="Arrow Preview" style={{ maxWidth: 50, maxHeight: 50, border: '1px solid #ccc' }} />
-              </div>
-            )}
-          </div>
-        </>
+        <ErrorPageEditor
+          data={data}
+          setData={setData}
+          setErr={setErr}
+        />
       )}
       {!jsonMode && section === 'faqIntro' && (
         <>
