@@ -1,0 +1,119 @@
+.sectionEditor {
+  flex: 1;
+  padding-left: 24px;
+  margin-left: 0;
+}
+
+.sectionEditor input,
+.sectionEditor textarea {
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+.title {
+  color: #ccc;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+
+.error {
+  color: red;
+}
+
+.jsonModeToggle {
+  margin-bottom: 10px;
+  margin-top: 4px;
+}
+
+.field {
+  margin-bottom: 12px;
+}
+
+.label {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.input {
+  width: 100%;
+  padding: 8px;
+}
+
+.textarea {
+  width: 100%;
+  padding: 8px;
+  font-family: monospace;
+  font-size: 12px;
+}
+
+.uploadSection {
+  margin-top: 4px;
+}
+
+.uploadHint {
+  margin-left: 8px;
+  font-size: 12px;
+  color: #666;
+}
+
+.imagePreview {
+  margin-top: 8px;
+}
+
+.imagePreview img {
+  max-width: 100%;
+  max-height: 200px;
+  border: 1px solid #ccc;
+}
+
+.actions {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.previewSection {
+  margin-top: 12px;
+}
+
+.serverDataSection {
+  margin-top: 12px;
+}
+
+.serverDataContainer {
+  border: 1px solid #333;
+  border-radius: 6px;
+  padding: 10px;
+}
+
+.serverDataTitle {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.serverDataContent {
+  white-space: pre-wrap;
+}
+
+.jsonEditor {
+  margin-bottom: 12px;
+}
+
+.jsonTextarea {
+  width: 100%;
+  font-family: monospace;
+  padding: 8px;
+}
+
+@media (max-width: 768px) {
+  .sectionEditor {
+    padding-left: 0;
+    margin-left: 0;
+  }
+
+  .sectionEditor input,
+  .sectionEditor textarea {
+    width: 100% !important;
+  }
+}
+

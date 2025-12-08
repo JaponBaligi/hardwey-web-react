@@ -1,492 +1,36 @@
-import { useEffect, useState, useRef } from 'react';
-import { fetchSection, updateSection, uploadImage } from './api';
 import Preview from './Preview';
-import { invalidateContentCache } from '@/hooks/useContent';
-import { getTemplateFor } from '@/types/content';
+import { useSectionEditor } from './hooks/useSectionEditor';
+import { uploadImage } from './api';
+import styles from './SectionEditor.module.css';
 
 export default function SectionEditor({ section }: { section: string }) {
-  const [data, setData] = useState<any>({ text: '', images: [], links: [] });
-  const [serverData, setServerData] = useState<any>(null);
-  const [jsonMode, setJsonMode] = useState(false);
-  const [rawJson, setRawJson] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [err, setErr] = useState('');
-  const fileRef = useRef<HTMLInputElement | null>(null);
-  const backgroundFileRef = useRef<HTMLInputElement | null>(null);
-  const logoFileRef = useRef<HTMLInputElement | null>(null);
-  const gifFileRef = useRef<HTMLInputElement | null>(null);
-  const starFileRef = useRef<HTMLInputElement | null>(null);
 
-  useEffect(() => {
-    let ignore = false;
-    setLoading(true);
-    setErr('');
-    fetchSection(section)
-      .then(({ data }) => {
-        if (!ignore) {
-          const norm = normalize(data || {});
-          setData(norm);
-          setServerData(norm);
-          setRawJson(JSON.stringify(norm, null, 2));
-        }
-      })
-      .catch(e => { 
-        if (!ignore) {
-          // If section doesn't exist (404 or 401), use template data
-          if (e.message.includes('404') || e.message.includes('Not found') || e.message.includes('Failed to load') || e.message.includes('401') || e.message.includes('Unauthorized')) {
-            const template = getTemplateFor(section);
-            const norm = normalize(template || {});
-            setData(norm);
-            setServerData(norm);
-            setRawJson(JSON.stringify(norm, null, 2));
-            // Only show error if it's a real auth issue (not just missing section)
-            if (e.message.includes('401') || e.message.includes('Unauthorized')) {
-              setErr('Authentication required. Please log in to the admin panel.');
-            } else {
-              setErr(''); // Clear error for missing sections
-            }
-          } else {
-            setErr(e.message);
-          }
-        }
-      })
-      .finally(() => { if (!ignore) setLoading(false); });
-    return () => { ignore = true; };
-  }, [section]);
-
-  function normalize(d: any) {
-    if (section === 'fredAgain') {
-      return {
-        heading: typeof d?.heading === 'string' ? d.heading : '',
-        subheading: typeof d?.subheading === 'string' ? d.subheading : '',
-        backgroundImage: typeof d?.backgroundImage === 'string' ? d.backgroundImage : '',
-        backgroundImageSrcSet: typeof d?.backgroundImageSrcSet === 'string' ? d.backgroundImageSrcSet : '',
-        logoUrls: Array.isArray(d?.logoUrls) ? d.logoUrls : [],
-        images: Array.isArray(d?.images) ? d.images : [],
-        links: Array.isArray(d?.links) ? d.links : []
-      };
-    }
-    if (section === 'hero') {
-      return {
-        logoUrl: typeof d?.logoUrl === 'string' ? d.logoUrl : '',
-        backgroundImage: typeof d?.backgroundImage === 'string' ? d.backgroundImage : '',
-        backgroundImageSrcSet: typeof d?.backgroundImageSrcSet === 'string' ? d.backgroundImageSrcSet : '',
-        mitaText: typeof d?.mitaText === 'string' ? d.mitaText : '',
-        subtitle: typeof d?.subtitle === 'string' ? d.subtitle : '',
-        leftIdentifier: typeof d?.leftIdentifier === 'string' ? d.leftIdentifier : '',
-        rightIdentifier: typeof d?.rightIdentifier === 'string' ? d.rightIdentifier : '',
-        motifs: Array.isArray(d?.motifs) ? d.motifs : [],
-        images: Array.isArray(d?.images) ? d.images : [],
-        links: Array.isArray(d?.links) ? d.links : []
-      };
-    }
-    if (section === 'errorPage') {
-      return {
-        error404: d?.error404 && typeof d.error404 === 'object' ? {
-          title: typeof d.error404.title === 'string' ? d.error404.title : '',
-          description: typeof d.error404.description === 'string' ? d.error404.description : ''
-        } : { title: '', description: '' },
-        error500: d?.error500 && typeof d.error500 === 'object' ? {
-          title: typeof d.error500.title === 'string' ? d.error500.title : '',
-          description: typeof d.error500.description === 'string' ? d.error500.description : ''
-        } : { title: '', description: '' },
-        error403: d?.error403 && typeof d.error403 === 'object' ? {
-          title: typeof d.error403.title === 'string' ? d.error403.title : '',
-          description: typeof d.error403.description === 'string' ? d.error403.description : ''
-        } : { title: '', description: '' },
-        defaultError: d?.defaultError && typeof d.defaultError === 'object' ? {
-          title: typeof d.defaultError.title === 'string' ? d.defaultError.title : '',
-          description: typeof d.defaultError.description === 'string' ? d.defaultError.description : ''
-        } : { title: '', description: '' },
-        backButtonText: typeof d?.backButtonText === 'string' ? d.backButtonText : '',
-        backgroundPatternImage: typeof d?.backgroundPatternImage === 'string' ? d.backgroundPatternImage : '',
-        arrowIcon: typeof d?.arrowIcon === 'string' ? d.arrowIcon : '',
-        images: Array.isArray(d?.images) ? d.images : [],
-        links: Array.isArray(d?.links) ? d.links : []
-      };
-    }
-    if (section === 'faqIntro') {
-      let records: any[] = [];
-      if (d?.records && Array.isArray(d.records)) {
-        records = d.records.map((r: any, idx: number) => ({
-          id: typeof r?.id === 'string' && r.id ? r.id : `record-${idx + 1}-${Date.now()}`,
-          imageUrl: typeof r?.imageUrl === 'string' ? r.imageUrl : '',
-          spotifyUrl: typeof r?.spotifyUrl === 'string' ? r.spotifyUrl : 'https://open.spotify.com/'
-        }));
-      } else if (d?.recordImage || d?.recordCount || d?.spotifyUrl) {
-        // Migrate from old format to new format
-        const recordCount = typeof d?.recordCount === 'number' && d.recordCount > 0 ? d.recordCount : 1;
-        const recordImage = typeof d?.recordImage === 'string' ? d.recordImage : '/assets/img/Playlist R&B Retro Nostalgia.png';
-        const spotifyUrl = typeof d?.spotifyUrl === 'string' ? d.spotifyUrl : 'https://open.spotify.com/';
-        records = Array.from({ length: recordCount }, (_, idx) => ({
-          id: `record-${idx + 1}-${Date.now()}`,
-          imageUrl: recordImage,
-          spotifyUrl: spotifyUrl
-        }));
-      }
-      if (records.length === 0) {
-        records = [{
-          id: `record-1-${Date.now()}`,
-          imageUrl: '/assets/img/Playlist R&B Retro Nostalgia.png',
-          spotifyUrl: 'https://open.spotify.com/'
-        }];
-      }
-      return {
-        starCount: typeof d?.starCount === 'number' ? d.starCount : 7,
-        records: records,
-        images: Array.isArray(d?.images) ? d.images : [],
-        links: Array.isArray(d?.links) ? d.links : []
-      };
-    }
-    if (section === 'investmentIntro') {
-      return {
-        heading: typeof d?.heading === 'string' ? d.heading : '',
-        subtitle: typeof d?.subtitle === 'string' ? d.subtitle : '',
-        images: Array.isArray(d?.images) ? d.images : [],
-        links: Array.isArray(d?.links) ? d.links : []
-      };
-    }
-    if (section === 'privacyPolicy') {
-      // Check if data has old format (just text/images/links) - if so, use template
-      const hasOldFormat = d?.text && !d?.sections && !d?.introText && !d?.pageTitle;
-      
-      if (hasOldFormat) {
-        const template = getTemplateFor('privacyPolicy');
-        d = template;
-      }
-      
-      let sections: any[] = [];
-      let introText: string[] = [];
-      
-      // Handle sections
-      if (d?.sections && Array.isArray(d.sections)) {
-        sections = d.sections.map((s: any) => ({
-          title: typeof s?.title === 'string' ? s.title : '',
-          paragraphs: Array.isArray(s?.paragraphs) ? s.paragraphs : [],
-          lists: Array.isArray(s?.lists) ? s.lists : [],
-          contactInfo: s?.contactInfo && typeof s.contactInfo === 'object' ? {
-            email: typeof s.contactInfo.email === 'string' ? s.contactInfo.email : '',
-            address: typeof s.contactInfo.address === 'string' ? s.contactInfo.address : ''
-          } : undefined
-        }));
-      }
-      
-      // Handle introText
-      if (Array.isArray(d?.introText)) {
-        introText = d.introText.filter((t: any) => typeof t === 'string');
-      } else if (typeof d?.introText === 'string') {
-        introText = [d.introText];
-      }
-      
-      return {
-        pageTitle: typeof d?.pageTitle === 'string' ? d.pageTitle : 'Privacy Policy',
-        lastUpdated: typeof d?.lastUpdated === 'string' ? d.lastUpdated : '',
-        introText: introText,
-        sections: sections,
-        footerButtonText: typeof d?.footerButtonText === 'string' ? d.footerButtonText : '',
-        footerButtonEmail: typeof d?.footerButtonEmail === 'string' ? d.footerButtonEmail : '',
-        images: Array.isArray(d?.images) ? d.images : [],
-        links: Array.isArray(d?.links) ? d.links : []
-      };
-    }
-    if (section === 'terms') {
-      // Check if data has old format (just text/images/links) - if so, use template
-      const hasOldFormat = d?.text && !d?.sections && !d?.introText && !d?.pageTitle;
-      
-      if (hasOldFormat) {
-        const template = getTemplateFor('terms');
-        d = template;
-      }
-      
-      let sections: any[] = [];
-      let introText: string[] = [];
-      
-      // Handle sections
-      if (d?.sections && Array.isArray(d.sections)) {
-        sections = d.sections.map((s: any) => ({
-          title: typeof s?.title === 'string' ? s.title : '',
-          paragraphs: Array.isArray(s?.paragraphs) ? s.paragraphs : [],
-          lists: Array.isArray(s?.lists) ? s.lists : [],
-          disclaimer: s?.disclaimer && typeof s.disclaimer === 'object' ? {
-            title: typeof s.disclaimer.title === 'string' ? s.disclaimer.title : '',
-            text: typeof s.disclaimer.text === 'string' ? s.disclaimer.text : ''
-          } : undefined,
-          contactInfo: s?.contactInfo && typeof s.contactInfo === 'object' ? {
-            email: typeof s.contactInfo.email === 'string' ? s.contactInfo.email : '',
-            address: typeof s.contactInfo.address === 'string' ? s.contactInfo.address : ''
-          } : undefined
-        }));
-      }
-      
-      // Handle introText
-      if (Array.isArray(d?.introText)) {
-        introText = d.introText.filter((t: any) => typeof t === 'string');
-      } else if (typeof d?.introText === 'string') {
-        introText = [d.introText];
-      }
-      
-      return {
-        pageTitle: typeof d?.pageTitle === 'string' ? d.pageTitle : 'Terms of Service',
-        lastUpdated: typeof d?.lastUpdated === 'string' ? d.lastUpdated : '',
-        introText: introText,
-        sections: sections,
-        footerButtonText: typeof d?.footerButtonText === 'string' ? d.footerButtonText : '',
-        footerButtonEmail: typeof d?.footerButtonEmail === 'string' ? d.footerButtonEmail : '',
-        images: Array.isArray(d?.images) ? d.images : [],
-        links: Array.isArray(d?.links) ? d.links : []
-      };
-    }
-    if (section === 'investment') {
-      return {
-        backgroundImage: typeof d?.backgroundImage === 'string' ? d.backgroundImage : '',
-        mainHeading: typeof d?.mainHeading === 'string' ? d.mainHeading : '',
-        animatedWords: Array.isArray(d?.animatedWords) ? d.animatedWords : [],
-        comingSoonTitle: typeof d?.comingSoonTitle === 'string' ? d.comingSoonTitle : '',
-        dateText: typeof d?.dateText === 'string' ? d.dateText : '',
-        logoImage: typeof d?.logoImage === 'string' ? d.logoImage : '',
-        welcomeText: typeof d?.welcomeText === 'string' ? d.welcomeText : '',
-        images: Array.isArray(d?.images) ? d.images : [],
-        links: Array.isArray(d?.links) ? d.links : []
-      };
-    }
-    if (section === 'shares') {
-      return {
-        heading: typeof d?.heading === 'string' ? d.heading : '',
-        subheadingMobile: typeof d?.subheadingMobile === 'string' ? d.subheadingMobile : '',
-        subheadingWords: Array.isArray(d?.subheadingWords) ? d.subheadingWords : [],
-        bodyCopy: typeof d?.bodyCopy === 'string' ? d.bodyCopy : '',
-        imageUrl: typeof d?.imageUrl === 'string' ? d.imageUrl : '',
-        imageSrcSet: typeof d?.imageSrcSet === 'string' ? d.imageSrcSet : '',
-        images: Array.isArray(d?.images) ? d.images : [],
-        links: Array.isArray(d?.links) ? d.links : []
-      };
-    }
-    if (section === 'ticker') {
-      return {
-        backgroundColor: typeof d?.backgroundColor === 'string' ? d.backgroundColor : '#bbdbfa',
-        tickerWords: Array.isArray(d?.tickerWords) ? d.tickerWords : [],
-        images: Array.isArray(d?.images) ? d.images : [],
-        links: Array.isArray(d?.links) ? d.links : []
-      };
-    }
-    if (section === 'nftDisclaimer') {
-      return {
-        nopeText: typeof d?.nopeText === 'string' ? d.nopeText : 'Nope',
-        wereText: typeof d?.wereText === 'string' ? d.wereText : "We're",
-        nftsText: typeof d?.nftsText === 'string' ? d.nftsText : 'NFTs',
-        valueMusicText: typeof d?.valueMusicText === 'string' ? d.valueMusicText : 'We value mu$ic more than pixels',
-        resonateText: typeof d?.resonateText === 'string' ? d.resonateText : 'We\'re building something that resonates with everyone. Not just "PR".',
-        resonateTextMobile: typeof d?.resonateTextMobile === 'string' ? d.resonateTextMobile : "we're building something that resonates with everyone. Not just crypto bros.",
-        monaImageUrl: typeof d?.monaImageUrl === 'string' ? d.monaImageUrl : '/assets/img/mona-image2.jpg',
-        monaImageSrcSet: typeof d?.monaImageSrcSet === 'string' ? d.monaImageSrcSet : '',
-        gifImageUrl: typeof d?.gifImageUrl === 'string' ? d.gifImageUrl : '/assets/img/fav.gif',
-        starIconUrl: typeof d?.starIconUrl === 'string' ? d.starIconUrl : '/assets/svg/hardwey-star.svg',
-        notGraphicUrl: typeof d?.notGraphicUrl === 'string' ? d.notGraphicUrl : 'https://assets-global.website-files.com/64f45f425cb2cbb837b6f9b8/6510100a109f7d930dd06744_not-svg.svg',
-        backgroundColor: typeof d?.backgroundColor === 'string' ? d.backgroundColor : '#d12d37',
-        images: Array.isArray(d?.images) ? d.images : [],
-        links: Array.isArray(d?.links) ? d.links : []
-      };
-    }
-    if (section === 'faq') {
-      return {
-        faqItems: Array.isArray(d?.faqItems) ? d.faqItems.map((item: any) => ({
-          id: typeof item?.id === 'string' ? item.id : `faq-${Date.now()}`,
-          question: typeof item?.question === 'string' ? item.question : '',
-          subtitle: typeof item?.subtitle === 'string' ? item.subtitle : '',
-          answer: typeof item?.answer === 'string' ? item.answer : '',
-          additionalInfo: Array.isArray(item?.additionalInfo) ? item.additionalInfo : ['', '']
-        })) : [],
-        images: Array.isArray(d?.images) ? d.images : [],
-        links: Array.isArray(d?.links) ? d.links : []
-      };
-    }
-    if (section === 'founders') {
-      return {
-        founders: Array.isArray(d?.founders) ? d.founders.map((item: any) => ({
-          id: typeof item?.id === 'string' ? item.id : `founder-${Date.now()}`,
-          name: typeof item?.name === 'string' ? item.name : '',
-          role: typeof item?.role === 'string' ? item.role : '',
-          bio: typeof item?.bio === 'string' ? item.bio : '',
-          quote: typeof item?.quote === 'string' ? item.quote : '',
-          imageUrl: typeof item?.imageUrl === 'string' ? item.imageUrl : '',
-          imageSrcSet: typeof item?.imageSrcSet === 'string' ? item.imageSrcSet : '',
-          additionalInfo: Array.isArray(item?.additionalInfo) ? item.additionalInfo : []
-        })) : [],
-        heading: typeof d?.heading === 'string' ? d.heading : '',
-        headingSingular: typeof d?.headingSingular === 'string' ? d.headingSingular : '',
-        animatedWords: Array.isArray(d?.animatedWords) ? d.animatedWords : [],
-        animatedTextMobile: typeof d?.animatedTextMobile === 'string' ? d.animatedTextMobile : '',
-        images: Array.isArray(d?.images) ? d.images : [],
-        links: Array.isArray(d?.links) ? d.links : []
-      };
-    }
-    if (section === 'partners') {
-      return {
-        pageTitle: typeof d?.pageTitle === 'string' ? d.pageTitle : '',
-        pageSubtitle: typeof d?.pageSubtitle === 'string' ? d.pageSubtitle : '',
-        partners: Array.isArray(d?.partners) ? d.partners.map((item: any, index: number) => ({
-          id: typeof item?.id === 'string' && item.id ? item.id : `partner-${index}-${Date.now()}`,
-          name: typeof item?.name === 'string' ? item.name : '',
-          title: typeof item?.title === 'string' ? item.title : '',
-          description: typeof item?.description === 'string' ? item.description : '',
-          imageUrl: typeof item?.imageUrl === 'string' ? item.imageUrl : '',
-          imageSrcSet: typeof item?.imageSrcSet === 'string' ? item.imageSrcSet : '',
-          websiteUrl: typeof item?.websiteUrl === 'string' ? item.websiteUrl : '',
-          socialLinks: Array.isArray(item?.socialLinks) ? item.socialLinks.map((sl: any) => ({
-            platform: typeof sl?.platform === 'string' ? sl.platform : '',
-            url: typeof sl?.url === 'string' ? sl.url : ''
-          })) : []
-        })) : [],
-        images: Array.isArray(d?.images) ? d.images : [],
-        links: Array.isArray(d?.links) ? d.links : []
-      };
-    }
-    if (section === 'collaboratives') {
-      return {
-        heading: typeof d?.heading === 'string' ? d.heading : '',
-        collaboratives: Array.isArray(d?.collaboratives) ? d.collaboratives.map((item: any, index: number) => ({
-          id: typeof item?.id === 'string' && item.id ? item.id : `collaborative-${index}-${Date.now()}`,
-          name: typeof item?.name === 'string' ? item.name : '',
-          title: typeof item?.title === 'string' ? item.title : '',
-          description: typeof item?.description === 'string' ? item.description : '',
-          imageUrl: typeof item?.imageUrl === 'string' ? item.imageUrl : '',
-          imageSrcSet: typeof item?.imageSrcSet === 'string' ? item.imageSrcSet : '',
-          websiteUrl: typeof item?.websiteUrl === 'string' ? item.websiteUrl : '',
-          socialLinks: Array.isArray(item?.socialLinks) ? item.socialLinks.map((sl: any) => ({
-            platform: typeof sl?.platform === 'string' ? sl.platform : '',
-            url: typeof sl?.url === 'string' ? sl.url : ''
-          })) : []
-        })) : [],
-        images: Array.isArray(d?.images) ? d.images : [],
-        links: Array.isArray(d?.links) ? d.links : []
-      };
-    }
-    if (section === 'moreFaq') {
-      // Handle FAQ items - check if they exist and are an array
-      let faqItems: any[] = [];
-      if (d?.faqItems && Array.isArray(d.faqItems)) {
-        faqItems = d.faqItems.map((item: any, index: number) => ({
-          id: typeof item?.id === 'string' && item.id ? item.id : `faq-item-${index}-${Date.now()}`,
-          question: typeof item?.question === 'string' ? item.question : '',
-          subtitle: typeof item?.subtitle === 'string' ? item.subtitle : '',
-          answer: typeof item?.answer === 'string' ? item.answer : '',
-          additionalInfo: Array.isArray(item?.additionalInfo) && item.additionalInfo.length >= 2 
-            ? item.additionalInfo.slice(0, 2)
-            : Array.isArray(item?.additionalInfo) && item.additionalInfo.length === 1
-            ? [item.additionalInfo[0], '']
-            : typeof item?.additionalInfo === 'string'
-            ? [item.additionalInfo, '']
-            : ['', '']
-        }));
-      }
-      
-      return {
-        pageTitle: typeof d?.pageTitle === 'string' ? d.pageTitle : '',
-        pageSubtitle: typeof d?.pageSubtitle === 'string' ? d.pageSubtitle : '',
-        faqItems: faqItems,
-        imageUrl: typeof d?.imageUrl === 'string' ? d.imageUrl : '',
-        contactHeading: typeof d?.contactHeading === 'string' ? d.contactHeading : '',
-        contactButtonText: typeof d?.contactButtonText === 'string' ? d.contactButtonText : '',
-        contactEmail: typeof d?.contactEmail === 'string' ? d.contactEmail : '',
-        images: Array.isArray(d?.images) ? d.images : [],
-        links: Array.isArray(d?.links) ? d.links : []
-      };
-    }
-    return {
-      text: typeof d?.text === 'string' ? d.text : '',
-      images: Array.isArray(d?.images) ? d.images : [],
-      links: Array.isArray(d?.links) ? d.links : []
-    };
-  }
-
-  function addLink() {
-    setData((prev: any) => ({ ...prev, links: [...(prev.links||[]), { label: '', url: '' }] }));
-  }
-  function removeLink(i: number) {
-    setData((prev: any) => ({ ...prev, links: prev.links.filter((_: any, idx: number) => idx !== i) }));
-  }
-
-  async function onUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    try {
-      const { url } = await uploadImage(file);
-      if (section === 'fredAgain') {
-        setData((prev: any) => ({ ...prev, logoUrls: [...(prev.logoUrls||[]), url] }));
-      } else if (section === 'hero') {
-        setData((prev: any) => ({ ...prev, motifs: [...(prev.motifs||[]), url] }));
-      } else {
-      setData((prev: any) => ({ ...prev, images: [...(prev.images||[]), url] }));
-      }
-    } catch (e: any) {
-      setErr(e.message);
-    } finally {
-      if (fileRef.current) fileRef.current.value = '';
-    }
-  }
-
-  async function onUploadBackground(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    try {
-      const { url } = await uploadImage(file);
-      if (section === 'faqIntro') {
-        setData((prev: any) => ({ ...prev, recordImage: url }));
-      } else if (section === 'shares') {
-        setData((prev: any) => ({ ...prev, imageUrl: url }));
-      } else if (section === 'nftDisclaimer') {
-        setData((prev: any) => ({ ...prev, monaImageUrl: url }));
-      } else if (section === 'investment') {
-        setData((prev: any) => ({ ...prev, backgroundImage: url }));
-      } else {
-        setData((prev: any) => ({ ...prev, backgroundImage: url }));
-      }
-    } catch (e: any) {
-      setErr(e.message);
-    } finally {
-      if (backgroundFileRef.current) backgroundFileRef.current.value = '';
-    }
-  }
-
-  async function onUploadLogo(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    try {
-      const { url } = await uploadImage(file);
-      if (section === 'nftDisclaimer') {
-        setData((prev: any) => ({ ...prev, starIconUrl: url }));
-      } else if (section === 'investment') {
-        setData((prev: any) => ({ ...prev, logoImage: url }));
-      } else {
-        setData((prev: any) => ({ ...prev, logoUrl: url }));
-      }
-    } catch (e: any) {
-      setErr(e.message);
-    } finally {
-      if (section === 'nftDisclaimer') {
-        if (starFileRef.current) starFileRef.current.value = '';
-      } else if (section === 'investment') {
-        if (logoFileRef.current) logoFileRef.current.value = '';
-      } else {
-        if (logoFileRef.current) logoFileRef.current.value = '';
-      }
-    }
-  }
-
-  async function onUploadGif(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    try {
-      const { url } = await uploadImage(file);
-      setData((prev: any) => ({ ...prev, gifImageUrl: url }));
-    } catch (e: any) {
-      setErr(e.message);
-    } finally {
-      if (gifFileRef.current) gifFileRef.current.value = '';
-    }
-  }
-
+  const {
+    data,
+    setData,
+    serverData,
+    jsonMode,
+    setJsonMode,
+    rawJson,
+    setRawJson,
+    loading,
+    saving,
+    err,
+    setErr,
+    onSave,
+    reloadFromServer,
+    addLink,
+    removeLink,
+    onUpload,
+    onUploadBackground,
+    onUploadLogo,
+    onUploadGif,
+    fileRef,
+    backgroundFileRef,
+    logoFileRef,
+    gifFileRef,
+    starFileRef,
+  } = useSectionEditor(section);
 
   function addMotif() {
     setData((prev: any) => ({ ...prev, motifs: [...(prev.motifs||[]), ''] }));
@@ -496,83 +40,12 @@ export default function SectionEditor({ section }: { section: string }) {
     setData((prev: any) => ({ ...prev, motifs: prev.motifs.filter((_: any, idx: number) => idx !== i) }));
   }
 
-  async function onSave() {
-    setSaving(true);
-    setErr('');
-    try {
-      if (jsonMode) {
-        let parsed: any;
-        try {
-          parsed = JSON.parse(rawJson);
-        } catch (e: any) {
-          setErr('Invalid JSON');
-          setSaving(false);
-          return;
-        }
-        await updateSection(section, parsed);
-        const norm = normalize(parsed);
-        setData(norm);
-        setServerData(norm);
-        setRawJson(JSON.stringify(norm, null, 2));
-      } else {
-        await updateSection(section, data);
-        setRawJson(JSON.stringify(data, null, 2));
-        setServerData(data);
-      }
-      // Invalidate content cache so frontend components refetch updated content
-      invalidateContentCache();
-    } catch (e: any) {
-      setErr(e.message);
-    } finally {
-      setSaving(false);
-    }
-  }
-
-  async function reloadFromServer() {
-    setLoading(true);
-    setErr('');
-    try {
-      const { data: fresh } = await fetchSection(section);
-      const norm = normalize(fresh || {});
-      setServerData(norm);
-      if (!jsonMode) setData(norm);
-      setRawJson(JSON.stringify(norm, null, 2));
-    } catch (e: any) {
-      setErr(e.message);
-    } finally {
-      setLoading(false);
-    }
-  }
-
   if (loading) return <div>Loading...</div>;
   return (
-    <>
-      <style>{`
-        .section-editor {
-          flex: 1;
-          padding-left: 24px;
-          margin-left: 0;
-        }
-        .section-editor input,
-        .section-editor textarea {
-          box-sizing: border-box;
-          max-width: 100%;
-        }
-        @media (max-width: 768px) {
-          .section-editor {
-            padding-left: 0;
-            margin-left: 0;
-          }
-          .section-editor input,
-          .section-editor textarea {
-            width: 100% !important;
-          }
-        }
-      `}</style>
-      <div className="section-editor">
-      <h3 style={{ color: '#ccc', marginBottom: 16, textTransform: 'uppercase' }}>Edit: {section}</h3>
-      {err && <div style={{ color: 'red' }}>{err}</div>}
-      <div style={{ marginBottom: 10, marginTop: 4 }}>
+    <div className={styles.sectionEditor}>
+      <h3 className={styles.title}>Edit: {section}</h3>
+      {err && <div className={styles.error}>{err}</div>}
+      <div className={styles.jsonModeToggle}>
         <label><input type="checkbox" checked={jsonMode} onChange={e => setJsonMode(e.target.checked)} /> Advanced JSON</label>
       </div>
       {!jsonMode && section === 'fredAgain' && (
@@ -2798,30 +2271,34 @@ Believes in the power of artist-fan connections"
         </ul>
       </div>}
       {jsonMode && (
-        <div style={{ marginBottom: 12 }}>
+        <div className={styles.jsonEditor}>
           <label>JSON</label>
-          <textarea value={rawJson} onChange={e => setRawJson(e.target.value)} rows={18} style={{ width: '100%', fontFamily: 'monospace' }} />
+          <textarea 
+            value={rawJson} 
+            onChange={e => setRawJson(e.target.value)} 
+            rows={18} 
+            className={styles.jsonTextarea}
+          />
         </div>
       )}
 
-      <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+      <div className={styles.actions}>
         <button onClick={onSave} disabled={saving}>{saving ? 'Saving...' : 'Save'}</button>
         <button onClick={reloadFromServer}>Reload current</button>
         <span>Preview:</span>
       </div>
       {!jsonMode && (
-        <div style={{ marginTop: 12 }}>
+        <div className={styles.previewSection}>
           <Preview data={data} />
         </div>
       )}
-      <div style={{ marginTop: 12 }}>
-        <div style={{ border: '1px solid #333', borderRadius: 6, padding: 10 }}>
-          <div style={{ fontWeight: 600, marginBottom: 6 }}>Current (server)</div>
-          <pre style={{ whiteSpace: 'pre-wrap' }}>{serverData ? JSON.stringify(serverData, null, 2) : '—'}</pre>
+      <div className={styles.serverDataSection}>
+        <div className={styles.serverDataContainer}>
+          <div className={styles.serverDataTitle}>Current (server)</div>
+          <pre className={styles.serverDataContent}>{serverData ? JSON.stringify(serverData, null, 2) : '—'}</pre>
         </div>
       </div>
       </div>
-    </>
   );
 }
 
