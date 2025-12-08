@@ -5,6 +5,7 @@ import { FredAgainEditor } from './editors/FredAgainEditor';
 import { HeroEditor } from './editors/HeroEditor';
 import { ErrorPageEditor } from './editors/ErrorPageEditor';
 import { InvestmentIntroEditor } from './editors/InvestmentIntroEditor';
+import { InvestmentEditor } from './editors/InvestmentEditor';
 import { SharesEditor } from './editors/SharesEditor';
 import styles from './SectionEditor.module.css';
 
@@ -195,107 +196,15 @@ export default function SectionEditor({ section }: { section: string }) {
         />
       )}
       {!jsonMode && section === 'investment' && (
-        <>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Background Image URL</label>
-            <input 
-              type="text" 
-              value={data.backgroundImage || ''} 
-              onChange={e => setData({ ...data, backgroundImage: e.target.value })} 
-              style={{ width: '100%', padding: 8 }} 
-              placeholder="/assets/img/BUY SHARES IMAGE.jpg"
-            />
-            <div style={{ marginTop: 4 }}>
-              <input 
-                type="file" 
-                accept="image/*" 
-                onChange={onUploadBackground} 
-                ref={backgroundFileRef}
-              />
-              <span style={{ marginLeft: 8, fontSize: 12, color: '#666' }}>Or upload an image</span>
-            </div>
-            {data.backgroundImage && (
-              <div style={{ marginTop: 8 }}>
-                <img src={data.backgroundImage} alt="Background Preview" style={{ maxWidth: '100%', maxHeight: 200, border: '1px solid #ccc' }} />
-              </div>
-            )}
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Main Heading</label>
-            <input 
-              type="text" 
-              value={data.mainHeading || ''} 
-              onChange={e => setData({ ...data, mainHeading: e.target.value })} 
-              style={{ width: '100%', padding: 8 }} 
-              placeholder="invest in artists"
-            />
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Animated Words (comma-separated)</label>
-            <input 
-              type="text" 
-              value={Array.isArray(data.animatedWords) ? data.animatedWords.join(', ') : ''} 
-              onChange={e => setData({ ...data, animatedWords: e.target.value.split(',').map(w => w.trim()).filter(w => w) })} 
-              style={{ width: '100%', padding: 8 }} 
-              placeholder="it, hits, different"
-            />
-            <span style={{ fontSize: 12, color: '#666', marginLeft: 8 }}>Words will be displayed in sequence with animation</span>
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Coming Soon Title</label>
-            <input 
-              type="text" 
-              value={data.comingSoonTitle || ''} 
-              onChange={e => setData({ ...data, comingSoonTitle: e.target.value })} 
-              style={{ width: '100%', padding: 8 }} 
-              placeholder="Coming soon"
-            />
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Date Text</label>
-            <input 
-              type="text" 
-              value={data.dateText || ''} 
-              onChange={e => setData({ ...data, dateText: e.target.value })} 
-              style={{ width: '100%', padding: 8 }} 
-              placeholder="(?/?/2026)"
-            />
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Logo Image URL</label>
-            <input 
-              type="text" 
-              value={data.logoImage || ''} 
-              onChange={e => setData({ ...data, logoImage: e.target.value })} 
-              style={{ width: '100%', padding: 8 }} 
-              placeholder="/assets/img/hardweymainlogo.jpg"
-            />
-            <div style={{ marginTop: 4 }}>
-              <input 
-                type="file" 
-                accept="image/*" 
-                onChange={onUploadLogo} 
-                ref={logoFileRef}
-              />
-              <span style={{ marginLeft: 8, fontSize: 12, color: '#666' }}>Or upload an image</span>
-            </div>
-            {data.logoImage && (
-              <div style={{ marginTop: 8 }}>
-                <img src={data.logoImage} alt="Logo Preview" style={{ maxWidth: '100%', maxHeight: 150, border: '1px solid #ccc' }} />
-              </div>
-            )}
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Welcome Text</label>
-            <input 
-              type="text" 
-              value={data.welcomeText || ''} 
-              onChange={e => setData({ ...data, welcomeText: e.target.value })} 
-              style={{ width: '100%', padding: 8 }} 
-              placeholder="Welcome to HARDWEY"
-            />
-          </div>
-        </>
+        <InvestmentEditor
+          data={data}
+          setData={setData}
+          setErr={setErr}
+          onUploadBackground={onUploadBackground}
+          backgroundFileRef={backgroundFileRef}
+          onUploadLogo={onUploadLogo}
+          logoFileRef={logoFileRef}
+        />
       )}
       {!jsonMode && section === 'shares' && (
         <SharesEditor
