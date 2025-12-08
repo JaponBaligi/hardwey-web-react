@@ -4,6 +4,8 @@ import { uploadImage } from './api';
 import { FredAgainEditor } from './editors/FredAgainEditor';
 import { HeroEditor } from './editors/HeroEditor';
 import { ErrorPageEditor } from './editors/ErrorPageEditor';
+import { InvestmentIntroEditor } from './editors/InvestmentIntroEditor';
+import { SharesEditor } from './editors/SharesEditor';
 import styles from './SectionEditor.module.css';
 
 export default function SectionEditor({ section }: { section: string }) {
@@ -186,28 +188,11 @@ export default function SectionEditor({ section }: { section: string }) {
         </>
       )}
       {!jsonMode && section === 'investmentIntro' && (
-        <>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Heading</label>
-            <input 
-              type="text" 
-              value={data.heading || ''} 
-              onChange={e => setData({ ...data, heading: e.target.value })} 
-              style={{ width: '100%', padding: 8 }} 
-              placeholder="If you've never invested..."
-            />
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Subtitle</label>
-            <input 
-              type="text" 
-              value={data.subtitle || ''} 
-              onChange={e => setData({ ...data, subtitle: e.target.value })} 
-              style={{ width: '100%', padding: 8 }} 
-              placeholder="This one's for you"
-            />
-          </div>
-        </>
+        <InvestmentIntroEditor
+          data={data}
+          setData={setData}
+          setErr={setErr}
+        />
       )}
       {!jsonMode && section === 'investment' && (
         <>
@@ -313,86 +298,13 @@ export default function SectionEditor({ section }: { section: string }) {
         </>
       )}
       {!jsonMode && section === 'shares' && (
-        <>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Heading</label>
-            <input 
-              type="text" 
-              value={data.heading || ''} 
-              onChange={e => setData({ ...data, heading: e.target.value })} 
-              style={{ width: '100%', padding: 8 }} 
-              placeholder="Buy shares in artists' brands"
-            />
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Subheading (Mobile)</label>
-            <input 
-              type="text" 
-              value={data.subheadingMobile || ''} 
-              onChange={e => setData({ ...data, subheadingMobile: e.target.value })} 
-              style={{ width: '100%', padding: 8 }} 
-              placeholder="A new way to invest"
-            />
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Subheading Words (Desktop - separate by commas)</label>
-            <input 
-              type="text" 
-              value={(data.subheadingWords || []).join(', ')} 
-              onChange={e => {
-                const words = e.target.value.split(',').map(w => w.trim()).filter(w => w);
-                setData({ ...data, subheadingWords: words });
-              }} 
-              style={{ width: '100%', padding: 8 }} 
-              placeholder="A new way, to, Invest"
-            />
-            <span style={{ fontSize: 12, color: '#666', marginLeft: 8 }}>Comma-separated words for desktop animation</span>
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Body Copy</label>
-            <textarea 
-              value={data.bodyCopy || ''} 
-              onChange={e => setData({ ...data, bodyCopy: e.target.value })} 
-              rows={4} 
-              style={{ width: '100%', padding: 8 }} 
-              placeholder="Artists build brands that generate revenue..."
-            />
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Image URL</label>
-            <input 
-              type="text" 
-              value={data.imageUrl || ''} 
-              onChange={e => setData({ ...data, imageUrl: e.target.value })} 
-              style={{ width: '100%', padding: 8 }} 
-              placeholder="/assets/img/BUY%20SHARES%20IMAGE.jpg"
-            />
-            <div style={{ marginTop: 4 }}>
-              <input 
-                type="file" 
-                accept="image/*" 
-                onChange={onUploadBackground} 
-                ref={backgroundFileRef}
-              />
-              <span style={{ marginLeft: 8, fontSize: 12, color: '#666' }}>Or upload an image</span>
-            </div>
-            {data.imageUrl && (
-              <div style={{ marginTop: 8 }}>
-                <img src={data.imageUrl} alt="Image Preview" style={{ maxWidth: '100%', maxHeight: 200, border: '1px solid #ccc' }} />
-              </div>
-            )}
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Image SrcSet (optional)</label>
-            <textarea 
-              value={data.imageSrcSet || ''} 
-              onChange={e => setData({ ...data, imageSrcSet: e.target.value })} 
-              rows={2} 
-              style={{ width: '100%', padding: 8, fontFamily: 'monospace', fontSize: 12 }} 
-              placeholder="/assets/img/shares-500.jpg 500w, /assets/img/shares-800.jpg 800w, ..."
-            />
-          </div>
-        </>
+        <SharesEditor
+          data={data}
+          setData={setData}
+          setErr={setErr}
+          onUploadBackground={onUploadBackground}
+          backgroundFileRef={backgroundFileRef}
+        />
       )}
       {!jsonMode && section === 'ticker' && (
         <>
