@@ -1,5 +1,6 @@
 const API_BASE = '/api';
 
+// CSRF Token Management
 let csrfToken: string | null = null;
 
 export async function ensureCsrf(): Promise<string> {
@@ -15,105 +16,148 @@ function withCsrf(headers: Record<string, string> = {}) {
   return { ...headers, 'x-csrf-token': csrfToken || '' };
 }
 
-export async function login(username: string, password: string) {
-  await ensureCsrf();
-  const res = await fetch(`${API_BASE}/auth/login`, {
-    method: 'POST',
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json', ...withCsrf() },
-    body: JSON.stringify({ username, password })
-  });
-  if (!res.ok) {
-    const e = await res.json().catch(() => ({}));
-    throw new Error(e.error || 'Login failed');
+// Error Handling Utilities
+interface ApiError {
+  error?: string;
+  message?: string;
+}
+
+async function handleApiError(res: Response, defaultMessage: string): Promise<never> {
+  if (res.status === 401) {
+    throw new Error('401 Unauthorized - Please log in to the admin panel. Your session may have expired.');
   }
+  
+  let errorMessage = defaultMessage;
+  try {
+    const error: ApiError = await res.json();
+    errorMessage = error.error || error.message || defaultMessage;
+  } catch {
+    // If JSON parsing fails, use status text or default
+    errorMessage = res.statusText || defaultMessage;
+  }
+  
+  throw new Error(errorMessage);
 }
 
-export async function refresh() {
-  await ensureCsrf();
-  const res = await fetch(`${API_BASE}/auth/refresh`, {
-    method: 'POST',
+async function handleSectionError(res: Response): Promise<never> {
+  if (res.status === 401) {
+    throw new Error('401 Unauthorized - Please log in to the admin panel');
+  }
+  if (res.status === 404) {
+    throw new Error('404 Not found - Section does not exist yet');
+  }
+  throw new Error(`Failed to load section: ${res.status} ${res.statusText}`);
+}
+
+// API Request Wrapper
+interface RequestOptions extends RequestInit {
+  requiresCsrf?: boolean;
+  contentType?: string;
+}
+
+async function apiRequest<T>(
+  endpoint: string,
+  options: RequestOptions = {}
+): Promise<T> {
+  const { requiresCsrf = false, contentType, ...fetchOptions } = options;
+  
+  const headers: Record<string, string> = { ...fetchOptions.headers as Record<string, string> };
+  
+  if (contentType) {
+    headers['Content-Type'] = contentType;
+  }
+  
+  if (requiresCsrf) {
+    await ensureCsrf();
+    Object.assign(headers, withCsrf());
+  }
+  
+  const res = await fetch(`${API_BASE}${endpoint}`, {
+    ...fetchOptions,
     credentials: 'include',
-    headers: withCsrf()
+    headers,
   });
-  if (!res.ok) throw new Error('Refresh failed');
+  
+  if (!res.ok) {
+    throw await handleApiError(res, 'Request failed');
+  }
+  
+  return res.json();
 }
 
-export async function logout() {
-  await ensureCsrf();
-  await fetch(`${API_BASE}/auth/logout`, { method: 'POST', credentials: 'include', headers: withCsrf() });
+// Auth API
+export async function login(username: string, password: string): Promise<void> {
+  await apiRequest('/auth/login', {
+    method: 'POST',
+    requiresCsrf: true,
+    contentType: 'application/json',
+    body: JSON.stringify({ username, password }),
+  });
+}
+
+export async function refresh(): Promise<void> {
+  await apiRequest('/auth/refresh', {
+    method: 'POST',
+    requiresCsrf: true,
+  });
+}
+
+export async function logout(): Promise<void> {
+  await apiRequest('/auth/logout', {
+    method: 'POST',
+    requiresCsrf: true,
+  });
 }
 
 export async function getMe(): Promise<{ authenticated: boolean; user?: { id: number; username: string } }> {
-  const res = await fetch(`${API_BASE}/auth/me`, { credentials: 'include' });
-  if (!res.ok) return { authenticated: false };
-  return res.json();
+  try {
+    return await apiRequest('/auth/me', { credentials: 'include' });
+  } catch {
+    return { authenticated: false };
+  }
 }
 
+// Content API
 export async function fetchAllContent(): Promise<{ content: Record<string, unknown> }> {
-  const res = await fetch(`${API_BASE}/content`, { credentials: 'include' });
-  if (!res.ok) throw new Error('Failed to load content');
-  return res.json();
+  return apiRequest('/content');
 }
 
-export async function fetchSection(section: string): Promise<{ section: string; data: unknown }> {
-  const res = await fetch(`${API_BASE}/content/${encodeURIComponent(section)}`, { credentials: 'include' });
+export async function fetchSection(section: string): Promise<{ section: string; data: any }> {
+  const endpoint = `/content/${encodeURIComponent(section)}`;
+  const res = await fetch(`${API_BASE}${endpoint}`, { credentials: 'include' });
+  
   if (!res.ok) {
-    if (res.status === 401) {
-      throw new Error('401 Unauthorized - Please log in to the admin panel');
-    } else if (res.status === 404) {
-      throw new Error('404 Not found - Section does not exist yet');
-    }
-    throw new Error(`Failed to load section: ${res.status} ${res.statusText}`);
+    throw await handleSectionError(res);
   }
+  
   return res.json();
 }
 
-export async function updateSection(section: string, data: unknown) {
-  await ensureCsrf();
-  const res = await fetch(`${API_BASE}/content/${encodeURIComponent(section)}`, {
+export async function updateSection(section: string, data: any): Promise<void> {
+  await apiRequest(`/content/${encodeURIComponent(section)}`, {
     method: 'PUT',
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json', ...withCsrf() },
-    body: JSON.stringify(data)
+    requiresCsrf: true,
+    contentType: 'application/json',
+    body: JSON.stringify(data),
   });
-  if (!res.ok) {
-    if (res.status === 401) {
-      throw new Error('401 Unauthorized - Please log in to the admin panel. Your session may have expired.');
-    }
-    const e = await res.json().catch(() => ({}));
-    throw new Error(e.error || `Update failed: ${res.status} ${res.statusText}`);
-  }
+}
+
+export async function deleteSection(section: string): Promise<void> {
+  await apiRequest(`/content/${encodeURIComponent(section)}`, {
+    method: 'DELETE',
+    requiresCsrf: true,
+  });
 }
 
 export async function uploadImage(file: File): Promise<{ ok: boolean; url: string }> {
-  await ensureCsrf();
   const form = new FormData();
   form.append('file', file);
-  const res = await fetch(`${API_BASE}/uploads`, {
+  
+  return apiRequest('/uploads', {
     method: 'POST',
-    credentials: 'include',
-    headers: withCsrf(),
-    body: form
+    requiresCsrf: true,
+    body: form,
   });
-  if (!res.ok) {
-    const e = await res.json().catch(() => ({}));
-    throw new Error(e.error || 'Upload failed');
-  }
-  return res.json();
-}
-
-export async function deleteSection(section: string) {
-  await ensureCsrf();
-  const res = await fetch(`${API_BASE}/content/${encodeURIComponent(section)}`, {
-    method: 'DELETE',
-    credentials: 'include',
-    headers: withCsrf(),
-  });
-  if (!res.ok) {
-    const e = await res.json().catch(() => ({}));
-    throw new Error(e.error || 'Delete failed');
-  }
 }
 
 
