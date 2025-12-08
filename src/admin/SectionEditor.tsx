@@ -7,6 +7,7 @@ import { ErrorPageEditor } from './editors/ErrorPageEditor';
 import { InvestmentIntroEditor } from './editors/InvestmentIntroEditor';
 import { InvestmentEditor } from './editors/InvestmentEditor';
 import { SharesEditor } from './editors/SharesEditor';
+import { TickerEditor } from './editors/TickerEditor';
 import styles from './SectionEditor.module.css';
 
 export default function SectionEditor({ section }: { section: string }) {
@@ -216,40 +217,11 @@ export default function SectionEditor({ section }: { section: string }) {
         />
       )}
       {!jsonMode && section === 'ticker' && (
-        <>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Background Color</label>
-            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-              <input 
-                type="color" 
-                value={data.backgroundColor || '#bbdbfa'} 
-                onChange={e => setData({ ...data, backgroundColor: e.target.value })} 
-                style={{ width: 60, height: 40, padding: 0, border: '1px solid #ccc' }}
-              />
-              <input 
-                type="text" 
-                value={data.backgroundColor || '#bbdbfa'} 
-                onChange={e => setData({ ...data, backgroundColor: e.target.value })} 
-                style={{ flex: 1, padding: 8 }} 
-                placeholder="#bbdbfa"
-              />
-            </div>
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Ticker Words (comma-separated)</label>
-            <input 
-              type="text" 
-              value={(data.tickerWords || []).join(', ')} 
-              onChange={e => {
-                const words = e.target.value.split(',').map(w => w.trim()).filter(w => w);
-                setData({ ...data, tickerWords: words });
-              }} 
-              style={{ width: '100%', padding: 8 }} 
-              placeholder="Music, Shows, Merch, More"
-            />
-            <span style={{ fontSize: 12, color: '#666', marginLeft: 8 }}>Separate words with commas</span>
-          </div>
-        </>
+        <TickerEditor
+          data={data}
+          setData={setData}
+          setErr={setErr}
+        />
       )}
       {!jsonMode && section === 'nftDisclaimer' && (
         <>
