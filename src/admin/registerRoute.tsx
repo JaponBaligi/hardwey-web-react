@@ -6,6 +6,6 @@ export const AdminApp = lazy(() => import('./AdminApp'));
 // In your router configuration, add something like:
 // <Route path="/dfaqs" element={<AdminApp />} />
 
-export default null as any;
+export default null;
 
 

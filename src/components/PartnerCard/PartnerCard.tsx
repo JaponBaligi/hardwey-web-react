@@ -199,15 +199,22 @@ export const PartnerCard: React.FC<PartnerCardProps> = ({
     const handleClick = () => {
       if (!enableMobileTilt || location.protocol !== 'https:') return;
 
-      if (typeof (window.DeviceMotionEvent as any).requestPermission === 'function') {
-        (window.DeviceMotionEvent as any)
-          .requestPermission()
+      interface DeviceMotionEventWithPermission extends DeviceMotionEvent {
+        requestPermission?: () => Promise<string>;
+      }
+      const DeviceMotionEventWithPermission = window.DeviceMotionEvent as unknown as {
+        requestPermission?: () => Promise<string>;
+      };
+      if (typeof DeviceMotionEventWithPermission.requestPermission === 'function') {
+        DeviceMotionEventWithPermission.requestPermission()
           .then((state: string) => {
             if (state === 'granted') {
               window.addEventListener('deviceorientation', deviceOrientationHandler);
             }
           })
-          .catch((err: any) => console.error(err));
+          .catch((err: unknown) => {
+            console.error(err);
+          });
       } else {
         window.addEventListener('deviceorientation', deviceOrientationHandler);
       }

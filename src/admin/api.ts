@@ -56,7 +56,7 @@ export async function fetchAllContent(): Promise<{ content: Record<string, unkno
   return res.json();
 }
 
-export async function fetchSection(section: string): Promise<{ section: string; data: any }> {
+export async function fetchSection(section: string): Promise<{ section: string; data: unknown }> {
   const res = await fetch(`${API_BASE}/content/${encodeURIComponent(section)}`, { credentials: 'include' });
   if (!res.ok) {
     if (res.status === 401) {
@@ -69,7 +69,7 @@ export async function fetchSection(section: string): Promise<{ section: string; 
   return res.json();
 }
 
-export async function updateSection(section: string, data: any) {
+export async function updateSection(section: string, data: unknown) {
   await ensureCsrf();
   const res = await fetch(`${API_BASE}/content/${encodeURIComponent(section)}`, {
     method: 'PUT',
