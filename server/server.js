@@ -126,8 +126,8 @@ const isPassenger = typeof process.env.PASSENGER_APP_ENV !== 'undefined' ||
 
 // Always export for Passenger compatibility
 // Only try to listen if we're definitely NOT in Passenger mode
-if (!isPassenger && process.env.RUN_STANDALONE === 'true') {
-  // Standalone mode (for testing only)
+if (!isPassenger) {
+  // Development/testing mode - listen on a port
   const PORT = process.env.PORT || 3001;
   app.listen(PORT, () => {
     console.log(`API server running on port ${PORT}`);
