@@ -1,6 +1,8 @@
 import Preview from './Preview';
 import { useSectionEditor } from './hooks/useSectionEditor';
 import { uploadImage } from './api';
+import { FredAgainEditor } from './editors/FredAgainEditor';
+import { HeroEditor } from './editors/HeroEditor';
 import styles from './SectionEditor.module.css';
 
 export default function SectionEditor({ section }: { section: string }) {
@@ -32,13 +34,6 @@ export default function SectionEditor({ section }: { section: string }) {
     starFileRef,
   } = useSectionEditor(section);
 
-  function addMotif() {
-    setData((prev: any) => ({ ...prev, motifs: [...(prev.motifs||[]), ''] }));
-  }
-
-  function removeMotif(i: number) {
-    setData((prev: any) => ({ ...prev, motifs: prev.motifs.filter((_: any, idx: number) => idx !== i) }));
-  }
 
   if (loading) return <div>Loading...</div>;
   return (
@@ -49,220 +44,30 @@ export default function SectionEditor({ section }: { section: string }) {
         <label><input type="checkbox" checked={jsonMode} onChange={e => setJsonMode(e.target.checked)} /> Advanced JSON</label>
       </div>
       {!jsonMode && section === 'fredAgain' && (
-        <>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Heading</label>
-            <input 
-              type="text" 
-              value={data.heading || ''} 
-              onChange={e => setData({ ...data, heading: e.target.value })} 
-              style={{ width: '100%', padding: 8 }} 
-              placeholder="Imagine you invested in Fred Again.. in 2020"
-            />
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Subheading</label>
-            <input 
-              type="text" 
-              value={data.subheading || ''} 
-              onChange={e => setData({ ...data, subheading: e.target.value })} 
-              style={{ width: '100%', padding: 8 }} 
-              placeholder="Braggin' rights now come with returns"
-            />
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Background Image URL</label>
-            <input 
-              type="text" 
-              value={data.backgroundImage || ''} 
-              onChange={e => setData({ ...data, backgroundImage: e.target.value })} 
-              style={{ width: '100%', padding: 8 }} 
-              placeholder="https://..."
-            />
-            <div style={{ marginTop: 4 }}>
-              <input 
-                type="file" 
-                accept="image/*" 
-                onChange={onUploadBackground} 
-                ref={backgroundFileRef}
-              />
-              <span style={{ marginLeft: 8, fontSize: 12, color: '#666' }}>Or upload an image</span>
-            </div>
-            {data.backgroundImage && (
-              <div style={{ marginTop: 8 }}>
-                <img src={data.backgroundImage} alt="Preview" style={{ maxWidth: '100%', maxHeight: 200, border: '1px solid #ccc' }} />
-              </div>
-            )}
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Background Image SrcSet (optional)</label>
-            <textarea 
-              value={data.backgroundImageSrcSet || ''} 
-              onChange={e => setData({ ...data, backgroundImageSrcSet: e.target.value })} 
-              rows={3} 
-              style={{ width: '100%', padding: 8, fontFamily: 'monospace', fontSize: 12 }} 
-              placeholder="image-500.jpg 500w, image-800.jpg 800w, ..."
-            />
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Logo URLs</label>
-            <div style={{ margin: '8px 0' }}>
-              <input type="file" accept="image/*" onChange={onUpload} ref={fileRef} />
-              <span style={{ marginLeft: 8, fontSize: 12, color: '#666' }}>Upload logo image</span>
-            </div>
-            <ul style={{ listStyle: 'none', padding: 0, margin: '8px 0' }}>
-              {(data.logoUrls || []).map((logoUrl: string, idx: number) => (
-                <li key={idx} style={{ marginBottom: 8, padding: 8, border: '1px solid #ddd', borderRadius: 4 }}>
-                  <img src={logoUrl} alt={`Logo ${idx + 1}`} style={{ maxHeight: 60, maxWidth: 150, verticalAlign: 'middle', marginRight: 8 }} />
-                  <input 
-                    type="text" 
-                    value={logoUrl} 
-                    onChange={e => {
-                      const next = [...(data.logoUrls || [])];
-                      next[idx] = e.target.value;
-                      setData({ ...data, logoUrls: next });
-                    }} 
-                    style={{ width: 'calc(100% - 200px)', padding: 4, marginRight: 8 }}
-                  />
-                  <button onClick={() => {
-                    const next = (data.logoUrls || []).filter((_: any, i: number) => i !== idx);
-                    setData({ ...data, logoUrls: next });
-                  }}>Remove</button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </>
+        <FredAgainEditor
+          data={data}
+          setData={setData}
+          setErr={setErr}
+          onUpload={onUpload}
+          onUploadBackground={onUploadBackground}
+          fileRef={fileRef}
+          backgroundFileRef={backgroundFileRef}
+          uploadImage={uploadImage}
+        />
       )}
       {!jsonMode && section === 'hero' && (
-        <>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Logo URL</label>
-            <input 
-              type="text" 
-              value={data.logoUrl || ''} 
-              onChange={e => setData({ ...data, logoUrl: e.target.value })} 
-              style={{ width: '100%', padding: 8 }} 
-              placeholder="/assets/img/hardweybannertext.png"
-            />
-            <div style={{ marginTop: 4 }}>
-              <input 
-                type="file" 
-                accept="image/*" 
-                onChange={onUploadLogo} 
-                ref={logoFileRef}
-              />
-              <span style={{ marginLeft: 8, fontSize: 12, color: '#666' }}>Or upload an image</span>
-            </div>
-            {data.logoUrl && (
-              <div style={{ marginTop: 8 }}>
-                <img src={data.logoUrl} alt="Logo Preview" style={{ maxWidth: '100%', maxHeight: 150, border: '1px solid #ccc' }} />
-              </div>
-            )}
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>MITA Text</label>
-            <input 
-              type="text" 
-              value={data.mitaText || ''} 
-              onChange={e => setData({ ...data, mitaText: e.target.value })} 
-              style={{ width: '100%', padding: 8 }} 
-              placeholder="Music is the answer™"
-            />
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Subtitle</label>
-            <input 
-              type="text" 
-              value={data.subtitle || ''} 
-              onChange={e => setData({ ...data, subtitle: e.target.value })} 
-              style={{ width: '100%', padding: 8 }} 
-              placeholder="A movement in music. Redefining the rules."
-            />
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Background Image URL</label>
-            <input 
-              type="text" 
-              value={data.backgroundImage || ''} 
-              onChange={e => setData({ ...data, backgroundImage: e.target.value })} 
-              style={{ width: '100%', padding: 8 }} 
-              placeholder="/assets/banner/artistlarge1.jpg"
-            />
-            <div style={{ marginTop: 4 }}>
-              <input 
-                type="file" 
-                accept="image/*" 
-                onChange={onUploadBackground} 
-                ref={backgroundFileRef}
-              />
-              <span style={{ marginLeft: 8, fontSize: 12, color: '#666' }}>Or upload an image</span>
-            </div>
-            {data.backgroundImage && (
-              <div style={{ marginTop: 8 }}>
-                <img src={data.backgroundImage} alt="Background Preview" style={{ maxWidth: '100%', maxHeight: 200, border: '1px solid #ccc' }} />
-              </div>
-            )}
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Background Image SrcSet (optional)</label>
-            <textarea 
-              value={data.backgroundImageSrcSet || ''} 
-              onChange={e => setData({ ...data, backgroundImageSrcSet: e.target.value })} 
-              rows={3} 
-              style={{ width: '100%', padding: 8, fontFamily: 'monospace', fontSize: 12 }} 
-              placeholder="/assets/banner/artistlarge1-p-500.jpg 500w, ..."
-            />
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Left Identifier (SVG URL)</label>
-            <input 
-              type="text" 
-              value={data.leftIdentifier || ''} 
-              onChange={e => setData({ ...data, leftIdentifier: e.target.value })} 
-              style={{ width: '100%', padding: 8 }} 
-              placeholder="/assets/svg/investident-hero.svg"
-            />
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Right Identifier (SVG URL)</label>
-            <input 
-              type="text" 
-              value={data.rightIdentifier || ''} 
-              onChange={e => setData({ ...data, rightIdentifier: e.target.value })} 
-              style={{ width: '100%', padding: 8 }} 
-              placeholder="/assets/svg/barcode-ident.svg"
-            />
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Motifs (SVG URLs)</label>
-            <button onClick={addMotif} style={{ marginBottom: 8 }}>Add Motif</button>
-            <ul style={{ listStyle: 'none', padding: 0, margin: '8px 0' }}>
-              {(data.motifs || []).map((motif: string, idx: number) => (
-                <li key={idx} style={{ marginBottom: 8, padding: 8, border: '1px solid #ddd', borderRadius: 4 }}>
-                  <span style={{ marginRight: 8, fontSize: 12, color: '#666' }}>Motif {idx + 1}:</span>
-                  <input 
-                    type="text" 
-                    value={motif} 
-                    onChange={e => {
-                      const next = [...(data.motifs || [])];
-                      next[idx] = e.target.value;
-                      setData({ ...data, motifs: next });
-                    }} 
-                    style={{ width: 'calc(100% - 100px)', padding: 4, marginRight: 8 }}
-                    placeholder="/assets/svg/motif.svg"
-                  />
-                  <button onClick={() => removeMotif(idx)}>Remove</button>
-                  {motif && (
-                    <div style={{ marginTop: 4 }}>
-                      <img src={motif} alt={`Motif ${idx + 1}`} style={{ maxHeight: 40, maxWidth: 100, border: '1px solid #eee' }} />
-                    </div>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </>
+        <HeroEditor
+          data={data}
+          setData={setData}
+          setErr={setErr}
+          onUpload={onUpload}
+          onUploadBackground={onUploadBackground}
+          onUploadLogo={onUploadLogo}
+          fileRef={fileRef}
+          backgroundFileRef={backgroundFileRef}
+          logoFileRef={logoFileRef}
+          uploadImage={uploadImage}
+        />
       )}
       {!jsonMode && section === 'errorPage' && (
         <>
