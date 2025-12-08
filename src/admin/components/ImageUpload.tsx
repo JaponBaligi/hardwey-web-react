@@ -1,9 +1,8 @@
-import { useRef } from 'react';
 import styles from './ImageUpload.module.css';
 
 interface ImageUploadProps {
   onUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  fileRef: React.RefObject<HTMLInputElement>;
+  fileRef?: React.RefObject<HTMLInputElement | null>;
   label?: string;
   hint?: string;
   previewUrl?: string;
