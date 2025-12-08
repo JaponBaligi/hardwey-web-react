@@ -8,6 +8,7 @@ import { InvestmentIntroEditor } from './editors/InvestmentIntroEditor';
 import { InvestmentEditor } from './editors/InvestmentEditor';
 import { SharesEditor } from './editors/SharesEditor';
 import { TickerEditor } from './editors/TickerEditor';
+import { NftDisclaimerEditor } from './editors/NftDisclaimerEditor';
 import styles from './SectionEditor.module.css';
 
 export default function SectionEditor({ section }: { section: string }) {
@@ -224,183 +225,17 @@ export default function SectionEditor({ section }: { section: string }) {
         />
       )}
       {!jsonMode && section === 'nftDisclaimer' && (
-        <>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Nope Text</label>
-            <input 
-              type="text" 
-              value={data.nopeText || ''} 
-              onChange={e => setData({ ...data, nopeText: e.target.value })} 
-              style={{ width: '100%', padding: 8 }} 
-              placeholder="Nope"
-            />
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>We're Text</label>
-            <input 
-              type="text" 
-              value={data.wereText || ''} 
-              onChange={e => setData({ ...data, wereText: e.target.value })} 
-              style={{ width: '100%', padding: 8 }} 
-              placeholder="We're"
-            />
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>NFTs Text</label>
-            <input 
-              type="text" 
-              value={data.nftsText || ''} 
-              onChange={e => setData({ ...data, nftsText: e.target.value })} 
-              style={{ width: '100%', padding: 8 }} 
-              placeholder="NFTs"
-            />
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Value Music Text</label>
-            <input 
-              type="text" 
-              value={data.valueMusicText || ''} 
-              onChange={e => setData({ ...data, valueMusicText: e.target.value })} 
-              style={{ width: '100%', padding: 8 }} 
-              placeholder="We value mu$ic more than pixels"
-            />
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Resonate Text (Desktop)</label>
-            <textarea 
-              value={data.resonateText || ''} 
-              onChange={e => setData({ ...data, resonateText: e.target.value })} 
-              rows={3} 
-              style={{ width: '100%', padding: 8 }} 
-              placeholder="We're building something that resonates with everyone. Not just &quot;PR&quot;."
-            />
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Resonate Text (Mobile)</label>
-            <textarea 
-              value={data.resonateTextMobile || ''} 
-              onChange={e => setData({ ...data, resonateTextMobile: e.target.value })} 
-              rows={3} 
-              style={{ width: '100%', padding: 8 }} 
-              placeholder="we're building something that resonates with everyone. Not just crypto bros."
-            />
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Mona Lisa Image URL</label>
-            <input 
-              type="text" 
-              value={data.monaImageUrl || ''} 
-              onChange={e => setData({ ...data, monaImageUrl: e.target.value })} 
-              style={{ width: '100%', padding: 8 }} 
-              placeholder="/assets/img/mona-image2.jpg"
-            />
-            <div style={{ marginTop: 4 }}>
-              <input 
-                type="file" 
-                accept="image/*" 
-                onChange={onUploadBackground} 
-                ref={backgroundFileRef}
-              />
-              <span style={{ marginLeft: 8, fontSize: 12, color: '#666' }}>Or upload an image</span>
-            </div>
-            {data.monaImageUrl && (
-              <div style={{ marginTop: 8 }}>
-                <img src={data.monaImageUrl} alt="Mona Lisa Preview" style={{ maxWidth: '100%', maxHeight: 200, border: '1px solid #ccc' }} />
-              </div>
-            )}
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Mona Image SrcSet (optional)</label>
-            <textarea 
-              value={data.monaImageSrcSet || ''} 
-              onChange={e => setData({ ...data, monaImageSrcSet: e.target.value })} 
-              rows={2} 
-              style={{ width: '100%', padding: 8, fontFamily: 'monospace', fontSize: 12 }} 
-              placeholder="/assets/img/mona-image2-p-500.jpg 500w, /assets/img/mona-image2-p-800.jpg 800w, ..."
-            />
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>GIF Image URL</label>
-            <input 
-              type="text" 
-              value={data.gifImageUrl || ''} 
-              onChange={e => setData({ ...data, gifImageUrl: e.target.value })} 
-              style={{ width: '100%', padding: 8 }} 
-              placeholder="/assets/img/fav.gif"
-            />
-            <div style={{ marginTop: 4 }}>
-              <input 
-                type="file" 
-                accept="image/*" 
-                onChange={onUploadGif} 
-                ref={gifFileRef}
-              />
-              <span style={{ marginLeft: 8, fontSize: 12, color: '#666' }}>Or upload an image</span>
-            </div>
-            {data.gifImageUrl && (
-              <div style={{ marginTop: 8 }}>
-                <img src={data.gifImageUrl} alt="GIF Preview" style={{ maxWidth: '100%', maxHeight: 200, border: '1px solid #ccc' }} />
-              </div>
-            )}
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Star Icon URL</label>
-            <input 
-              type="text" 
-              value={data.starIconUrl || ''} 
-              onChange={e => setData({ ...data, starIconUrl: e.target.value })} 
-              style={{ width: '100%', padding: 8 }} 
-              placeholder="/assets/svg/hardwey-star.svg"
-            />
-            <div style={{ marginTop: 4 }}>
-              <input 
-                type="file" 
-                accept="image/*" 
-                onChange={onUploadLogo} 
-                ref={starFileRef}
-              />
-              <span style={{ marginLeft: 8, fontSize: 12, color: '#666' }}>Or upload an image</span>
-            </div>
-            {data.starIconUrl && (
-              <div style={{ marginTop: 8 }}>
-                <img src={data.starIconUrl} alt="Star Icon Preview" style={{ maxWidth: '100%', maxHeight: 100, border: '1px solid #ccc' }} />
-              </div>
-            )}
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>NOT Graphic URL</label>
-            <input 
-              type="text" 
-              value={data.notGraphicUrl || ''} 
-              onChange={e => setData({ ...data, notGraphicUrl: e.target.value })} 
-              style={{ width: '100%', padding: 8 }} 
-              placeholder="https://assets-global.website-files.com/..."
-            />
-            {data.notGraphicUrl && (
-              <div style={{ marginTop: 8 }}>
-                <img src={data.notGraphicUrl} alt="NOT Graphic Preview" style={{ maxWidth: '100%', maxHeight: 200, border: '1px solid #ccc' }} />
-              </div>
-            )}
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Background Color</label>
-            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-              <input 
-                type="color" 
-                value={data.backgroundColor || '#d12d37'} 
-                onChange={e => setData({ ...data, backgroundColor: e.target.value })} 
-                style={{ width: 60, height: 40, padding: 0, border: '1px solid #ccc' }}
-              />
-              <input 
-                type="text" 
-                value={data.backgroundColor || '#d12d37'} 
-                onChange={e => setData({ ...data, backgroundColor: e.target.value })} 
-                style={{ flex: 1, padding: 8 }} 
-                placeholder="#d12d37"
-              />
-            </div>
-          </div>
-        </>
+        <NftDisclaimerEditor
+          data={data}
+          setData={setData}
+          setErr={setErr}
+          onUploadBackground={onUploadBackground}
+          backgroundFileRef={backgroundFileRef}
+          onUploadGif={onUploadGif}
+          gifFileRef={gifFileRef}
+          onUploadLogo={onUploadLogo}
+          starFileRef={starFileRef}
+        />
       )}
       {!jsonMode && section === 'faq' && (
         <>
