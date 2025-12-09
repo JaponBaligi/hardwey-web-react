@@ -1,6 +1,8 @@
-import { SectionEditorProps } from './types';
+import type { SectionEditorProps } from './types';
 import { FormField, TextInput, TextAreaInput } from '../components/FormField';
 import { ImageUpload } from '../components/ImageUpload';
+import { getStringValue, getArrayValue } from '../utils/dataHelpers';
+import type { FaqItem } from '@/types/content';
 import styles from './MoreFaqEditor.module.css';
 
 export function MoreFaqEditor({ 
@@ -9,7 +11,7 @@ export function MoreFaqEditor({
   setErr,
   uploadImage
 }: SectionEditorProps) {
-  const faqItems = data.faqItems || [];
+  const faqItems = getArrayValue<FaqItem>(data, 'faqItems');
 
   const addFaqItem = () => {
     const newItem = {
@@ -23,11 +25,11 @@ export function MoreFaqEditor({
   };
 
   const removeFaqItem = (idx: number) => {
-    const next = faqItems.filter((_: any, i: number) => i !== idx);
+    const next = faqItems.filter((_: FaqItem, i: number) => i !== idx);
     setData({ ...data, faqItems: next });
   };
 
-  const updateFaqItem = (idx: number, field: string, value: any) => {
+  const updateFaqItem = (idx: number, field: string, value: string | string[]) => {
     const next = [...faqItems];
     next[idx] = { ...next[idx], [field]: value };
     setData({ ...data, faqItems: next });
@@ -47,8 +49,9 @@ export function MoreFaqEditor({
     try {
       const { url } = await uploadImage(file);
       setData({ ...data, imageUrl: url });
-    } catch (err: any) {
-      setErr(err.message || 'Failed to upload image');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to upload image';
+      setErr(message);
     }
   };
 
@@ -56,7 +59,7 @@ export function MoreFaqEditor({
     <>
       <FormField label="Page Title">
         <TextInput
-          value={data.pageTitle || ''}
+          value={getStringValue(data, 'pageTitle')}
           onChange={value => setData({ ...data, pageTitle: value })}
           placeholder="More FAQ It"
         />
@@ -64,7 +67,7 @@ export function MoreFaqEditor({
 
       <FormField label="Page Subtitle">
         <TextAreaInput
-          value={data.pageSubtitle || ''}
+          value={getStringValue(data, 'pageSubtitle')}
           onChange={value => setData({ ...data, pageSubtitle: value })}
           rows={2}
           placeholder="Everything you need to know about investing in artists"
@@ -85,7 +88,7 @@ export function MoreFaqEditor({
             No FAQ items found. Click "Add FAQ Item" to create one, or click "Reload current" if you expect items to exist.
           </div>
         )}
-        {Array.isArray(faqItems) && faqItems.map((faq: any, idx: number) => (
+        {Array.isArray(faqItems) && faqItems.map((faq: FaqItem, idx: number) => (
           <div key={faq.id || `faq-${idx}`} className={styles.faqItem}>
             <div className={styles.faqItemHeader}>
               <h4 className={styles.faqItemTitle}>FAQ Item {idx + 1}</h4>
@@ -143,20 +146,20 @@ export function MoreFaqEditor({
 
       <FormField label="Image URL">
         <TextInput
-          value={data.imageUrl || ''}
+          value={getStringValue(data, 'imageUrl')}
           onChange={value => setData({ ...data, imageUrl: value })}
           placeholder="https://..."
         />
         <ImageUpload
           onUpload={handleImageUpload}
           hint="Or upload an image"
-          previewUrl={data.imageUrl}
+          previewUrl={getStringValue(data, 'imageUrl') || undefined}
         />
       </FormField>
 
       <FormField label="Contact Heading">
         <TextInput
-          value={data.contactHeading || ''}
+          value={getStringValue(data, 'contactHeading')}
           onChange={value => setData({ ...data, contactHeading: value })}
           placeholder="More questions? We've got more answers"
         />
@@ -164,7 +167,7 @@ export function MoreFaqEditor({
 
       <FormField label="Contact Button Text">
         <TextInput
-          value={data.contactButtonText || ''}
+          value={getStringValue(data, 'contactButtonText')}
           onChange={value => setData({ ...data, contactButtonText: value })}
           placeholder="don't be shy, it's okay to send mail"
         />
@@ -173,7 +176,7 @@ export function MoreFaqEditor({
       <FormField label="Contact Email">
         <TextInput
           type="email"
-          value={data.contactEmail || ''}
+          value={getStringValue(data, 'contactEmail')}
           onChange={value => setData({ ...data, contactEmail: value })}
           placeholder="hello@hardweyllc.com"
         />

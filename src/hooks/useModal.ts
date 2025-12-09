@@ -97,13 +97,11 @@ export function useModal(options: UseModalOptions = {}): UseModalReturn {
  * @returns Click handler for overlay
  */
 export function useOverlayClick(onClose: () => void) {
-  const handleOverlayClick = useCallback((event: React.MouseEvent) => {
+  return useCallback((event: React.MouseEvent) => {
     if (event.target === event.currentTarget) {
       onClose();
     }
   }, [onClose]);
-
-  return handleOverlayClick;
 }
 
 /**

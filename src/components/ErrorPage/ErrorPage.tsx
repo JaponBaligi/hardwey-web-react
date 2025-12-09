@@ -19,6 +19,145 @@ interface ErrorPageProps {
   showBackgroundPattern?: boolean;
 }
 
+interface DefaultContent {
+  title: string;
+  description: string;
+}
+
+// Helper function to get default content based on error code
+function getDefaultContentForError(errorCode: number): DefaultContent {
+  switch (errorCode) {
+    case 404:
+      return {
+        title: '404 NOT FOUND',
+        description: 'You dive too deep so you discovered an unexplored place, congrats! Let me assist you the explored places granny you forgot your pills again...',
+      };
+    case 500:
+      return {
+        title: '500 SERVER ERROR',
+        description: 'Oops! Something went wrong on our end. Our team has been notified and is working to fix this issue.',
+      };
+    case 403:
+      return {
+        title: '403 FORBIDDEN',
+        description: 'Access denied. You don\'t have permission to view this page.',
+      };
+    default:
+      return {
+        title: `${errorCode} ERROR`,
+        description: 'An unexpected error occurred. Please try again later.',
+      };
+  }
+}
+
+// Helper function to get error content from section data
+function getErrorContentFromSection(
+  content: ErrorPageSection | null | undefined,
+  errorCode: number
+): DefaultContent {
+  const defaultContent = getDefaultContentForError(errorCode);
+  
+  if (!content) {
+    return defaultContent;
+  }
+
+  switch (errorCode) {
+    case 404: {
+      const error404 = content.error404;
+      if (error404 && typeof error404.title === 'string' && error404.title) {
+        return { title: error404.title, description: error404.description || defaultContent.description };
+      }
+      return defaultContent;
+    }
+    case 500: {
+      const error500 = content.error500;
+      if (error500 && typeof error500.title === 'string' && error500.title) {
+        return { title: error500.title, description: error500.description || defaultContent.description };
+      }
+      return defaultContent;
+    }
+    case 403: {
+      const error403 = content.error403;
+      if (error403 && typeof error403.title === 'string' && error403.title) {
+        return { title: error403.title, description: error403.description || defaultContent.description };
+      }
+      return defaultContent;
+    }
+    default: {
+      const defaultError = content.defaultError;
+      if (defaultError && typeof defaultError.title === 'string' && defaultError.title) {
+        return { title: defaultError.title, description: defaultError.description || defaultContent.description };
+      }
+      return defaultContent;
+    }
+  }
+}
+
+// Helper function to resolve final content values
+function resolveContentValues(
+  propsTitle: string | undefined,
+  propsDescription: string | undefined,
+  propsBackButtonText: string | undefined,
+  content: ErrorPageSection | null | undefined,
+  errorCode: number
+) {
+  const errorContent = getErrorContentFromSection(content, errorCode);
+  const defaultContent = getDefaultContentForError(errorCode);
+
+  return {
+    title: propsTitle || errorContent.title || defaultContent.title,
+    description: propsDescription || errorContent.description || defaultContent.description,
+    backButtonText: propsBackButtonText || content?.backButtonText || 'Back to Home',
+    backgroundPatternImage: content?.backgroundPatternImage || '/assets/img/Green eye.gif',
+    arrowIcon: content?.arrowIcon || '/assets/svg/arrow-red.svg',
+  };
+}
+
+// Back button component to reduce complexity
+interface BackButtonProps {
+  text: string;
+  arrowIcon: string;
+  onNavigate: () => void;
+}
+
+const BackButton: React.FC<BackButtonProps> = ({ text, arrowIcon, onNavigate }) => {
+  const [buttonHovered, setButtonHovered] = useState(false);
+
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      onNavigate();
+    }
+  };
+
+  return (
+    <button
+      className={styles.backButton}
+      onClick={onNavigate}
+      onKeyDown={handleKeyDown}
+      onMouseEnter={() => setButtonHovered(true)}
+      onMouseLeave={() => setButtonHovered(false)}
+      aria-label={`${text} - Navigate to homepage`}
+      type="button"
+    >
+      <span className={styles.backButtonText}>
+        {text}
+      </span>
+      <div className={`${styles.backButtonHover} ${buttonHovered ? styles.backButtonHoverActive : ''}`} />
+      
+      {/* Arrow Icon */}
+      <div className={styles.arrowDivWrapper}>
+        <img
+          src={arrowIcon}
+          alt=""
+          className={`${styles.arrowDiv} ${buttonHovered ? styles.arrowDivInvert : ''}`}
+          loading="lazy"
+        />
+      </div>
+    </button>
+  );
+};
+
 /**
  * Error page component with animated background and interactive elements
  * @param errorCode - HTTP error code (defaults to 404)
@@ -40,33 +179,6 @@ export const ErrorPage: React.FC<ErrorPageProps> = ({
 }) => {
   const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(false);
-  const [buttonHovered, setButtonHovered] = useState(false);
-
-  // Default content based on error code
-  const getDefaultContent = () => {
-    switch (errorCode) {
-      case 404:
-        return {
-          title: '404 NOT FOUND',
-          description: 'You dive too deep so you discovered an unexplored place, congrats! Let me assist you the explored places granny you forgot your pills again...',
-        };
-      case 500:
-        return {
-          title: '500 SERVER ERROR',
-          description: 'Oops! Something went wrong on our end. Our team has been notified and is working to fix this issue.',
-        };
-      case 403:
-        return {
-          title: '403 FORBIDDEN',
-          description: 'Access denied. You don\'t have permission to view this page.',
-        };
-      default:
-        return {
-          title: `${errorCode} ERROR`,
-          description: 'An unexpected error occurred. Please try again later.',
-        };
-    }
-  };
 
   const { data: content } = useContent<ErrorPageSection>('errorPage', {
     error404: {
@@ -90,26 +202,13 @@ export const ErrorPage: React.FC<ErrorPageProps> = ({
     arrowIcon: '/assets/svg/arrow-red.svg',
   });
 
-  // Get content for specific error code
-  const getErrorContent = () => {
-    switch (errorCode) {
-      case 404:
-        return content?.error404 || getDefaultContent();
-      case 500:
-        return content?.error500 || getDefaultContent();
-      case 403:
-        return content?.error403 || getDefaultContent();
-      default:
-        return content?.defaultError || getDefaultContent();
-    }
-  };
-
-  const errorContent = getErrorContent();
-  const finalTitle = title || errorContent.title || getDefaultContent().title;
-  const finalDescription = description || errorContent.description || getDefaultContent().description;
-  const finalBackButtonText = backButtonText || content?.backButtonText || 'Back to Home';
-  const backgroundPatternImage = content?.backgroundPatternImage || '/assets/img/Green eye.gif';
-  const arrowIcon = content?.arrowIcon || '/assets/svg/arrow-red.svg';
+  const resolvedContent = resolveContentValues(
+    title,
+    description,
+    backButtonText,
+    content,
+    errorCode
+  );
 
   useEffect(() => {
     // Trigger entrance animation
@@ -124,18 +223,11 @@ export const ErrorPage: React.FC<ErrorPageProps> = ({
     navigate('/', { replace: true });
   };
 
-  const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      handleBackToHome();
-    }
-  };
-
   return (
     <div className={`${styles.errorPageContainer} ${className}`}>
       {/* Animated Background Pattern */}
       {showBackgroundPattern && (
-        <div className={styles.backgroundPattern} style={{ backgroundImage: `url(${backgroundPatternImage})` }}>
+        <div className={styles.backgroundPattern} style={{ backgroundImage: `url(${resolvedContent.backgroundPatternImage})` }}>
           <div className={styles.patternOverlay} />
         </div>
       )}
@@ -144,40 +236,21 @@ export const ErrorPage: React.FC<ErrorPageProps> = ({
       <div className={`${styles.errorContent} ${isVisible ? styles.errorContentVisible : ''}`}>
         {/* Error Title */}
         <h1 className={styles.errorTitle}>
-          {finalTitle}
+          {resolvedContent.title}
         </h1>
 
         {/* Error Description */}
         <p className={styles.errorDescription}>
-          {finalDescription}
+          {resolvedContent.description}
         </p>
 
         {/* Back Button */}
         {showBackButton && (
-          <button
-            className={styles.backButton}
-            onClick={handleBackToHome}
-            onKeyDown={handleKeyDown}
-            onMouseEnter={() => setButtonHovered(true)}
-            onMouseLeave={() => setButtonHovered(false)}
-            aria-label={`${finalBackButtonText} - Navigate to homepage`}
-            type="button"
-          >
-            <span className={styles.backButtonText}>
-              {finalBackButtonText}
-            </span>
-            <div className={`${styles.backButtonHover} ${buttonHovered ? styles.backButtonHoverActive : ''}`} />
-            
-            {/* Arrow Icon */}
-            <div className={styles.arrowDivWrapper}>
-              <img
-                src={arrowIcon}
-                alt=""
-                className={`${styles.arrowDiv} ${buttonHovered ? styles.arrowDivInvert : ''}`}
-                loading="lazy"
-              />
-            </div>
-          </button>
+          <BackButton
+            text={resolvedContent.backButtonText}
+            arrowIcon={resolvedContent.arrowIcon}
+            onNavigate={handleBackToHome}
+          />
         )}
 
       </div>

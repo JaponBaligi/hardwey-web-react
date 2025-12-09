@@ -16,10 +16,293 @@ import { MoreFaqEditor } from './editors/MoreFaqEditor';
 import { PartnersEditor } from './editors/PartnersEditor';
 import { CollaborativesEditor } from './editors/CollaborativesEditor';
 import { PrivacyPolicyTermsEditor } from './editors/PrivacyPolicyTermsEditor';
+import type { LinkItem } from '@/types/content';
 import styles from './SectionEditor.module.css';
 
-export default function SectionEditor({ section }: { section: string }) {
+interface SectionEditorProps {
+  section: string;
+}
 
+interface SectionEditorRenderProps {
+  section: string;
+  data: Record<string, unknown>;
+  setData: React.Dispatch<React.SetStateAction<Record<string, unknown>>>;
+  setErr: (err: string) => void;
+  onUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onUploadBackground: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onUploadLogo: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onUploadGif: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  fileRef: React.RefObject<HTMLInputElement | null>;
+  backgroundFileRef: React.RefObject<HTMLInputElement | null>;
+  logoFileRef: React.RefObject<HTMLInputElement | null>;
+  gifFileRef: React.RefObject<HTMLInputElement | null>;
+  starFileRef: React.RefObject<HTMLInputElement | null>;
+}
+
+// Helper function for editors with upload functionality
+function renderEditorWithUpload(
+  Editor: React.ComponentType<{ data: Record<string, unknown>; setData: React.Dispatch<React.SetStateAction<Record<string, unknown>>>; setErr: (err: string) => void; uploadImage: (file: File) => Promise<{ url: string }> }>,
+  commonProps: { data: Record<string, unknown>; setData: React.Dispatch<React.SetStateAction<Record<string, unknown>>>; setErr: (err: string) => void },
+  uploadImageFn: (file: File) => Promise<{ url: string }>
+) {
+  return <Editor {...commonProps} uploadImage={uploadImageFn} />;
+}
+
+// Helper function for editors with background upload
+function renderEditorWithBackground(
+  Editor: React.ComponentType<{ data: Record<string, unknown>; setData: React.Dispatch<React.SetStateAction<Record<string, unknown>>>; setErr: (err: string) => void; onUploadBackground: (e: React.ChangeEvent<HTMLInputElement>) => void; backgroundFileRef: React.RefObject<HTMLInputElement | null> }>,
+  commonProps: { data: Record<string, unknown>; setData: React.Dispatch<React.SetStateAction<Record<string, unknown>>>; setErr: (err: string) => void },
+  onUploadBackground: (e: React.ChangeEvent<HTMLInputElement>) => void,
+  backgroundFileRef: React.RefObject<HTMLInputElement | null>
+) {
+  return (
+    <Editor
+      {...commonProps}
+      onUploadBackground={onUploadBackground}
+      backgroundFileRef={backgroundFileRef}
+    />
+  );
+}
+
+function renderSectionEditor({
+  section,
+  data,
+  setData,
+  setErr,
+  onUpload,
+  onUploadBackground,
+  onUploadLogo,
+  onUploadGif,
+  fileRef,
+  backgroundFileRef,
+  logoFileRef,
+  gifFileRef,
+  starFileRef,
+}: SectionEditorRenderProps) {
+  const commonProps = { data, setData, setErr };
+
+  // Simple editors (no special props)
+  if (section === 'errorPage') {
+    return <ErrorPageEditor {...commonProps} />;
+  }
+  if (section === 'investmentIntro') {
+    return <InvestmentIntroEditor {...commonProps} />;
+  }
+  if (section === 'ticker') {
+    return <TickerEditor {...commonProps} />;
+  }
+  if (section === 'faq') {
+    return <FaqEditor {...commonProps} />;
+  }
+
+  // Editors with uploadImage
+  if (section === 'faqIntro') {
+    return renderEditorWithUpload(FaqIntroEditor, commonProps, uploadImage as (file: File) => Promise<{ url: string }>);
+  }
+  if (section === 'founders') {
+    return renderEditorWithUpload(FoundersEditor, commonProps, uploadImage);
+  }
+  if (section === 'moreFaq') {
+    return renderEditorWithUpload(MoreFaqEditor, commonProps, uploadImage);
+  }
+  if (section === 'partners') {
+    return renderEditorWithUpload(PartnersEditor, commonProps, uploadImage);
+  }
+  if (section === 'collaboratives') {
+    return renderEditorWithUpload(CollaborativesEditor, commonProps, uploadImage);
+  }
+
+  // Editors with background upload
+  if (section === 'shares') {
+    return renderEditorWithBackground(SharesEditor, commonProps, onUploadBackground, backgroundFileRef);
+  }
+
+  // Special cases with multiple props
+  if (section === 'fredAgain') {
+    return (
+      <FredAgainEditor
+        {...commonProps}
+        onUpload={onUpload}
+        onUploadBackground={onUploadBackground}
+        fileRef={fileRef}
+        backgroundFileRef={backgroundFileRef}
+        uploadImage={uploadImage}
+      />
+    );
+  }
+  if (section === 'hero') {
+    return (
+      <HeroEditor
+        {...commonProps}
+        onUpload={onUpload}
+        onUploadBackground={onUploadBackground}
+        onUploadLogo={onUploadLogo}
+        fileRef={fileRef}
+        backgroundFileRef={backgroundFileRef}
+        logoFileRef={logoFileRef}
+        uploadImage={uploadImage}
+      />
+    );
+  }
+  if (section === 'investment') {
+    return (
+      <InvestmentEditor
+        {...commonProps}
+        onUploadBackground={onUploadBackground}
+        backgroundFileRef={backgroundFileRef}
+        onUploadLogo={onUploadLogo}
+        logoFileRef={logoFileRef}
+      />
+    );
+  }
+  if (section === 'nftDisclaimer') {
+    return (
+      <NftDisclaimerEditor
+        {...commonProps}
+        onUploadBackground={onUploadBackground}
+        backgroundFileRef={backgroundFileRef}
+        onUploadGif={onUploadGif}
+        gifFileRef={gifFileRef}
+        onUploadLogo={onUploadLogo}
+        starFileRef={starFileRef}
+      />
+    );
+  }
+  if (section === 'privacyPolicy' || section === 'terms') {
+    return <PrivacyPolicyTermsEditor {...commonProps} section={section} />;
+  }
+
+  return null;
+}
+
+const SECTIONS_WITH_CUSTOM_EDITOR = new Set([
+  'fredAgain',
+  'hero',
+  'errorPage',
+  'faqIntro',
+  'shares',
+  'ticker',
+  'nftDisclaimer',
+  'faq',
+  'founders',
+  'investment',
+  'investmentIntro',
+  'moreFaq',
+  'privacyPolicy',
+  'terms',
+  'partners',
+  'collaboratives',
+]);
+
+// Helper component for text input field
+interface TextFieldProps {
+  data: Record<string, unknown>;
+  setData: React.Dispatch<React.SetStateAction<Record<string, unknown>>>;
+}
+
+function TextField({ data, setData }: TextFieldProps) {
+  return (
+    <div style={{ marginBottom: 12 }}>
+      <label>Text</label>
+      <textarea
+        value={(data as { text?: string })?.text || ''}
+        onChange={e => setData({ ...data, text: e.target.value })}
+        rows={6}
+        style={{ width: '100%' }}
+      />
+    </div>
+  );
+}
+
+// Helper component for images section
+interface ImagesSectionProps {
+  data: Record<string, unknown>;
+  setData: React.Dispatch<React.SetStateAction<Record<string, unknown>>>;
+  onUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  fileRef: React.RefObject<HTMLInputElement | null>;
+}
+
+function ImagesSection({ data, setData, onUpload, fileRef }: ImagesSectionProps) {
+  const images = (data as { images?: string[] })?.images || [];
+
+  const removeImage = (idx: number) => {
+    const currentData = data as { images?: string[] };
+    setData({
+      ...data,
+      images: (currentData.images || []).filter((_: string, i: number) => i !== idx),
+    });
+  };
+
+  return (
+    <div style={{ marginBottom: 12 }}>
+      <label>Images</label>
+      <div style={{ margin: '8px 0' }}>
+        <input type="file" accept="image/*" onChange={onUpload} ref={fileRef} />
+      </div>
+      <ul>
+        {images.map((src: string, idx: number) => (
+          <li key={idx}>
+            <img src={src} alt="" style={{ maxHeight: 40, verticalAlign: 'middle' }} /> {src}
+            <button onClick={() => removeImage(idx)} style={{ marginLeft: 8 }}>Remove</button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+// Helper component for links section
+interface LinksSectionProps {
+  data: Record<string, unknown>;
+  setData: React.Dispatch<React.SetStateAction<Record<string, unknown>>>;
+  addLink: () => void;
+  removeLink: (idx: number) => void;
+}
+
+function LinksSection({ data, setData, addLink, removeLink }: LinksSectionProps) {
+  const links = (data as { links?: LinkItem[] })?.links || [];
+
+  const updateLinkLabel = (idx: number, label: string) => {
+    const currentData = data as { links?: LinkItem[] };
+    const next = [...(currentData.links || [])];
+    next[idx] = { ...next[idx], label };
+    setData({ ...data, links: next });
+  };
+
+  const updateLinkUrl = (idx: number, url: string) => {
+    const currentData = data as { links?: LinkItem[] };
+    const next = [...(currentData.links || [])];
+    next[idx] = { ...next[idx], url };
+    setData({ ...data, links: next });
+  };
+
+  return (
+    <div style={{ marginBottom: 12 }}>
+      <label>Links</label>
+      <button onClick={addLink} style={{ marginLeft: 8 }}>Add Link</button>
+      <ul>
+        {links.map((l: LinkItem, idx: number) => (
+          <li key={idx}>
+            <input
+              placeholder="Label"
+              value={l.label}
+              onChange={e => updateLinkLabel(idx, e.target.value)}
+            />
+            <input
+              placeholder="https://... or /uploads/..."
+              value={l.url}
+              onChange={e => updateLinkUrl(idx, e.target.value)}
+              style={{ marginLeft: 8, width: 320 }}
+            />
+            <button onClick={() => removeLink(idx)} style={{ marginLeft: 8 }}>Remove</button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default function SectionEditor({ section }: SectionEditorProps) {
   const {
     data,
     setData,
@@ -47,202 +330,65 @@ export default function SectionEditor({ section }: { section: string }) {
     starFileRef,
   } = useSectionEditor(section);
 
-
   if (loading) return <div>Loading...</div>;
+
+  const showDefaultText = !jsonMode && !SECTIONS_WITH_CUSTOM_EDITOR.has(section);
+  const showImages = !jsonMode && section !== 'fredAgain' && section !== 'hero';
+  const showLinks = !jsonMode;
+
   return (
     <div className={styles.sectionEditor}>
       <h3 className={styles.title}>Edit: {section}</h3>
       {err && <div className={styles.error}>{err}</div>}
       <div className={styles.jsonModeToggle}>
-        <label><input type="checkbox" checked={jsonMode} onChange={e => setJsonMode(e.target.checked)} /> Advanced JSON</label>
+        <label>
+          <input
+            type="checkbox"
+            checked={jsonMode}
+            onChange={e => setJsonMode(e.target.checked)}
+          />{' '}
+          Advanced JSON
+        </label>
       </div>
-      {!jsonMode && section === 'fredAgain' && (
-        <FredAgainEditor
-          data={data}
-          setData={setData}
-          setErr={setErr}
-          onUpload={onUpload}
-          onUploadBackground={onUploadBackground}
-          fileRef={fileRef}
-          backgroundFileRef={backgroundFileRef}
-          uploadImage={uploadImage}
-        />
+      {!jsonMode &&
+        renderSectionEditor({
+          section,
+          data,
+          setData,
+          setErr,
+          onUpload,
+          onUploadBackground,
+          onUploadLogo,
+          onUploadGif,
+          fileRef,
+          backgroundFileRef,
+          logoFileRef,
+          gifFileRef,
+          starFileRef,
+        })}
+      {showDefaultText && <TextField data={data} setData={setData} />}
+      {showImages && (
+        <ImagesSection data={data} setData={setData} onUpload={onUpload} fileRef={fileRef} />
       )}
-      {!jsonMode && section === 'hero' && (
-        <HeroEditor
-          data={data}
-          setData={setData}
-          setErr={setErr}
-          onUpload={onUpload}
-          onUploadBackground={onUploadBackground}
-          onUploadLogo={onUploadLogo}
-          fileRef={fileRef}
-          backgroundFileRef={backgroundFileRef}
-          logoFileRef={logoFileRef}
-          uploadImage={uploadImage}
-        />
+      {showLinks && (
+        <LinksSection data={data} setData={setData} addLink={addLink} removeLink={removeLink} />
       )}
-      {!jsonMode && section === 'errorPage' && (
-        <ErrorPageEditor
-          data={data}
-          setData={setData}
-          setErr={setErr}
-        />
-      )}
-      {!jsonMode && section === 'faqIntro' && (
-        <FaqIntroEditor
-          data={data}
-          setData={setData}
-          setErr={setErr}
-          uploadImage={uploadImage}
-        />
-      )}
-      {!jsonMode && section === 'investmentIntro' && (
-        <InvestmentIntroEditor
-          data={data}
-          setData={setData}
-          setErr={setErr}
-        />
-      )}
-      {!jsonMode && section === 'investment' && (
-        <InvestmentEditor
-          data={data}
-          setData={setData}
-          setErr={setErr}
-          onUploadBackground={onUploadBackground}
-          backgroundFileRef={backgroundFileRef}
-          onUploadLogo={onUploadLogo}
-          logoFileRef={logoFileRef}
-        />
-      )}
-      {!jsonMode && section === 'shares' && (
-        <SharesEditor
-          data={data}
-          setData={setData}
-          setErr={setErr}
-          onUploadBackground={onUploadBackground}
-          backgroundFileRef={backgroundFileRef}
-        />
-      )}
-      {!jsonMode && section === 'ticker' && (
-        <TickerEditor
-          data={data}
-          setData={setData}
-          setErr={setErr}
-        />
-      )}
-      {!jsonMode && section === 'nftDisclaimer' && (
-        <NftDisclaimerEditor
-          data={data}
-          setData={setData}
-          setErr={setErr}
-          onUploadBackground={onUploadBackground}
-          backgroundFileRef={backgroundFileRef}
-          onUploadGif={onUploadGif}
-          gifFileRef={gifFileRef}
-          onUploadLogo={onUploadLogo}
-          starFileRef={starFileRef}
-        />
-      )}
-      {!jsonMode && section === 'faq' && (
-        <FaqEditor
-          data={data}
-          setData={setData}
-          setErr={setErr}
-        />
-      )}
-      {!jsonMode && section === 'founders' && (
-        <FoundersEditor
-          data={data}
-          setData={setData}
-          setErr={setErr}
-          uploadImage={uploadImage}
-        />
-      )}
-      {!jsonMode && section === 'moreFaq' && (
-        <MoreFaqEditor
-          data={data}
-          setData={setData}
-          setErr={setErr}
-          uploadImage={uploadImage}
-        />
-      )}
-      {!jsonMode && (section === 'privacyPolicy' || section === 'terms') && (
-        <PrivacyPolicyTermsEditor
-          data={data}
-          setData={setData}
-          section={section}
-        />
-      )}
-      {!jsonMode && section === 'partners' && (
-        <PartnersEditor
-          data={data}
-          setData={setData}
-          setErr={setErr}
-          uploadImage={uploadImage}
-        />
-      )}
-      {!jsonMode && section === 'collaboratives' && (
-        <CollaborativesEditor
-          data={data}
-          setData={setData}
-          setErr={setErr}
-          uploadImage={uploadImage}
-        />
-      )}
-      {!jsonMode && section !== 'fredAgain' && section !== 'hero' && section !== 'errorPage' && section !== 'faqIntro' && section !== 'shares' && section !== 'ticker' && section !== 'nftDisclaimer' && section !== 'faq' && section !== 'founders' && section !== 'investment' && section !== 'investmentIntro' && section !== 'moreFaq' && section !== 'privacyPolicy' && section !== 'terms' && section !== 'partners' && section !== 'collaboratives' && (
-        <div style={{ marginBottom: 12 }}>
-        <label>Text</label>
-          <textarea value={data.text || ''} onChange={e => setData({ ...data, text: e.target.value })} rows={6} style={{ width: '100%' }} />
-        </div>
-      )}
-      {!jsonMode && section !== 'fredAgain' && section !== 'hero' && (
-        <div style={{ marginBottom: 12 }}>
-        <label>Images</label>
-        <div style={{ margin: '8px 0' }}>
-          <input type="file" accept="image/*" onChange={onUpload} ref={fileRef} />
-        </div>
-        <ul>
-          {(data.images || []).map((src: string, idx: number) => (
-            <li key={idx}>
-              <img src={src} alt="" style={{ maxHeight: 40, verticalAlign: 'middle' }} /> {src}
-              <button onClick={() => setData({ ...data, images: data.images.filter((_: any, i: number) => i !== idx) })} style={{ marginLeft: 8 }}>Remove</button>
-            </li>
-          ))}
-        </ul>
-        </div>
-      )}
-      {!jsonMode && <div style={{ marginBottom: 12 }}>
-        <label>Links</label>
-        <button onClick={addLink} style={{ marginLeft: 8 }}>Add Link</button>
-        <ul>
-          {(data.links || []).map((l: any, idx: number) => (
-            <li key={idx}>
-              <input placeholder="Label" value={l.label} onChange={e => {
-                const next = [...data.links]; next[idx] = { ...next[idx], label: e.target.value }; setData({ ...data, links: next });
-              }} />
-              <input placeholder="https://... or /uploads/..." value={l.url} onChange={e => {
-                const next = [...data.links]; next[idx] = { ...next[idx], url: e.target.value }; setData({ ...data, links: next });
-              }} style={{ marginLeft: 8, width: 320 }} />
-              <button onClick={() => removeLink(idx)} style={{ marginLeft: 8 }}>Remove</button>
-            </li>
-          ))}
-        </ul>
-      </div>}
       {jsonMode && (
         <div className={styles.jsonEditor}>
           <label>JSON</label>
-          <textarea 
-            value={rawJson} 
-            onChange={e => setRawJson(e.target.value)} 
-            rows={18} 
+          <textarea
+            value={rawJson}
+            onChange={e => setRawJson(e.target.value)}
+            rows={18}
             className={styles.jsonTextarea}
           />
         </div>
       )}
 
       <div className={styles.actions}>
-        <button onClick={onSave} disabled={saving}>{saving ? 'Saving...' : 'Save'}</button>
+        <button onClick={onSave} disabled={saving}>
+          {saving ? 'Saving...' : 'Save'}
+        </button>
         <button onClick={reloadFromServer}>Reload current</button>
         <span>Preview:</span>
       </div>
@@ -254,10 +400,12 @@ export default function SectionEditor({ section }: { section: string }) {
       <div className={styles.serverDataSection}>
         <div className={styles.serverDataContainer}>
           <div className={styles.serverDataTitle}>Current (server)</div>
-          <pre className={styles.serverDataContent}>{serverData ? JSON.stringify(serverData, null, 2) : '—'}</pre>
+          <pre className={styles.serverDataContent}>
+            {serverData ? JSON.stringify(serverData, null, 2) : '—'}
+          </pre>
         </div>
       </div>
-      </div>
+    </div>
   );
 }
 

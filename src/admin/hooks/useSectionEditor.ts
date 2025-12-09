@@ -5,8 +5,8 @@ import { getTemplateFor } from '@/types/content';
 import { normalizeSectionData } from '../sectionNormalizers';
 
 export function useSectionEditor(section: string) {
-  const [data, setData] = useState<any>({ text: '', images: [], links: [] });
-  const [serverData, setServerData] = useState<any>(null);
+  const [data, setData] = useState<Record<string, unknown>>({ text: '', images: [], links: [] });
+  const [serverData, setServerData] = useState<Record<string, unknown> | null>(null);
   const [jsonMode, setJsonMode] = useState(false);
   const [rawJson, setRawJson] = useState('');
   const [loading, setLoading] = useState(false);
@@ -32,21 +32,22 @@ export function useSectionEditor(section: string) {
           setRawJson(JSON.stringify(norm, null, 2));
         }
       })
-      .catch(e => { 
+      .catch((error: unknown) => { 
         if (!ignore) {
-          if (e.message.includes('404') || e.message.includes('Not found') || e.message.includes('Failed to load') || e.message.includes('401') || e.message.includes('Unauthorized')) {
+          const errorMessage = error instanceof Error ? error.message : String(error);
+          if (errorMessage.includes('404') || errorMessage.includes('Not found') || errorMessage.includes('Failed to load') || errorMessage.includes('401') || errorMessage.includes('Unauthorized')) {
             const template = getTemplateFor(section);
             const norm = normalizeSectionData(section, template || {});
             setData(norm);
             setServerData(norm);
             setRawJson(JSON.stringify(norm, null, 2));
-            if (e.message.includes('401') || e.message.includes('Unauthorized')) {
+            if (errorMessage.includes('401') || errorMessage.includes('Unauthorized')) {
               setErr('Authentication required. Please log in to the admin panel.');
             } else {
               setErr('');
             }
           } else {
-            setErr(e.message);
+            setErr(errorMessage);
           }
         }
       })
@@ -59,10 +60,10 @@ export function useSectionEditor(section: string) {
     setErr('');
     try {
       if (jsonMode) {
-        let parsed: any;
+        let parsed: Record<string, unknown>;
         try {
-          parsed = JSON.parse(rawJson);
-        } catch (e: any) {
+          parsed = JSON.parse(rawJson) as Record<string, unknown>;
+        } catch {
           setErr('Invalid JSON');
           setSaving(false);
           return;
@@ -78,8 +79,9 @@ export function useSectionEditor(section: string) {
         setServerData(data);
       }
       invalidateContentCache();
-    } catch (e: any) {
-      setErr(e.message);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      setErr(errorMessage);
     } finally {
       setSaving(false);
     }
@@ -93,17 +95,26 @@ export function useSectionEditor(section: string) {
       setData(norm);
       setRawJson(JSON.stringify(norm, null, 2));
       setErr('');
-    } catch (e: any) {
-      setErr(e.message);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      setErr(errorMessage);
     }
   }
 
   function addLink() {
-    setData((prev: any) => ({ ...prev, links: [...(prev.links||[]), { label: '', url: '' }] }));
+    setData((prev) => {
+      const prevData = prev as Record<string, unknown>;
+      const links = (prevData.links as Array<{ label: string; url: string }> | undefined) || [];
+      return { ...prevData, links: [...links, { label: '', url: '' }] };
+    });
   }
 
   function removeLink(i: number) {
-    setData((prev: any) => ({ ...prev, links: prev.links.filter((_: any, idx: number) => idx !== i) }));
+    setData((prev) => {
+      const prevData = prev as Record<string, unknown>;
+      const links = (prevData.links as Array<{ label: string; url: string }> | undefined) || [];
+      return { ...prevData, links: links.filter((_, idx: number) => idx !== i) };
+    });
   }
 
   async function onUpload(e: React.ChangeEvent<HTMLInputElement>) {
@@ -112,14 +123,27 @@ export function useSectionEditor(section: string) {
     try {
       const { url } = await uploadImage(file);
       if (section === 'fredAgain') {
-        setData((prev: any) => ({ ...prev, logoUrls: [...(prev.logoUrls||[]), url] }));
+        setData((prev) => {
+          const prevData = prev as Record<string, unknown>;
+          const logoUrls = (prevData.logoUrls as string[] | undefined) || [];
+          return { ...prevData, logoUrls: [...logoUrls, url] };
+        });
       } else if (section === 'hero') {
-        setData((prev: any) => ({ ...prev, motifs: [...(prev.motifs||[]), url] }));
+        setData((prev) => {
+          const prevData = prev as Record<string, unknown>;
+          const motifs = (prevData.motifs as string[] | undefined) || [];
+          return { ...prevData, motifs: [...motifs, url] };
+        });
       } else {
-        setData((prev: any) => ({ ...prev, images: [...(prev.images||[]), url] }));
+        setData((prev) => {
+          const prevData = prev as Record<string, unknown>;
+          const images = (prevData.images as string[] | undefined) || [];
+          return { ...prevData, images: [...images, url] };
+        });
       }
-    } catch (e: any) {
-      setErr(e.message);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      setErr(errorMessage);
     } finally {
       if (fileRef.current) fileRef.current.value = '';
     }
@@ -131,16 +155,17 @@ export function useSectionEditor(section: string) {
     try {
       const { url } = await uploadImage(file);
       if (section === 'faqIntro') {
-        setData((prev: any) => ({ ...prev, recordImage: url }));
+        setData((prev) => ({ ...(prev as Record<string, unknown>), recordImage: url }));
       } else if (section === 'shares') {
-        setData((prev: any) => ({ ...prev, imageUrl: url }));
+        setData((prev) => ({ ...(prev as Record<string, unknown>), imageUrl: url }));
       } else if (section === 'nftDisclaimer') {
-        setData((prev: any) => ({ ...prev, monaImageUrl: url }));
+        setData((prev) => ({ ...(prev as Record<string, unknown>), monaImageUrl: url }));
       } else {
-        setData((prev: any) => ({ ...prev, backgroundImage: url }));
+        setData((prev) => ({ ...(prev as Record<string, unknown>), backgroundImage: url }));
       }
-    } catch (e: any) {
-      setErr(e.message);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      setErr(errorMessage);
     } finally {
       if (backgroundFileRef.current) backgroundFileRef.current.value = '';
     }
@@ -152,17 +177,18 @@ export function useSectionEditor(section: string) {
     try {
       const { url } = await uploadImage(file);
       if (section === 'nftDisclaimer') {
-        setData((prev: any) => ({ ...prev, starIconUrl: url }));
+        setData((prev) => ({ ...(prev as Record<string, unknown>), starIconUrl: url }));
         if (starFileRef.current) starFileRef.current.value = '';
       } else if (section === 'investment') {
-        setData((prev: any) => ({ ...prev, logoImage: url }));
+        setData((prev) => ({ ...(prev as Record<string, unknown>), logoImage: url }));
         if (logoFileRef.current) logoFileRef.current.value = '';
       } else {
-        setData((prev: any) => ({ ...prev, logoUrl: url }));
+        setData((prev) => ({ ...(prev as Record<string, unknown>), logoUrl: url }));
         if (logoFileRef.current) logoFileRef.current.value = '';
       }
-    } catch (e: any) {
-      setErr(e.message);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      setErr(errorMessage);
     }
   }
 
@@ -171,9 +197,10 @@ export function useSectionEditor(section: string) {
     if (!file) return;
     try {
       const { url } = await uploadImage(file);
-      setData((prev: any) => ({ ...prev, gifImageUrl: url }));
-    } catch (e: any) {
-      setErr(e.message);
+      setData((prev) => ({ ...(prev as Record<string, unknown>), gifImageUrl: url }));
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      setErr(errorMessage);
     } finally {
       if (gifFileRef.current) gifFileRef.current.value = '';
     }
@@ -184,9 +211,10 @@ export function useSectionEditor(section: string) {
     if (!file) return;
     try {
       const { url } = await uploadImage(file);
-      setData((prev: any) => ({ ...prev, starImageUrl: url }));
-    } catch (e: any) {
-      setErr(e.message);
+      setData((prev) => ({ ...(prev as Record<string, unknown>), starImageUrl: url }));
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      setErr(errorMessage);
     } finally {
       if (starFileRef.current) starFileRef.current.value = '';
     }

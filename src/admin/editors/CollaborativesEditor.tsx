@@ -1,6 +1,8 @@
-import { SectionEditorProps } from './types';
+import type { SectionEditorProps } from './types';
 import { FormField, TextInput, TextAreaInput } from '../components/FormField';
 import { ImageUpload } from '../components/ImageUpload';
+import { getStringValue, getArrayValue } from '../utils/dataHelpers';
+import type { PartnerItem } from '@/types/content';
 import styles from './CollaborativesEditor.module.css';
 
 export function CollaborativesEditor({ 
@@ -9,7 +11,7 @@ export function CollaborativesEditor({
   setErr,
   uploadImage
 }: SectionEditorProps) {
-  const collaboratives = data.collaboratives || [];
+  const collaboratives = getArrayValue<PartnerItem>(data, 'collaboratives');
 
   const addCollaborative = () => {
     const newCollaborative = {
@@ -26,11 +28,11 @@ export function CollaborativesEditor({
   };
 
   const removeCollaborative = (idx: number) => {
-    const next = collaboratives.filter((_: any, i: number) => i !== idx);
+    const next = collaboratives.filter((_: PartnerItem, i: number) => i !== idx);
     setData({ ...data, collaboratives: next });
   };
 
-  const updateCollaborative = (idx: number, field: string, value: any) => {
+  const updateCollaborative = (idx: number, field: string, value: string) => {
     const next = [...collaboratives];
     next[idx] = { ...next[idx], [field]: value };
     setData({ ...data, collaboratives: next });
@@ -41,8 +43,9 @@ export function CollaborativesEditor({
     try {
       const { url } = await uploadImage(file);
       updateCollaborative(idx, 'imageUrl', url);
-    } catch (err: any) {
-      setErr(err.message || 'Failed to upload image');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to upload image';
+      setErr(message);
     }
   };
 
@@ -55,7 +58,7 @@ export function CollaborativesEditor({
 
   const removeSocialLink = (collaborativeIdx: number, socialIdx: number) => {
     const next = [...collaboratives];
-    const socialLinks = (next[collaborativeIdx].socialLinks || []).filter((_: any, i: number) => i !== socialIdx);
+    const socialLinks = (next[collaborativeIdx].socialLinks || []).filter((_: { platform: string; url: string }, i: number) => i !== socialIdx);
     next[collaborativeIdx] = { ...next[collaborativeIdx], socialLinks };
     setData({ ...data, collaboratives: next });
   };
@@ -72,7 +75,7 @@ export function CollaborativesEditor({
     <>
       <FormField label="Section Heading">
         <TextInput
-          value={data.heading || ''}
+          value={getStringValue(data, 'heading')}
           onChange={value => setData({ ...data, heading: value })}
           placeholder="Collaboratives"
         />
@@ -94,7 +97,7 @@ export function CollaborativesEditor({
             No collaboratives yet. Click "Add Collaborative" to add one.
           </div>
         )}
-        {collaboratives.map((collaborative: any, idx: number) => (
+        {collaboratives.map((collaborative: PartnerItem, idx: number) => (
           <div key={collaborative.id || idx} className={styles.collaborativeItem}>
             <div className={styles.collaborativeItemHeader}>
               <h4 className={styles.collaborativeItemTitle}>Collaborative {idx + 1}</h4>
@@ -179,7 +182,7 @@ export function CollaborativesEditor({
                   Add Social Link
                 </button>
               </div>
-              {(collaborative.socialLinks || []).map((social: any, socialIdx: number) => (
+              {(collaborative.socialLinks || []).map((social: { platform: string; url: string }, socialIdx: number) => (
                 <div key={socialIdx} className={styles.socialLinkRow}>
                   <TextInput
                     placeholder="Platform (e.g., Twitter, LinkedIn)"

@@ -1,6 +1,6 @@
 export interface SectionEditorProps {
-  data: any;
-  setData: (data: any) => void;
+  data: Record<string, unknown>;
+  setData: React.Dispatch<React.SetStateAction<Record<string, unknown>>>;
   setErr: (err: string) => void;
   onUpload?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onUploadBackground?: (e: React.ChangeEvent<HTMLInputElement>) => void;

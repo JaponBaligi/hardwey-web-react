@@ -122,7 +122,7 @@ export async function fetchAllContent(): Promise<{ content: Record<string, unkno
   return apiRequest('/content');
 }
 
-export async function fetchSection(section: string): Promise<{ section: string; data: any }> {
+export async function fetchSection(section: string): Promise<{ section: string; data: Record<string, unknown> }> {
   const endpoint = `/content/${encodeURIComponent(section)}`;
   const res = await fetch(`${API_BASE}${endpoint}`, { credentials: 'include' });
   
@@ -133,7 +133,7 @@ export async function fetchSection(section: string): Promise<{ section: string; 
   return res.json();
 }
 
-export async function updateSection(section: string, data: any): Promise<void> {
+export async function updateSection(section: string, data: Record<string, unknown>): Promise<void> {
   await apiRequest(`/content/${encodeURIComponent(section)}`, {
     method: 'PUT',
     requiresCsrf: true,

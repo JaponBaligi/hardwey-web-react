@@ -1,6 +1,8 @@
-import { SectionEditorProps } from './types';
+import type { SectionEditorProps } from './types';
 import { FormField, TextInput } from '../components/FormField';
 import { ImageUpload } from '../components/ImageUpload';
+import { getNumberValue, getArrayValue } from '../utils/dataHelpers';
+import type { FaqIntroRecord } from '@/types/content';
 import styles from './FaqIntroEditor.module.css';
 
 export function FaqIntroEditor({ 
@@ -9,7 +11,7 @@ export function FaqIntroEditor({
   setErr,
   uploadImage
 }: SectionEditorProps) {
-  const records = data.records || [];
+  const records = getArrayValue<FaqIntroRecord>(data, 'records');
 
   const addRecord = () => {
     const newRecord = {
@@ -37,8 +39,9 @@ export function FaqIntroEditor({
     try {
       const { url } = await uploadImage(file);
       updateRecord(idx, 'imageUrl', url);
-    } catch (err: any) {
-      setErr(err.message || 'Failed to upload image');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to upload image';
+      setErr(message);
     }
   };
 
@@ -47,7 +50,7 @@ export function FaqIntroEditor({
       <FormField label="Star Count">
         <input
           type="number"
-          value={data.starCount ?? 7}
+          value={getNumberValue(data, 'starCount', 7)}
           onChange={e => setData({ ...data, starCount: parseInt(e.target.value, 10) || 0 })}
           min="0"
           max="50"
@@ -68,7 +71,7 @@ export function FaqIntroEditor({
             No records yet. Click "Add Record" to add one.
           </div>
         )}
-        {records.map((record: any, idx: number) => (
+        {records.map((record: FaqIntroRecord, idx: number) => (
           <div key={record.id || idx} className={styles.recordItem}>
             <div className={styles.recordItemHeader}>
               <h4 className={styles.recordItemTitle}>Record {idx + 1}</h4>

@@ -2,6 +2,13 @@ import { useState, useCallback } from 'react';
 import { fetchAllContent, updateSection, deleteSection } from './api';
 import { SECTION_KEYS, getTemplateFor } from '@/types/content';
 
+function normalizeTemplate(template: unknown): Record<string, unknown> {
+  if (template && typeof template === 'object' && !Array.isArray(template)) {
+    return template as Record<string, unknown>;
+  }
+  return {};
+}
+
 export function useAdminContent() {
   const [sections, setSections] = useState<Record<string, unknown>>({});
   const [loading, setLoading] = useState(false);
@@ -26,9 +33,9 @@ export function useAdminContent() {
   const createSection = useCallback(async (name: string) => {
     try {
       setError(null);
-      await updateSection(name, getTemplateFor(name));
-      const content = await loadSections();
-      return content;
+      const template = getTemplateFor(name);
+      await updateSection(name, normalizeTemplate(template));
+      return await loadSections();
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to create section';
       setError(message);
@@ -42,8 +49,7 @@ export function useAdminContent() {
     try {
       setError(null);
       await deleteSection(name);
-      const content = await loadSections();
-      return content;
+      return await loadSections();
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to delete section';
       setError(message);
@@ -57,7 +63,10 @@ export function useAdminContent() {
       const existingKeys = new Set(Object.keys(sections || {}));
       const promises = SECTION_KEYS
         .filter(key => !existingKeys.has(key))
-        .map(key => updateSection(key, getTemplateFor(key)));
+        .map(key => {
+          const template = getTemplateFor(key);
+          return updateSection(key, normalizeTemplate(template));
+        });
       
       await Promise.all(promises);
       return await loadSections();

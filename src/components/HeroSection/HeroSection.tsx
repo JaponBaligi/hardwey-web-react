@@ -7,6 +7,42 @@ interface HeroSectionProps {
   className?: string;
 }
 
+// Default values for hero content
+const DEFAULT_HERO_CONTENT = {
+  logoUrl: '/assets/img/hardweybannertext.png',
+  backgroundImage: '/assets/banner/artistlarge1.jpg',
+  backgroundImageSrcSet: '/assets/banner/artistlarge%201-p-500.jpg 500w, /assets/banner/artistlarge1-p-800.jpg 800w, /assets/banner/artistlarge1-p-1080.jpg 1080w, /assets/banner/artistlarge1-p-1600.jpg 1600w, /assets/banner/artistlarge1-p-2000.jpg 2000w, /assets/banner/artistlarge1.jpg 2457w',
+  mitaText: 'Music is the answer™',
+  subtitle: 'A movement in music. Redefining the rules.',
+  leftIdentifier: '/assets/svg/investident-hero.svg',
+  rightIdentifier: '/assets/svg/barcode-ident.svg',
+  motifs: [
+    '/assets/svg/new-wave24.svg',
+    '/assets/svg/restricted-change-ident.svg',
+    '/assets/svg/international-blue.svg',
+    '/assets/svg/hardweyrights.svg',
+    '/assets/svg/star-ident-blue.svg'
+  ] as string[],
+};
+
+// Helper function to resolve content values with defaults
+function resolveHeroContent(content: HeroContent | null | undefined) {
+  if (!content) {
+    return DEFAULT_HERO_CONTENT;
+  }
+
+  return {
+    logoUrl: content.logoUrl || DEFAULT_HERO_CONTENT.logoUrl,
+    backgroundImage: content.backgroundImage || DEFAULT_HERO_CONTENT.backgroundImage,
+    backgroundImageSrcSet: content.backgroundImageSrcSet || DEFAULT_HERO_CONTENT.backgroundImageSrcSet,
+    mitaText: content.mitaText || DEFAULT_HERO_CONTENT.mitaText,
+    subtitle: content.subtitle || DEFAULT_HERO_CONTENT.subtitle,
+    leftIdentifier: content.leftIdentifier || DEFAULT_HERO_CONTENT.leftIdentifier,
+    rightIdentifier: content.rightIdentifier || DEFAULT_HERO_CONTENT.rightIdentifier,
+    motifs: content.motifs || DEFAULT_HERO_CONTENT.motifs,
+  };
+}
+
 /**
  * Hero section with exact HTML structure from static site
  * @param className - Additional CSS classes
@@ -39,14 +75,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ className = '' }) => {
     motifs: defaultMotifs,
   });
 
-  const logoUrl = content?.logoUrl || defaultLogo;
-  const backgroundImage = content?.backgroundImage || defaultBackgroundImage;
-  const backgroundImageSrcSet = content?.backgroundImageSrcSet || defaultBackgroundImageSrcSet;
-  const mitaText = content?.mitaText || 'Music is the answer™';
-  const subtitle = content?.subtitle || 'A movement in music. Redefining the rules.';
-  const leftIdentifier = content?.leftIdentifier || '/assets/svg/investident-hero.svg';
-  const rightIdentifier = content?.rightIdentifier || '/assets/svg/barcode-ident.svg';
-  const motifs = content?.motifs || defaultMotifs;
+  const resolvedContent = resolveHeroContent(content);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -126,7 +155,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ className = '' }) => {
       {/* Hero Logo Div */}
       <div ref={logoRef} className={styles.heroLogoDiv}>
         <img 
-          src={logoUrl} 
+          src={resolvedContent.logoUrl} 
           loading="lazy" 
           alt="Hardwey LOGO" 
           className={styles.heroLogo}
@@ -136,17 +165,17 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ className = '' }) => {
       {/* Hero Base Container */}
       <div className={styles.heroBaseContainer}>
         {/* Outer Identifiers */}
-        {leftIdentifier && (
+        {resolvedContent.leftIdentifier && (
           <img 
-            src={leftIdentifier} 
+            src={resolvedContent.leftIdentifier} 
             loading="lazy" 
             alt="" 
             className={`${styles.outerIdent} ${styles.outerIdentLeft}`}
           />
         )}
-        {rightIdentifier && (
+        {resolvedContent.rightIdentifier && (
           <img 
-            src={rightIdentifier} 
+            src={resolvedContent.rightIdentifier} 
             loading="lazy" 
             alt="" 
             className={styles.outerIdent}
@@ -155,22 +184,22 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ className = '' }) => {
 
         {/* Mobile MITA Text */}
         <h2 className={`${styles.mitaHeroText} ${styles.mitaHeroTextMobile}`}>
-          {mitaText}
+          {resolvedContent.mitaText}
         </h2>
 
         {/* Hero Idents Flex */}
         <div className={styles.heroIdentsFlex}>
-          {motifs.length > 0 && (
+          {resolvedContent.motifs.length > 0 && (
             <>
               <img 
-                src={motifs[0]} 
+                src={resolvedContent.motifs[0]} 
                 loading="lazy" 
                 alt="" 
                 className={`${styles.motif} ${styles.motif2k23}`}
               />
-              {motifs.length > 1 && (
+              {resolvedContent.motifs.length > 1 && (
                 <img 
-                  src={motifs[1]} 
+                  src={resolvedContent.motifs[1]} 
                   loading="lazy" 
                   alt="" 
                   className={`${styles.motif} ${styles.motifRestricted}`}
@@ -181,28 +210,28 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ className = '' }) => {
           
           {/* Desktop MITA Text */}
           <h2 className={`${styles.mitaHeroText} ${styles.mitaHeroTextDesktop}`}>
-            {mitaText}
+            {resolvedContent.mitaText}
           </h2>
           
-          {motifs.length > 2 && (
+          {resolvedContent.motifs.length > 2 && (
             <>
               <img 
-                src={motifs[2]} 
+                src={resolvedContent.motifs[2]} 
                 loading="lazy" 
                 alt="" 
                 className={`${styles.motif} ${styles.motifGlobal}`}
               />
-              {motifs.length > 3 && (
+              {resolvedContent.motifs.length > 3 && (
                 <img 
-                  src={motifs[3]} 
+                  src={resolvedContent.motifs[3]} 
                   loading="lazy" 
                   alt="" 
                   className={`${styles.motif} ${styles.motifRights}`}
                 />
               )}
-              {motifs.length > 4 && (
+              {resolvedContent.motifs.length > 4 && (
                 <img 
-                  src={motifs[4]} 
+                  src={resolvedContent.motifs[4]} 
                   loading="lazy" 
                   alt="" 
                   className={`${styles.motif} ${styles.motifStars}`}
@@ -215,7 +244,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ className = '' }) => {
         {/* Fixed Width Text Container */}
         <div className={`${styles.fixedWidthTextContainer} ${styles.fixedWidthTextContainerHh}`}>
           <h5 className={`${styles.bodyCaps} ${styles.bodyCapsBlue}`}>
-            {subtitle}
+            {resolvedContent.subtitle}
           </h5>
         </div>
       </div>
@@ -226,11 +255,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ className = '' }) => {
       {/* Background Image */}
       <img 
         ref={backgroundRef}
-        src={backgroundImage} 
+        src={resolvedContent.backgroundImage} 
         loading="lazy" 
         sizes="100vw" 
         alt="" 
-        srcSet={backgroundImageSrcSet} 
+        srcSet={resolvedContent.backgroundImageSrcSet} 
         className={styles.image}
       />
     </section>

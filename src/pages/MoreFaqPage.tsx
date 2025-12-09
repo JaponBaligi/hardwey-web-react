@@ -14,6 +14,170 @@ interface MoreFaqPageProps {
   className?: string;
 }
 
+// Helper function to close all accordion items except the target
+function closeOtherAccordions(
+  accordionRefs: React.MutableRefObject<(HTMLDivElement | null)[]>,
+  excludeIndex: number
+) {
+  accordionRefs.current.forEach((ref, refIndex) => {
+    if (ref && refIndex !== excludeIndex) {
+      ref.style.height = '0px';
+    }
+  });
+}
+
+// Helper function to open accordion item
+function openAccordionItem(
+  accordionPane: HTMLDivElement,
+  setOpenItem: (index: number | null) => void,
+  index: number
+) {
+  const naturalHeight = accordionPane.scrollHeight + 'px';
+  accordionPane.style.height = '0px';
+  setOpenItem(index);
+
+  requestAnimationFrame(() => {
+    accordionPane.style.height = naturalHeight;
+  });
+}
+
+// Helper component for FAQ accordion item
+interface FaqAccordionItemProps {
+  item: FaqItem;
+  index: number;
+  mainFaqCount: number;
+  isOpen: boolean;
+  isVisible: boolean;
+  accordionRef: (el: HTMLDivElement | null) => void;
+  onToggle: () => void;
+  onKeyDown: (e: React.KeyboardEvent) => void;
+}
+
+function FaqAccordionItem({
+  item,
+  index,
+  mainFaqCount,
+  isOpen,
+  isVisible,
+  accordionRef,
+  onToggle,
+  onKeyDown,
+}: FaqAccordionItemProps) {
+  return (
+    <div
+      key={item.id}
+      role="listitem"
+      className={`${styles.accordionItem} ${isVisible ? styles.accordionItemVisible : ''}`}
+      style={{ animationDelay: `${index * 0.1}s` }}
+    >
+      <button
+        type="button"
+        className={`${styles.accordionTabButton} ${isOpen ? styles.accordionTabButtonActive : ''}`}
+        onClick={onToggle}
+        onKeyDown={onKeyDown}
+        aria-expanded={isOpen}
+        aria-controls={`faq-panel-${item.id}`}
+        aria-label={`Toggle FAQ: ${item.question}`}
+      >
+        <div className={styles.faqNumber}>
+          {String(index + mainFaqCount + 1).padStart(2, '0')}
+        </div>
+        <div className={styles.faqTitleFlex}>
+          <h3 className={`${styles.heading3} ${styles.heading3IsFaq}`}>
+            {item.question}
+          </h3>
+          <p className={styles.faqSupportTxt}>
+            {item.subtitle}
+          </p>
+        </div>
+        <div className={styles.arrowDivWrapper}>
+          <img
+            src="/assets/svg/arrow-red.svg"
+            alt=""
+            className={`${styles.arrowDiv} ${isOpen ? styles.arrowDivActive : ''}`}
+            loading="lazy"
+          />
+        </div>
+      </button>
+      <div
+        ref={accordionRef}
+        id={`faq-panel-${item.id}`}
+        className={styles.accordionPane}
+        style={{ height: '0px' }}
+        aria-hidden={!isOpen}
+      >
+        <div className={styles.accordionPaneContent}>
+          <p className={styles.faqAnswer}>
+            {item.answer}
+          </p>
+          <div className={styles.faqSecondaryFlex}>
+            {item.additionalInfo && item.additionalInfo.length > 0 && item.additionalInfo[0] && (
+              <p className={styles.bodyCopy}>
+                {item.additionalInfo[0]}
+              </p>
+            )}
+            {item.additionalInfo && item.additionalInfo.length > 1 && item.additionalInfo[1] && (
+              <p className={styles.bodyCopy}>
+                {item.additionalInfo[1]}
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Component for page header
+interface PageHeaderProps {
+  pageTitle: string | undefined;
+  pageSubtitle: string | undefined;
+}
+
+function PageHeader({ pageTitle, pageSubtitle }: PageHeaderProps) {
+  return (
+    <div className={styles.pageHeader}>
+      <div className={styles.headerContent}>
+        <h1 className={styles.pageTitle}>{pageTitle}</h1>
+        <p className={styles.pageSubtitle}>{pageSubtitle}</p>
+      </div>
+    </div>
+  );
+}
+
+// Component for image section with contact
+interface ImageContactSectionProps {
+  imageUrl?: string;
+  contactHeading: string | undefined;
+  contactEmail: string | undefined;
+  contactButtonText: string | undefined;
+}
+
+function ImageContactSection({ imageUrl, contactHeading, contactEmail, contactButtonText }: ImageContactSectionProps) {
+  return (
+    <section className={styles.imageSection}>
+      {imageUrl && (
+        <img
+          src={imageUrl}
+          alt=""
+          className={styles.imageFull}
+          loading="lazy"
+        />
+      )}
+      <div className={styles.bodyTextContain}>
+        <h4 className={styles.heading2Image}>{contactHeading}</h4>
+        <a
+          href={`mailto:${contactEmail || 'hello@hardweyllc.com'}`}
+          className={styles.emailButton}
+          aria-label="Email us for support"
+        >
+          {contactButtonText}
+        </a>
+      </div>
+    </section>
+  );
+}
+
 /**
  * Extended FAQ page with comprehensive questions and answers
  * @param className - Additional CSS classes
@@ -60,26 +224,11 @@ export const MoreFaqPage: React.FC<MoreFaqPageProps> = ({
     const isCurrentlyOpen = openItem === index;
 
     if (isCurrentlyOpen) {
-      // Close the current item
       accordionPane.style.height = '0px';
       setOpenItem(null);
     } else {
-      // Close all other items first
-      accordionRefs.current.forEach((ref, refIndex) => {
-        if (ref && refIndex !== index) {
-          ref.style.height = '0px';
-        }
-      });
-
-      // Open the selected item
-      const naturalHeight = accordionPane.scrollHeight + 'px';
-      accordionPane.style.height = '0px';
-      setOpenItem(index);
-
-      // Animate to natural height
-      requestAnimationFrame(() => {
-        accordionPane.style.height = naturalHeight;
-      });
+      closeOtherAccordions(accordionRefs, index);
+      openAccordionItem(accordionPane, setOpenItem, index);
     }
   };
 
@@ -92,115 +241,36 @@ export const MoreFaqPage: React.FC<MoreFaqPageProps> = ({
 
   return (
     <div ref={pageRef} className={`${styles.pageContainer} ${className}`}>
-      {/* Header */}
-      <div className={styles.pageHeader}>
-        <div className={styles.headerContent}>
-          <h1 className={styles.pageTitle}>{content?.pageTitle || fallbackContent.pageTitle}</h1>
-          <p className={styles.pageSubtitle}>
-            {content?.pageSubtitle || fallbackContent.pageSubtitle}
-          </p>
-        </div>
-      </div>
+      <PageHeader
+        pageTitle={content?.pageTitle ?? fallbackContent.pageTitle}
+        pageSubtitle={content?.pageSubtitle ?? fallbackContent.pageSubtitle}
+      />
 
       {/* FAQ Content */}
       <div className={`${styles.collectionList} ${isVisible ? styles.collectionListVisible : ''}`}>
         {extendedFaqItems.map((item, index) => (
-          <div
+          <FaqAccordionItem
             key={item.id}
-            role="listitem"
-            className={`${styles.accordionItem} ${isVisible ? styles.accordionItemVisible : ''}`}
-            style={{ animationDelay: `${index * 0.1}s` }}
-          >
-            <button
-              type="button"
-              className={`${styles.accordionTabButton} ${openItem === index ? styles.accordionTabButtonActive : ''}`}
-              onClick={() => handleToggle(index)}
-              onKeyDown={(e) => handleKeyDown(e, index)}
-              aria-expanded={openItem === index}
-              aria-controls={`faq-panel-${item.id}`}
-              aria-label={`Toggle FAQ: ${item.question}`}
-            >
-              {/* FAQ Number - Absolutely positioned */}
-              <div className={styles.faqNumber}>
-                {String(index + mainFaqCount + 1).padStart(2, '0')}
-              </div>
-
-              {/* FAQ Title Flex */}
-              <div className={styles.faqTitleFlex}>
-                <h3 className={`${styles.heading3} ${styles.heading3IsFaq}`}>
-                  {item.question}
-                </h3>
-                <p className={styles.faqSupportTxt}>
-                  {item.subtitle}
-                </p>
-              </div>
-
-              {/* Arrow Wrapper */}
-              <div className={styles.arrowDivWrapper}>
-                <img
-                  src="/assets/svg/arrow-red.svg"
-                  alt=""
-                  className={`${styles.arrowDiv} ${openItem === index ? styles.arrowDivActive : ''}`}
-                  loading="lazy"
-                />
-              </div>
-            </button>
-
-            {/* Accordion Pane */}
-            <div
-              ref={(el) => {
-                if (el) accordionRefs.current[index] = el;
-              }}
-              id={`faq-panel-${item.id}`}
-              className={styles.accordionPane}
-              style={{ height: '0px' }}
-              aria-hidden={openItem !== index}
-            >
-              <div className={styles.accordionPaneContent}>
-                <p className={styles.faqAnswer}>
-                  {item.answer}
-                </p>
-                <div className={styles.faqSecondaryFlex}>
-                  {item.additionalInfo && item.additionalInfo.length > 0 && item.additionalInfo[0] && (
-                    <p className={styles.bodyCopy}>
-                      {item.additionalInfo[0]}
-                    </p>
-                  )}
-                  {item.additionalInfo && item.additionalInfo.length > 1 && item.additionalInfo[1] && (
-                    <p className={styles.bodyCopy}>
-                      {item.additionalInfo[1]}
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
+            item={item}
+            index={index}
+            mainFaqCount={mainFaqCount}
+            isOpen={openItem === index}
+            isVisible={isVisible}
+            accordionRef={(el) => {
+              if (el) accordionRefs.current[index] = el;
+            }}
+            onToggle={() => handleToggle(index)}
+            onKeyDown={(e) => handleKeyDown(e, index)}
+          />
         ))}
       </div>
 
-      {/* Image Section with Contact */}
-      <section className={styles.imageSection}>
-        {(content?.imageUrl || fallbackContent.imageUrl) && (
-          <img
-            src={content?.imageUrl || fallbackContent.imageUrl}
-            alt=""
-            className={styles.imageFull}
-            loading="lazy"
-          />
-        )}
-        <div className={styles.bodyTextContain}>
-          <h4 className={styles.heading2Image}>
-            {content?.contactHeading || fallbackContent.contactHeading}
-          </h4>
-          <a
-            href={`mailto:${content?.contactEmail || fallbackContent.contactEmail || 'hello@hardweyllc.com'}`}
-            className={styles.emailButton}
-            aria-label="Email us for support"
-          >
-            {content?.contactButtonText || fallbackContent.contactButtonText}
-          </a>
-        </div>
-      </section>
+      <ImageContactSection
+        imageUrl={content?.imageUrl ?? fallbackContent.imageUrl}
+        contactHeading={content?.contactHeading ?? fallbackContent.contactHeading}
+        contactEmail={content?.contactEmail ?? fallbackContent.contactEmail ?? 'hello@hardweyllc.com'}
+        contactButtonText={content?.contactButtonText ?? fallbackContent.contactButtonText}
+      />
     </div>
   );
 };

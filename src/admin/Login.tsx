@@ -13,8 +13,9 @@ export default function Login({ onLoggedIn }: { onLoggedIn: () => void }) {
     try {
       await login(username, password);
       onLoggedIn();
-    } catch (e: any) {
-      setErr(e.message || 'Login failed');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Login failed';
+      setErr(message);
     }
   }
 

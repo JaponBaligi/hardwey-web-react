@@ -15,6 +15,108 @@ interface FormData {
   artist: string;
 }
 
+// Helper function to create mailto link
+function createMailtoLink(formData: FormData): string {
+  const emailBody = `Pre-Registration for Hardwey Music
+
+Name: ${formData.name}
+Email: ${formData.email}
+Artist: ${formData.artist}
+
+This is a pre-registration submission from the Hardwey Music.`;
+  
+  return `mailto:hello@hardweyllc.com?subject=Pre-registration for Hardwey Music Group&body=${encodeURIComponent(emailBody)}`;
+}
+
+// Component for form fields
+interface FormFieldProps {
+  name: string;
+  type: string;
+  placeholder: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  required?: boolean;
+  label?: string;
+  className?: string;
+}
+
+function FormField({ name, type, placeholder, value, onChange, required, label, className }: FormFieldProps) {
+  return (
+    <div className={styles.formFieldDiv}>
+      <input
+        type={type}
+        name={name}
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+        className={className || styles.formFieldTp}
+        required={required}
+      />
+      {required && <img src="/assets/svg/asterixwhite.svg" alt="" className={styles.formStarIcon} />}
+      {label && (
+        <label className={styles.subheadingBlackFormIsw}>
+          {label}
+        </label>
+      )}
+    </div>
+  );
+}
+
+// Component for movement text
+interface MovementTextProps {
+  movementText: Array<{ text: string; isAbsolute: boolean }>;
+}
+
+function MovementText({ movementText }: MovementTextProps) {
+  return (
+    <div className={styles.horizontalFlexCmNs}>
+      {movementText.map((item, index) => (
+        <div
+          key={index}
+          className={item.isAbsolute ? styles.subheadingBlackAbsoluteNmIsw : styles.subheadingBlackNmIsw}
+        >
+          {item.text}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// Component for submit button
+interface SubmitButtonProps {
+  buttonText: string;
+  reassuranceText: string;
+}
+
+function SubmitButton({ buttonText, reassuranceText }: SubmitButtonProps) {
+  return (
+    <div className={styles.submitDivOverlay}>
+      <button type="submit" className={styles.submitButtonFormBlue}>
+        <div className={styles.submitButtonText}>{buttonText}</div>
+        <div className={styles.buttonArrow}>
+          <img
+            src="/assets/svg/arrow-black.svg"
+            alt=""
+            className={styles.buttonArrowImg}
+            loading="lazy"
+          />
+          <img
+            src="/assets/svg/arrow-black.svg"
+            alt=""
+            className={styles.buttonArrowImg2}
+            loading="lazy"
+          />
+        </div>
+      </button>
+      <div className={styles.buttonTextDiv}>
+        <div className={styles.subheadingBlueFormOverlay}>
+          {reassuranceText}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /**
  * Join Us Modal Component
  * Exact recreation of the live Hardwey website modal from static HTML
@@ -63,15 +165,7 @@ export const JoinUsModal: React.FC<JoinUsModalProps> = ({
     e.preventDefault();
     
     // Always create mailto link and open email client (matches HTML algorithm exactly)
-    const emailBody = `Pre-Registration for Hardwey Music
-
-Name: ${formData.name}
-Email: ${formData.email}
-Artist: ${formData.artist}
-
-This is a pre-registration submission from the Hardwey Music.`;
-    
-    const mailtoLink = `mailto:hello@hardweyllc.com?subject=Pre-registration for Hardwey Music Group&body=${encodeURIComponent(emailBody)}`;
+    const mailtoLink = createMailtoLink(formData);
     window.location.href = mailtoLink;
     
     // Call onSubmit callback if provided (for additional tracking/logging)
@@ -146,20 +240,16 @@ This is a pre-registration submission from the Hardwey Music.`;
           </div>
         </div>
         <h3 className={styles.footerHeadingWhite}>{content?.heading || 'Join us'}</h3>
-        <div className={styles.horizontalFlexCmNs}>
-          {(content?.movementText || [
+        <MovementText
+          movementText={(content?.movementText || [
             { text: 'A movement', isAbsolute: false },
             { text: 'in', isAbsolute: true },
             { text: 'music', isAbsolute: false }
-          ]).map((item, index) => (
-            <div
-              key={index}
-              className={item.isAbsolute ? styles.subheadingBlackAbsoluteNmIsw : styles.subheadingBlackNmIsw}
-            >
-              {item.text}
-            </div>
-          ))}
-        </div>
+          ]).map(item => ({
+            text: item.text,
+            isAbsolute: item.isAbsolute ?? false
+          }))}
+        />
       </div>
       <div className={styles.overlayFormWrap}>
         <div className={styles.formExplainerDiv}>
@@ -169,67 +259,35 @@ This is a pre-registration submission from the Hardwey Music.`;
         </div>
         <div className={styles.footerFormContainerOverlay}>
           <form className={styles.formContainer} onSubmit={handleSubmit}>
-            <div className={styles.formFieldDiv}>
-              <input
-                type="text"
-                name="name"
-                placeholder={content?.namePlaceholder || 'Your name...'}
-                value={formData.name}
-                onChange={handleInputChange}
-                className={styles.formFieldTp}
-                required
-              />
-              <img src="/assets/svg/asterixwhite.svg" alt="" className={styles.formStarIcon} />
-            </div>
-            <div className={styles.formFieldDiv}>
-              <input
-                type="email"
-                name="email"
-                placeholder={content?.emailPlaceholder || 'Your email...'}
-                value={formData.email}
-                onChange={handleInputChange}
-                className={styles.formFieldTp}
-                required
-              />
-              <img src="/assets/svg/asterixwhite.svg" alt="" className={styles.formStarIcon} />
-            </div>
-            <div className={styles.formFieldDiv}>
-              <input
-                type="text"
-                name="artist"
-                placeholder={content?.artistPlaceholder || 'Your artist...'}
-                value={formData.artist}
-                onChange={handleInputChange}
-                className={styles.formFieldTpArt}
-              />
-              <label className={styles.subheadingBlackFormIsw}>
-                {content?.artistLabel || "Name an emerging artist you'd invest in"}
-              </label>
-            </div>
-            <div className={styles.submitDivOverlay}>
-              <button type="submit" className={styles.submitButtonFormBlue}>
-                <div className={styles.submitButtonText}>{content?.submitButtonText || 'Pre-Register'}</div>
-                <div className={styles.buttonArrow}>
-                  <img
-                    src="/assets/svg/arrow-black.svg"
-                    alt=""
-                    className={styles.buttonArrowImg}
-                    loading="lazy"
-                  />
-                  <img
-                    src="/assets/svg/arrow-black.svg"
-                    alt=""
-                    className={styles.buttonArrowImg2}
-                    loading="lazy"
-                  />
-                </div>
-              </button>
-              <div className={styles.buttonTextDiv}>
-                <div className={styles.subheadingBlueFormOverlay}>
-                  {content?.submitReassurance || "Don't worry, we won't spam you"}
-                </div>
-              </div>
-            </div>
+            <FormField
+              name="name"
+              type="text"
+              placeholder={content?.namePlaceholder || 'Your name...'}
+              value={formData.name}
+              onChange={handleInputChange}
+              required
+            />
+            <FormField
+              name="email"
+              type="email"
+              placeholder={content?.emailPlaceholder || 'Your email...'}
+              value={formData.email}
+              onChange={handleInputChange}
+              required
+            />
+            <FormField
+              name="artist"
+              type="text"
+              placeholder={content?.artistPlaceholder || 'Your artist...'}
+              value={formData.artist}
+              onChange={handleInputChange}
+              label={content?.artistLabel || "Name an emerging artist you'd invest in"}
+              className={styles.formFieldTpArt}
+            />
+            <SubmitButton
+              buttonText={content?.submitButtonText || 'Pre-Register'}
+              reassuranceText={content?.submitReassurance || "Don't worry, we won't spam you"}
+            />
           </form>
           
           {/* Success Message */}

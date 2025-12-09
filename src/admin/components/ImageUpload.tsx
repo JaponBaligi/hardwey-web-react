@@ -3,7 +3,6 @@ import styles from './ImageUpload.module.css';
 interface ImageUploadProps {
   onUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
   fileRef?: React.RefObject<HTMLInputElement | null>;
-  label?: string;
   hint?: string;
   previewUrl?: string;
   className?: string;
@@ -12,7 +11,6 @@ interface ImageUploadProps {
 export function ImageUpload({ 
   onUpload, 
   fileRef, 
-  label = 'Upload Image',
   hint = 'Or upload an image',
   previewUrl,
   className 

@@ -1,4 +1,12 @@
-export default function Preview({ data }: { data: any }) {
+import type { LinkItem } from '@/types/content';
+
+interface PreviewData {
+  text?: string;
+  images?: string[];
+  links?: LinkItem[];
+}
+
+export default function Preview({ data }: { data: PreviewData | null | undefined }) {
   if (!data) return null;
   return (
     <div style={{ border: '1px dashed #aaa', padding: 12, borderRadius: 6 }}>
@@ -11,7 +19,7 @@ export default function Preview({ data }: { data: any }) {
       )}
       {Array.isArray(data.links) && data.links.length > 0 && (
         <ul>
-          {data.links.map((l: any, i: number) => (<li key={i}><a href={l.url} target="_blank" rel="noreferrer">{l.label}</a></li>))}
+          {data.links.map((l: LinkItem, i: number) => (<li key={i}><a href={l.url} target="_blank" rel="noreferrer">{l.label}</a></li>))}
         </ul>
       )}
     </div>

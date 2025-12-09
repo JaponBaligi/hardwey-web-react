@@ -1,6 +1,8 @@
-import { SectionEditorProps } from './types';
+import type { SectionEditorProps } from './types';
 import { FormField, TextInput, TextAreaInput } from '../components/FormField';
 import { ImageUpload } from '../components/ImageUpload';
+import { getStringValue, getArrayValue } from '../utils/dataHelpers';
+import type { PartnerItem } from '@/types/content';
 import styles from './PartnersEditor.module.css';
 
 export function PartnersEditor({ 
@@ -9,7 +11,7 @@ export function PartnersEditor({
   setErr,
   uploadImage
 }: SectionEditorProps) {
-  const partners = data.partners || [];
+  const partners = getArrayValue<PartnerItem>(data, 'partners');
 
   const addPartner = () => {
     const newPartner = {
@@ -26,11 +28,11 @@ export function PartnersEditor({
   };
 
   const removePartner = (idx: number) => {
-    const next = partners.filter((_: any, i: number) => i !== idx);
+    const next = partners.filter((_: PartnerItem, i: number) => i !== idx);
     setData({ ...data, partners: next });
   };
 
-  const updatePartner = (idx: number, field: string, value: any) => {
+  const updatePartner = (idx: number, field: string, value: string) => {
     const next = [...partners];
     next[idx] = { ...next[idx], [field]: value };
     setData({ ...data, partners: next });
@@ -41,8 +43,9 @@ export function PartnersEditor({
     try {
       const { url } = await uploadImage(file);
       updatePartner(idx, 'imageUrl', url);
-    } catch (err: any) {
-      setErr(err.message || 'Failed to upload image');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to upload image';
+      setErr(message);
     }
   };
 
@@ -55,7 +58,7 @@ export function PartnersEditor({
 
   const removeSocialLink = (partnerIdx: number, socialIdx: number) => {
     const next = [...partners];
-    const socialLinks = (next[partnerIdx].socialLinks || []).filter((_: any, i: number) => i !== socialIdx);
+    const socialLinks = (next[partnerIdx].socialLinks || []).filter((_: { platform: string; url: string }, i: number) => i !== socialIdx);
     next[partnerIdx] = { ...next[partnerIdx], socialLinks };
     setData({ ...data, partners: next });
   };
@@ -72,7 +75,7 @@ export function PartnersEditor({
     <>
       <FormField label="Page Title">
         <TextInput
-          value={data.pageTitle || ''}
+          value={getStringValue(data, 'pageTitle')}
           onChange={value => setData({ ...data, pageTitle: value })}
           placeholder="Our Partners"
         />
@@ -80,7 +83,7 @@ export function PartnersEditor({
 
       <FormField label="Page Subtitle">
         <TextInput
-          value={data.pageSubtitle || ''}
+          value={getStringValue(data, 'pageSubtitle')}
           onChange={value => setData({ ...data, pageSubtitle: value })}
           placeholder="Building the future of music investment together"
         />
@@ -102,7 +105,7 @@ export function PartnersEditor({
             No partners yet. Click "Add Partner" to add one.
           </div>
         )}
-        {partners.map((partner: any, idx: number) => (
+        {partners.map((partner: PartnerItem, idx: number) => (
           <div key={partner.id || idx} className={styles.partnerItem}>
             <div className={styles.partnerItemHeader}>
               <h4 className={styles.partnerItemTitle}>Partner {idx + 1}</h4>
@@ -187,7 +190,7 @@ export function PartnersEditor({
                   Add Social Link
                 </button>
               </div>
-              {(partner.socialLinks || []).map((social: any, socialIdx: number) => (
+              {(partner.socialLinks || []).map((social: { platform: string; url: string }, socialIdx: number) => (
                 <div key={socialIdx} className={styles.socialLinkRow}>
                   <TextInput
                     placeholder="Platform (e.g., Twitter, LinkedIn)"

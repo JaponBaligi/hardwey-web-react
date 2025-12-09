@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
-// @ts-ignore
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore - lottie-web doesn't have TypeScript definitions
 import lottie from 'lottie-web';
 import { useContent } from '@/hooks/useContent';
 import type { IntroSection as IntroContent } from '@/types/content';
@@ -9,22 +10,36 @@ interface IntroSectionProps {
   className?: string;
 }
 
-/**
- * @param className 
- */
-export const IntroSection: React.FC<IntroSectionProps> = ({ className = '' }) => {
-  const sectionRef = useRef<HTMLElement>(null);
-  const lottieContainerRef = useRef<HTMLDivElement>(null);
-  const subFlexRef = useRef<HTMLDivElement>(null);
-  const { data: content } = useContent<IntroContent>('intro', {
-    heading: 'invest in artists',
-    headingMobile: 'Invest in artists, it hits different.',
-    subheadingWords: ['it', 'hits', 'different'],
-    comingSoon: 'Coming soon',
-    date: '(?/?/2026)',
-    welcomeText: 'Welcome to HARDWEY',
-  });
+// Helper function to get subheading class based on index
+function getSubheadingClass(idx: number, totalLength: number): string {
+  if (idx === 0) return styles.subheadingLeft;
+  if (idx === totalLength - 1) return styles.subheadingRight;
+  return styles.subheadingDesktop;
+}
 
+// Helper component for subheading words
+interface SubheadingWordsProps {
+  words: string[];
+}
+
+function SubheadingWords({ words }: SubheadingWordsProps) {
+  const totalLength = words.length;
+  return (
+    <>
+      {words.map((word, idx) => (
+        <div
+          key={idx}
+          className={`${styles.subheading} ${getSubheadingClass(idx, totalLength)}`}
+        >
+          {word}
+        </div>
+      ))}
+    </>
+  );
+}
+
+// Hook for subheading animation
+function useSubheadingAnimation(subFlexRef: React.RefObject<HTMLDivElement | null>) {
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -44,8 +59,11 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ className = '' }) =>
     }
 
     return () => observer.disconnect();
-  }, []);
+  }, [subFlexRef]);
+}
 
+// Hook for lottie animation
+function useLottieAnimation(lottieContainerRef: React.RefObject<HTMLDivElement | null>) {
   useEffect(() => {
     if (lottieContainerRef.current) {
       const animation = lottie.loadAnimation({
@@ -75,7 +93,27 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ className = '' }) =>
         playObserver.disconnect();
       };
     }
-  }, []);
+  }, [lottieContainerRef]);
+}
+
+/**
+ * @param className 
+ */
+export const IntroSection: React.FC<IntroSectionProps> = ({ className = '' }) => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const lottieContainerRef = useRef<HTMLDivElement>(null);
+  const subFlexRef = useRef<HTMLDivElement>(null);
+  const { data: content } = useContent<IntroContent>('intro', {
+    heading: 'invest in artists',
+    headingMobile: 'Invest in artists, it hits different.',
+    subheadingWords: ['it', 'hits', 'different'],
+    comingSoon: 'Coming soon',
+    date: '(?/?/2026)',
+    welcomeText: 'Welcome to HARDWEY',
+  });
+
+  useSubheadingAnimation(subFlexRef);
+  useLottieAnimation(lottieContainerRef);
 
   return (
     <section
@@ -106,16 +144,7 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ className = '' }) =>
 
       {/* Intro Sub Flex */}
       <div ref={subFlexRef} className={`${styles.introSubFlex} ${styles.introSubFlexIntro}`}>
-        {(content?.subheadingWords || ['it', 'hits', 'different']).map((word, idx) => (
-          <div
-            key={idx}
-            className={`${styles.subheading} ${
-              idx === 0 ? styles.subheadingLeft : idx === (content?.subheadingWords?.length || 3) - 1 ? styles.subheadingRight : styles.subheadingDesktop
-            }`}
-          >
-            {word}
-          </div>
-        ))}
+        <SubheadingWords words={content?.subheadingWords || ['it', 'hits', 'different']} />
       </div>
 
       {/* Intro Heading Container Second */}

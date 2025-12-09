@@ -1,9 +1,459 @@
-import { SectionEditorProps } from './types';
+import type { SectionEditorProps } from './types';
 import { FormField, TextInput, TextAreaInput } from '../components/FormField';
+import { getStringValue, getArrayValue } from '../utils/dataHelpers';
 import styles from './PrivacyPolicyTermsEditor.module.css';
 
 interface PrivacyPolicyTermsEditorProps extends SectionEditorProps {
   section: string;
+}
+
+interface PolicySection {
+  title: string;
+  paragraphs: string[];
+  lists?: string[][];
+  disclaimer?: {
+    title?: string;
+    text?: string;
+  };
+  contactInfo?: {
+    email?: string;
+    address?: string;
+  };
+}
+
+interface ParagraphsSectionProps {
+  paragraphs: string[];
+  secIdx: number;
+  onAddParagraph: (idx: number) => void;
+  onRemoveParagraph: (idx: number, paraIdx: number) => void;
+  onUpdateParagraph: (idx: number, paraIdx: number, value: string) => void;
+}
+
+function ParagraphsSection({
+  paragraphs,
+  secIdx,
+  onAddParagraph,
+  onRemoveParagraph,
+  onUpdateParagraph,
+}: ParagraphsSectionProps) {
+  return (
+    <div className={styles.paragraphsSection}>
+      <div className={styles.subSectionHeader}>
+        <label className={styles.subLabel}>Paragraphs</label>
+        <button
+          onClick={() => onAddParagraph(secIdx)}
+          className={styles.addTinyButton}
+        >
+          Add
+        </button>
+      </div>
+      {paragraphs.map((para: string, paraIdx: number) => (
+        <div key={paraIdx} className={styles.paragraphRow}>
+          <TextAreaInput
+            value={para}
+            onChange={value => onUpdateParagraph(secIdx, paraIdx, value)}
+            rows={2}
+            placeholder="Paragraph text..."
+          />
+          <button
+            onClick={() => onRemoveParagraph(secIdx, paraIdx)}
+            className={styles.removeTinyButton}
+          >
+            ✕
+          </button>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+interface ListsSectionProps {
+  lists: string[][];
+  secIdx: number;
+  onAddList: (idx: number) => void;
+  onRemoveList: (idx: number, listIdx: number) => void;
+  onAddListItem: (idx: number, listIdx: number) => void;
+  onRemoveListItem: (idx: number, listIdx: number, itemIdx: number) => void;
+  onUpdateListItem: (idx: number, listIdx: number, itemIdx: number, value: string) => void;
+}
+
+function ListsSection({
+  lists,
+  secIdx,
+  onAddList,
+  onRemoveList,
+  onAddListItem,
+  onRemoveListItem,
+  onUpdateListItem,
+}: ListsSectionProps) {
+  return (
+    <div className={styles.listsSection}>
+      <div className={styles.subSectionHeader}>
+        <label className={styles.subLabel}>Lists</label>
+        <button
+          onClick={() => onAddList(secIdx)}
+          className={styles.addTinyButton}
+        >
+          Add List
+        </button>
+      </div>
+      {lists.map((list: string[], listIdx: number) => (
+        <div key={listIdx} className={styles.listContainer}>
+          <div className={styles.listHeader}>
+            <label className={styles.listLabel}>List {listIdx + 1}</label>
+            <button
+              onClick={() => onRemoveList(secIdx, listIdx)}
+              className={styles.removeMicroButton}
+            >
+              Remove
+            </button>
+          </div>
+          {list.map((item: string, itemIdx: number) => (
+            <div key={itemIdx} className={styles.listItemRow}>
+              <TextInput
+                value={item}
+                onChange={value => onUpdateListItem(secIdx, listIdx, itemIdx, value)}
+                placeholder={`List item ${itemIdx + 1}`}
+                className={styles.listItemInput}
+              />
+              <button
+                onClick={() => onRemoveListItem(secIdx, listIdx, itemIdx)}
+                className={styles.removeTinyButton}
+              >
+                ✕
+              </button>
+            </div>
+          ))}
+          <button
+            onClick={() => onAddListItem(secIdx, listIdx)}
+            className={styles.addTinyButton}
+          >
+            + Add Item
+          </button>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+interface DisclaimerSectionProps {
+  disclaimer?: {
+    title?: string;
+    text?: string;
+  };
+  secIdx: number;
+  onUpdateDisclaimer: (idx: number, field: 'title' | 'text', value: string) => void;
+  onRemoveDisclaimer: (idx: number) => void;
+}
+
+function DisclaimerSection({
+  disclaimer,
+  secIdx,
+  onUpdateDisclaimer,
+  onRemoveDisclaimer,
+}: DisclaimerSectionProps) {
+  const hasContent = disclaimer?.title || disclaimer?.text;
+
+  return (
+    <div className={styles.disclaimerSection}>
+      <FormField label="Disclaimer (Optional)">
+        <TextInput
+          value={disclaimer?.title || ''}
+          onChange={value => onUpdateDisclaimer(secIdx, 'title', value)}
+          placeholder="Disclaimer title"
+        />
+        <TextAreaInput
+          value={disclaimer?.text || ''}
+          onChange={value => onUpdateDisclaimer(secIdx, 'text', value)}
+          rows={3}
+          placeholder="Disclaimer text"
+        />
+        {hasContent && (
+          <button
+            onClick={() => onRemoveDisclaimer(secIdx)}
+            className={styles.removeTinyButton}
+          >
+            Remove Disclaimer
+          </button>
+        )}
+      </FormField>
+    </div>
+  );
+}
+
+interface ContactInfoSectionProps {
+  contactInfo?: {
+    email?: string;
+    address?: string;
+  };
+  secIdx: number;
+  onUpdateContactInfo: (idx: number, field: 'email' | 'address', value: string) => void;
+  onRemoveContactInfo: (idx: number) => void;
+}
+
+function ContactInfoSection({
+  contactInfo,
+  secIdx,
+  onUpdateContactInfo,
+  onRemoveContactInfo,
+}: ContactInfoSectionProps) {
+  const hasContent = contactInfo?.email || contactInfo?.address;
+
+  return (
+    <div className={styles.contactInfoSection}>
+      <FormField label="Contact Info (Optional)">
+        <TextInput
+          type="email"
+          value={contactInfo?.email || ''}
+          onChange={value => onUpdateContactInfo(secIdx, 'email', value)}
+          placeholder="Email address"
+        />
+        <TextInput
+          value={contactInfo?.address || ''}
+          onChange={value => onUpdateContactInfo(secIdx, 'address', value)}
+          placeholder="Physical address"
+        />
+        {hasContent && (
+          <button
+            onClick={() => onRemoveContactInfo(secIdx)}
+            className={styles.removeTinyButton}
+          >
+            Remove Contact Info
+          </button>
+        )}
+      </FormField>
+    </div>
+  );
+}
+
+interface PolicySectionItemProps {
+  section: PolicySection;
+  secIdx: number;
+  sectionType: string;
+  onUpdateTitle: (idx: number, value: string) => void;
+  onRemove: (idx: number) => void;
+  onAddParagraph: (idx: number) => void;
+  onRemoveParagraph: (idx: number, paraIdx: number) => void;
+  onUpdateParagraph: (idx: number, paraIdx: number, value: string) => void;
+  onAddList: (idx: number) => void;
+  onRemoveList: (idx: number, listIdx: number) => void;
+  onAddListItem: (idx: number, listIdx: number) => void;
+  onRemoveListItem: (idx: number, listIdx: number, itemIdx: number) => void;
+  onUpdateListItem: (idx: number, listIdx: number, itemIdx: number, value: string) => void;
+  onUpdateDisclaimer: (idx: number, field: 'title' | 'text', value: string) => void;
+  onRemoveDisclaimer: (idx: number) => void;
+  onUpdateContactInfo: (idx: number, field: 'email' | 'address', value: string) => void;
+  onRemoveContactInfo: (idx: number) => void;
+}
+
+function PolicySectionItem({
+  section: sec,
+  secIdx,
+  sectionType,
+  onUpdateTitle,
+  onRemove,
+  onAddParagraph,
+  onRemoveParagraph,
+  onUpdateParagraph,
+  onAddList,
+  onRemoveList,
+  onAddListItem,
+  onRemoveListItem,
+  onUpdateListItem,
+  onUpdateDisclaimer,
+  onRemoveDisclaimer,
+  onUpdateContactInfo,
+  onRemoveContactInfo
+}: PolicySectionItemProps) {
+  return (
+    <div className={styles.sectionItem}>
+      <div className={styles.sectionItemHeader}>
+        <h4 className={styles.sectionItemTitle}>Section {secIdx + 1}</h4>
+        <button
+          onClick={() => onRemove(secIdx)}
+          className={styles.removeTinyButton}
+        >
+          Remove
+        </button>
+      </div>
+
+      <FormField label="Title">
+        <TextInput
+          value={sec.title || ''}
+          onChange={value => onUpdateTitle(secIdx, value)}
+          placeholder="Section title"
+        />
+      </FormField>
+
+      <ParagraphsSection
+        paragraphs={sec.paragraphs || []}
+        secIdx={secIdx}
+        onAddParagraph={onAddParagraph}
+        onRemoveParagraph={onRemoveParagraph}
+        onUpdateParagraph={onUpdateParagraph}
+      />
+
+      <ListsSection
+        lists={sec.lists || []}
+        secIdx={secIdx}
+        onAddList={onAddList}
+        onRemoveList={onRemoveList}
+        onAddListItem={onAddListItem}
+        onRemoveListItem={onRemoveListItem}
+        onUpdateListItem={onUpdateListItem}
+      />
+
+      {sectionType === 'terms' && (
+        <DisclaimerSection
+          disclaimer={sec.disclaimer}
+          secIdx={secIdx}
+          onUpdateDisclaimer={onUpdateDisclaimer}
+          onRemoveDisclaimer={onRemoveDisclaimer}
+        />
+      )}
+
+      <ContactInfoSection
+        contactInfo={sec.contactInfo}
+        secIdx={secIdx}
+        onUpdateContactInfo={onUpdateContactInfo}
+        onRemoveContactInfo={onRemoveContactInfo}
+      />
+    </div>
+  );
+}
+
+interface IntroSectionProps {
+  introText: string[];
+  onAddParagraph: () => void;
+  onRemoveParagraph: (idx: number) => void;
+  onUpdateParagraph: (idx: number, value: string) => void;
+}
+
+function IntroSection({
+  introText,
+  onAddParagraph,
+  onRemoveParagraph,
+  onUpdateParagraph,
+}: IntroSectionProps) {
+  return (
+    <div className={styles.introSection}>
+      <div className={styles.sectionHeader}>
+        <label className={styles.sectionLabel}>
+          Intro Text {introText.length > 0 && (
+            <span className={styles.count}>({introText.length} paragraph{introText.length !== 1 ? 's' : ''})</span>
+          )}
+        </label>
+        <button onClick={onAddParagraph} className={styles.addSmallButton}>
+          Add Paragraph
+        </button>
+      </div>
+      {introText.length === 0 && (
+        <div className={styles.emptySubState}>
+          No intro paragraphs. Click "Add Paragraph" to add one.
+        </div>
+      )}
+      {introText.map((para: string, idx: number) => (
+        <div key={idx} className={styles.introParagraph}>
+          <div className={styles.textAreaRow}>
+            <TextAreaInput
+              value={para}
+              onChange={value => onUpdateParagraph(idx, value)}
+              rows={3}
+              placeholder="Enter intro paragraph..."
+            />
+            <button
+              onClick={() => onRemoveParagraph(idx)}
+              className={styles.removeSmallButton}
+            >
+              Remove
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+interface SectionsContainerProps {
+  sections: PolicySection[];
+  sectionType: string;
+  onAddSection: () => void;
+  onUpdateTitle: (idx: number, value: string) => void;
+  onRemoveSection: (idx: number) => void;
+  onAddParagraph: (idx: number) => void;
+  onRemoveParagraph: (idx: number, paraIdx: number) => void;
+  onUpdateParagraph: (idx: number, paraIdx: number, value: string) => void;
+  onAddList: (idx: number) => void;
+  onRemoveList: (idx: number, listIdx: number) => void;
+  onAddListItem: (idx: number, listIdx: number) => void;
+  onRemoveListItem: (idx: number, listIdx: number, itemIdx: number) => void;
+  onUpdateListItem: (idx: number, listIdx: number, itemIdx: number, value: string) => void;
+  onUpdateDisclaimer: (idx: number, field: 'title' | 'text', value: string) => void;
+  onRemoveDisclaimer: (idx: number) => void;
+  onUpdateContactInfo: (idx: number, field: 'email' | 'address', value: string) => void;
+  onRemoveContactInfo: (idx: number) => void;
+}
+
+function SectionsContainer({
+  sections,
+  sectionType,
+  onAddSection,
+  onUpdateTitle,
+  onRemoveSection,
+  onAddParagraph,
+  onRemoveParagraph,
+  onUpdateParagraph,
+  onAddList,
+  onRemoveList,
+  onAddListItem,
+  onRemoveListItem,
+  onUpdateListItem,
+  onUpdateDisclaimer,
+  onRemoveDisclaimer,
+  onUpdateContactInfo,
+  onRemoveContactInfo,
+}: SectionsContainerProps) {
+  return (
+    <div className={styles.sectionsContainer}>
+      <div className={styles.sectionHeader}>
+        <label className={styles.sectionLabel}>
+          Sections {sections.length > 0 && (
+            <span className={styles.count}>({sections.length} section{sections.length !== 1 ? 's' : ''})</span>
+          )}
+        </label>
+        <button onClick={onAddSection} className={styles.addButton}>
+          Add Section
+        </button>
+      </div>
+      {sections.length === 0 && (
+        <div className={styles.emptySubState}>
+          No sections yet. Click "Add Section" to add one, or check the "Current (server)" JSON below to see what data exists.
+        </div>
+      )}
+      {sections.map((sec: PolicySection, secIdx: number) => (
+        <PolicySectionItem
+          key={secIdx}
+          section={sec}
+          secIdx={secIdx}
+          sectionType={sectionType}
+          onUpdateTitle={onUpdateTitle}
+          onRemove={onRemoveSection}
+          onAddParagraph={onAddParagraph}
+          onRemoveParagraph={onRemoveParagraph}
+          onUpdateParagraph={onUpdateParagraph}
+          onAddList={onAddList}
+          onRemoveList={onRemoveList}
+          onAddListItem={onAddListItem}
+          onRemoveListItem={onRemoveListItem}
+          onUpdateListItem={onUpdateListItem}
+          onUpdateDisclaimer={onUpdateDisclaimer}
+          onRemoveDisclaimer={onRemoveDisclaimer}
+          onUpdateContactInfo={onUpdateContactInfo}
+          onRemoveContactInfo={onRemoveContactInfo}
+        />
+      ))}
+    </div>
+  );
 }
 
 export function PrivacyPolicyTermsEditor({ 
@@ -11,8 +461,8 @@ export function PrivacyPolicyTermsEditor({
   setData,
   section
 }: PrivacyPolicyTermsEditorProps) {
-  const introText = data.introText || [];
-  const sections = data.sections || [];
+  const introText = getArrayValue<string>(data, 'introText');
+  const sections = getArrayValue<PolicySection>(data, 'sections');
 
   const addIntroParagraph = () => {
     setData({ ...data, introText: [...introText, ''] });
@@ -77,25 +527,33 @@ export function PrivacyPolicyTermsEditor({
 
   const removeSectionList = (secIdx: number, listIdx: number) => {
     const updated = [...sections];
-    updated[secIdx].lists.splice(listIdx, 1);
+    if (updated[secIdx]?.lists) {
+      updated[secIdx].lists.splice(listIdx, 1);
+    }
     setData({ ...data, sections: updated });
   };
 
   const addListItem = (secIdx: number, listIdx: number) => {
     const updated = [...sections];
-    updated[secIdx].lists[listIdx].push('');
+    if (updated[secIdx]?.lists?.[listIdx]) {
+      updated[secIdx].lists[listIdx].push('');
+    }
     setData({ ...data, sections: updated });
   };
 
   const removeListItem = (secIdx: number, listIdx: number, itemIdx: number) => {
     const updated = [...sections];
-    updated[secIdx].lists[listIdx].splice(itemIdx, 1);
+    if (updated[secIdx]?.lists?.[listIdx]) {
+      updated[secIdx].lists[listIdx].splice(itemIdx, 1);
+    }
     setData({ ...data, sections: updated });
   };
 
   const updateListItem = (secIdx: number, listIdx: number, itemIdx: number, value: string) => {
     const updated = [...sections];
-    updated[secIdx].lists[listIdx][itemIdx] = value;
+    if (updated[secIdx]?.lists?.[listIdx]?.[itemIdx] !== undefined) {
+      updated[secIdx].lists[listIdx][itemIdx] = value;
+    }
     setData({ ...data, sections: updated });
   };
 
@@ -129,9 +587,12 @@ export function PrivacyPolicyTermsEditor({
     setData({ ...data, sections: updated });
   };
 
+  const isEmpty = sections.length === 0 && introText.length === 0;
+  const pageTitlePlaceholder = section === 'privacyPolicy' ? 'Privacy Policy' : 'Terms of Service';
+
   return (
     <>
-      {(sections.length === 0 && introText.length === 0) && (
+      {isEmpty && (
         <div className={styles.emptyState}>
           No content loaded. If you have existing content, try clicking "Reload current" or check the JSON view below.
         </div>
@@ -139,223 +600,50 @@ export function PrivacyPolicyTermsEditor({
 
       <FormField label="Page Title">
         <TextInput
-          value={data.pageTitle || ''}
+          value={getStringValue(data, 'pageTitle')}
           onChange={value => setData({ ...data, pageTitle: value })}
-          placeholder={section === 'privacyPolicy' ? 'Privacy Policy' : 'Terms of Service'}
+          placeholder={pageTitlePlaceholder}
         />
       </FormField>
 
       <FormField label="Last Updated">
         <TextInput
-          value={data.lastUpdated || ''}
+          value={getStringValue(data, 'lastUpdated')}
           onChange={value => setData({ ...data, lastUpdated: value })}
           placeholder="October 11th, 2025"
         />
       </FormField>
 
-      <div className={styles.introSection}>
-        <div className={styles.sectionHeader}>
-          <label className={styles.sectionLabel}>
-            Intro Text {introText.length > 0 && (
-              <span className={styles.count}>({introText.length} paragraph{introText.length !== 1 ? 's' : ''})</span>
-            )}
-          </label>
-          <button onClick={addIntroParagraph} className={styles.addSmallButton}>
-            Add Paragraph
-          </button>
-        </div>
-        {introText.length === 0 && (
-          <div className={styles.emptySubState}>
-            No intro paragraphs. Click "Add Paragraph" to add one.
-          </div>
-        )}
-        {introText.map((para: string, idx: number) => (
-          <div key={idx} className={styles.introParagraph}>
-            <div className={styles.textAreaRow}>
-              <TextAreaInput
-                value={para}
-                onChange={value => updateIntroParagraph(idx, value)}
-                rows={3}
-                placeholder="Enter intro paragraph..."
-              />
-              <button
-                onClick={() => removeIntroParagraph(idx)}
-                className={styles.removeSmallButton}
-              >
-                Remove
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+      <IntroSection
+        introText={introText}
+        onAddParagraph={addIntroParagraph}
+        onRemoveParagraph={removeIntroParagraph}
+        onUpdateParagraph={updateIntroParagraph}
+      />
 
-      <div className={styles.sectionsContainer}>
-        <div className={styles.sectionHeader}>
-          <label className={styles.sectionLabel}>
-            Sections {sections.length > 0 && (
-              <span className={styles.count}>({sections.length} section{sections.length !== 1 ? 's' : ''})</span>
-            )}
-          </label>
-          <button onClick={addSection} className={styles.addButton}>
-            Add Section
-          </button>
-        </div>
-        {sections.length === 0 && (
-          <div className={styles.emptySubState}>
-            No sections yet. Click "Add Section" to add one, or check the "Current (server)" JSON below to see what data exists.
-          </div>
-        )}
-        {sections.map((sec: any, secIdx: number) => (
-          <div key={secIdx} className={styles.sectionItem}>
-            <div className={styles.sectionItemHeader}>
-              <h4 className={styles.sectionItemTitle}>Section {secIdx + 1}</h4>
-              <button
-                onClick={() => removeSection(secIdx)}
-                className={styles.removeTinyButton}
-              >
-                Remove
-              </button>
-            </div>
-
-            <FormField label="Title">
-              <TextInput
-                value={sec.title || ''}
-                onChange={value => updateSectionTitle(secIdx, value)}
-                placeholder="Section title"
-              />
-            </FormField>
-
-            <div className={styles.paragraphsSection}>
-              <div className={styles.subSectionHeader}>
-                <label className={styles.subLabel}>Paragraphs</label>
-                <button
-                  onClick={() => addSectionParagraph(secIdx)}
-                  className={styles.addTinyButton}
-                >
-                  Add
-                </button>
-              </div>
-              {(sec.paragraphs || []).map((para: string, paraIdx: number) => (
-                <div key={paraIdx} className={styles.paragraphRow}>
-                  <TextAreaInput
-                    value={para}
-                    onChange={value => updateSectionParagraph(secIdx, paraIdx, value)}
-                    rows={2}
-                    placeholder="Paragraph text..."
-                  />
-                  <button
-                    onClick={() => removeSectionParagraph(secIdx, paraIdx)}
-                    className={styles.removeTinyButton}
-                  >
-                    ✕
-                  </button>
-                </div>
-              ))}
-            </div>
-
-            <div className={styles.listsSection}>
-              <div className={styles.subSectionHeader}>
-                <label className={styles.subLabel}>Lists</label>
-                <button
-                  onClick={() => addSectionList(secIdx)}
-                  className={styles.addTinyButton}
-                >
-                  Add List
-                </button>
-              </div>
-              {(sec.lists || []).map((list: string[], listIdx: number) => (
-                <div key={listIdx} className={styles.listContainer}>
-                  <div className={styles.listHeader}>
-                    <label className={styles.listLabel}>List {listIdx + 1}</label>
-                    <button
-                      onClick={() => removeSectionList(secIdx, listIdx)}
-                      className={styles.removeMicroButton}
-                    >
-                      Remove
-                    </button>
-                  </div>
-                  {list.map((item: string, itemIdx: number) => (
-                    <div key={itemIdx} className={styles.listItemRow}>
-                      <TextInput
-                        value={item}
-                        onChange={value => updateListItem(secIdx, listIdx, itemIdx, value)}
-                        placeholder={`List item ${itemIdx + 1}`}
-                        className={styles.listItemInput}
-                      />
-                      <button
-                        onClick={() => removeListItem(secIdx, listIdx, itemIdx)}
-                        className={styles.removeTinyButton}
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  ))}
-                  <button
-                    onClick={() => addListItem(secIdx, listIdx)}
-                    className={styles.addTinyButton}
-                  >
-                    + Add Item
-                  </button>
-                </div>
-              ))}
-            </div>
-
-            {section === 'terms' && (
-              <div className={styles.disclaimerSection}>
-                <FormField label="Disclaimer (Optional)">
-                  <TextInput
-                    value={sec.disclaimer?.title || ''}
-                    onChange={value => updateDisclaimer(secIdx, 'title', value)}
-                    placeholder="Disclaimer title"
-                  />
-                  <TextAreaInput
-                    value={sec.disclaimer?.text || ''}
-                    onChange={value => updateDisclaimer(secIdx, 'text', value)}
-                    rows={3}
-                    placeholder="Disclaimer text"
-                  />
-                  {(sec.disclaimer?.title || sec.disclaimer?.text) && (
-                    <button
-                      onClick={() => removeDisclaimer(secIdx)}
-                      className={styles.removeTinyButton}
-                    >
-                      Remove Disclaimer
-                    </button>
-                  )}
-                </FormField>
-              </div>
-            )}
-
-            <div className={styles.contactInfoSection}>
-              <FormField label="Contact Info (Optional)">
-                <TextInput
-                  type="email"
-                  value={sec.contactInfo?.email || ''}
-                  onChange={value => updateContactInfo(secIdx, 'email', value)}
-                  placeholder="Email address"
-                />
-                <TextInput
-                  value={sec.contactInfo?.address || ''}
-                  onChange={value => updateContactInfo(secIdx, 'address', value)}
-                  placeholder="Physical address"
-                />
-                {(sec.contactInfo?.email || sec.contactInfo?.address) && (
-                  <button
-                    onClick={() => removeContactInfo(secIdx)}
-                    className={styles.removeTinyButton}
-                  >
-                    Remove Contact Info
-                  </button>
-                )}
-              </FormField>
-            </div>
-          </div>
-        ))}
-      </div>
+      <SectionsContainer
+        sections={sections}
+        sectionType={section}
+        onAddSection={addSection}
+        onUpdateTitle={updateSectionTitle}
+        onRemoveSection={removeSection}
+        onAddParagraph={addSectionParagraph}
+        onRemoveParagraph={removeSectionParagraph}
+        onUpdateParagraph={updateSectionParagraph}
+        onAddList={addSectionList}
+        onRemoveList={removeSectionList}
+        onAddListItem={addListItem}
+        onRemoveListItem={removeListItem}
+        onUpdateListItem={updateListItem}
+        onUpdateDisclaimer={updateDisclaimer}
+        onRemoveDisclaimer={removeDisclaimer}
+        onUpdateContactInfo={updateContactInfo}
+        onRemoveContactInfo={removeContactInfo}
+      />
 
       <FormField label="Footer Button Text">
         <TextInput
-          value={data.footerButtonText || ''}
+          value={getStringValue(data, 'footerButtonText')}
           onChange={value => setData({ ...data, footerButtonText: value })}
           placeholder="Contact Us"
         />
@@ -364,7 +652,7 @@ export function PrivacyPolicyTermsEditor({
       <FormField label="Footer Button Email">
         <TextInput
           type="email"
-          value={data.footerButtonEmail || ''}
+          value={getStringValue(data, 'footerButtonEmail')}
           onChange={value => setData({ ...data, footerButtonEmail: value })}
           placeholder="hello@hardweyllc.com"
         />

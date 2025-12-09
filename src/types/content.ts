@@ -125,7 +125,7 @@ export interface JoinUsSectionType extends BaseSection {
   joinTeamText?: string;
   joinTeamUrl?: string;
 }
-export interface FooterSection extends BaseSection { }
+export type FooterSection = BaseSection;
 
 export interface ErrorPageContent {
   title?: string;
@@ -283,7 +283,7 @@ export const SECTION_KEYS: SectionKey[] = [
   'collaboratives',
 ];
 
-export const SECTION_TEMPLATES: Record<SectionKey, any> = {
+export const SECTION_TEMPLATES: Record<SectionKey, unknown> = {
   home: { text: 'Welcome to Hardwey LLC', images: [], links: [] },
   hero: {
     logoUrl: '/assets/img/hardweybannertext.png',
@@ -807,7 +807,7 @@ export const SECTION_TEMPLATES: Record<SectionKey, any> = {
   },
 };
 
-export function getTemplateFor(section: string): any {
+export function getTemplateFor(section: string): unknown {
   return SECTION_TEMPLATES[(section as SectionKey)] ?? { text: '', images: [], links: [] };
 }
 

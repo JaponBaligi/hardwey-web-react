@@ -52,7 +52,7 @@ export const Navigation: React.FC<NavigationProps> = ({
     setIsModalOpen(false);
   };
 
-  const handleModalSubmit = (_data: { name: string; email: string; artist: string }) => {
+  const handleModalSubmit = () => {
     // Form submission handled by JoinUsModal which opens email client
     // This callback is available for future tracking/logging if needed
   };

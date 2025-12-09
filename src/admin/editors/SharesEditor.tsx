@@ -1,4 +1,4 @@
-import { SectionEditorProps } from './types';
+import type { SectionEditorProps } from './types';
 import { FormField, TextInput, TextAreaInput } from '../components/FormField';
 import { ImageUpload } from '../components/ImageUpload';
 import styles from './SharesEditor.module.css';

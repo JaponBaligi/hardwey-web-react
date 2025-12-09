@@ -1,4 +1,4 @@
-import { SectionEditorProps } from './types';
+import type { SectionEditorProps } from './types';
 import { FormField, TextInput } from '../components/FormField';
 import styles from './TickerEditor.module.css';
 

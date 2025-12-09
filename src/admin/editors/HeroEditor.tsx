@@ -1,6 +1,7 @@
-import { SectionEditorProps } from './types';
+import type { SectionEditorProps } from './types';
 import { FormField, TextInput, TextAreaInput } from '../components/FormField';
 import { ImageUpload } from '../components/ImageUpload';
+import { getStringValue, getArrayValue } from '../utils/dataHelpers';
 import styles from './SectionEditorBase.module.css';
 
 export function HeroEditor({ 
@@ -14,18 +15,21 @@ export function HeroEditor({
   logoFileRef 
 }: SectionEditorProps) {
   function addMotif() {
-    setData((prev: any) => ({ ...prev, motifs: [...(prev.motifs||[]), ''] }));
+    setData((prev) => ({ ...prev, motifs: [...((prev as { motifs?: string[] }).motifs || []), ''] }));
   }
 
   function removeMotif(i: number) {
-    setData((prev: any) => ({ ...prev, motifs: prev.motifs.filter((_: any, idx: number) => idx !== i) }));
+    setData((prev) => {
+      const prevData = prev as { motifs?: string[] };
+      return { ...prevData, motifs: (prevData.motifs || []).filter((_: string, idx: number) => idx !== i) };
+    });
   }
 
   return (
     <>
       <FormField label="Logo URL">
         <TextInput
-          value={data.logoUrl || ''}
+          value={getStringValue(data, 'logoUrl')}
           onChange={value => setData({ ...data, logoUrl: value })}
           placeholder="/assets/img/hardweybannertext.png"
         />
@@ -33,14 +37,14 @@ export function HeroEditor({
           <ImageUpload
             onUpload={onUploadLogo}
             fileRef={logoFileRef}
-            previewUrl={data.logoUrl}
+            previewUrl={getStringValue(data, 'logoUrl') || undefined}
           />
         )}
       </FormField>
 
       <FormField label="MITA Text">
         <TextInput
-          value={data.mitaText || ''}
+          value={getStringValue(data, 'mitaText')}
           onChange={value => setData({ ...data, mitaText: value })}
           placeholder="Music is the answer™"
         />
@@ -48,7 +52,7 @@ export function HeroEditor({
 
       <FormField label="Subtitle">
         <TextInput
-          value={data.subtitle || ''}
+          value={getStringValue(data, 'subtitle')}
           onChange={value => setData({ ...data, subtitle: value })}
           placeholder="A movement in music. Redefining the rules."
         />
@@ -56,7 +60,7 @@ export function HeroEditor({
 
       <FormField label="Background Image URL">
         <TextInput
-          value={data.backgroundImage || ''}
+          value={getStringValue(data, 'backgroundImage')}
           onChange={value => setData({ ...data, backgroundImage: value })}
           placeholder="https://..."
         />
@@ -64,14 +68,14 @@ export function HeroEditor({
           <ImageUpload
             onUpload={onUploadBackground}
             fileRef={backgroundFileRef}
-            previewUrl={data.backgroundImage}
+            previewUrl={getStringValue(data, 'backgroundImage') || undefined}
           />
         )}
       </FormField>
 
       <FormField label="Background Image SrcSet (optional)">
         <TextAreaInput
-          value={data.backgroundImageSrcSet || ''}
+          value={getStringValue(data, 'backgroundImageSrcSet')}
           onChange={value => setData({ ...data, backgroundImageSrcSet: value })}
           rows={3}
           placeholder="/assets/banner/artistlarge1-p-500.jpg 500w, ..."
@@ -80,7 +84,7 @@ export function HeroEditor({
 
       <FormField label="Left Identifier (SVG URL)">
         <TextInput
-          value={data.leftIdentifier || ''}
+          value={getStringValue(data, 'leftIdentifier')}
           onChange={value => setData({ ...data, leftIdentifier: value })}
           placeholder="/assets/svg/investident-hero.svg"
         />
@@ -88,7 +92,7 @@ export function HeroEditor({
 
       <FormField label="Right Identifier (SVG URL)">
         <TextInput
-          value={data.rightIdentifier || ''}
+          value={getStringValue(data, 'rightIdentifier')}
           onChange={value => setData({ ...data, rightIdentifier: value })}
           placeholder="/assets/svg/barcode-ident.svg"
         />
@@ -99,13 +103,14 @@ export function HeroEditor({
           Add Motif
         </button>
         <ul className={styles.list}>
-          {(data.motifs || []).map((motif: string, idx: number) => (
+          {getArrayValue<string>(data, 'motifs').map((motif: string, idx: number) => (
             <li key={idx} className={styles.listItem}>
               <span style={{ marginRight: 8, fontSize: 12, color: '#666' }}>Motif {idx + 1}:</span>
               <TextInput
                 value={motif}
                 onChange={value => {
-                  const next = [...(data.motifs || [])];
+                  const motifs = getArrayValue<string>(data, 'motifs');
+                  const next = [...motifs];
                   next[idx] = value;
                   setData({ ...data, motifs: next });
                 }}

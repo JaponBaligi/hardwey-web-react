@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Login from './Login';
 import ContentList from './ContentList';
 import SectionEditor from './SectionEditor';
@@ -12,14 +12,14 @@ export default function AdminApp() {
   const [current, setCurrent] = useState('');
   const { sections, loadSections, createSection, removeSection, syncKnownSections } = useAdminContent();
 
-  async function load() {
+  const load = useCallback(async () => {
     const me = await getMe();
     setAuth(me.authenticated);
     if (me.authenticated) {
       const content = await loadSections();
       setCurrent(Object.keys(content)[0] || 'home');
     }
-  }
+  }, [loadSections]);
 
   const handleCreateSection = async (name: string) => {
     await createSection(name);
@@ -40,7 +40,7 @@ export default function AdminApp() {
     }
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [load]);
 
   if (!auth) return <Login onLoggedIn={load} />;
 

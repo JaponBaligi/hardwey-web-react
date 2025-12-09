@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 
-let contentCache: Record<string, any> | null = null;
+let contentCache: Record<string, unknown> | null = null;
 let cacheTimestamp = 0;
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
-let cacheInvalidationListeners: Set<() => void> = new Set();
+const cacheInvalidationListeners: Set<() => void> = new Set();
 
-export function useContent<T = any>(sectionKey: string, fallback?: T): { data: T | null; loading: boolean; error: string | null } {
+export function useContent<T = unknown>(sectionKey: string, fallback?: T): { data: T | null; loading: boolean; error: string | null } {
   const [data, setData] = useState<T | null>(fallback || null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -17,7 +17,8 @@ export function useContent<T = any>(sectionKey: string, fallback?: T): { data: T
     
     const now = Date.now();
     if (contentCache && now - cacheTimestamp < CACHE_TTL) {
-      setData(contentCache[sectionKey] || fallback || null);
+      const cachedValue = contentCache[sectionKey];
+      setData((cachedValue !== undefined ? cachedValue as T : fallback) || null);
       setLoading(false);
       return () => {
         cacheInvalidationListeners.delete(listener);
@@ -28,11 +29,12 @@ export function useContent<T = any>(sectionKey: string, fallback?: T): { data: T
     setLoading(true);
     fetch('/api/content')
       .then(r => r.json())
-      .then((json: { content: Record<string, any> }) => {
+      .then((json: { content: Record<string, unknown> }) => {
         if (cancelled) return;
         contentCache = json.content;
         cacheTimestamp = Date.now();
-        setData(json.content[sectionKey] || fallback || null);
+        const contentValue = json.content[sectionKey];
+        setData((contentValue !== undefined ? contentValue as T : fallback) || null);
         setError(null);
       })
       .catch(e => {

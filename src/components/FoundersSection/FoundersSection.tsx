@@ -16,6 +16,226 @@ interface FoundersSectionProps {
   autoPlay?: boolean;
 }
 
+// Helper function to convert FounderItem[] to Founder[]
+function convertFounders(founders: FoundersSectionType['founders']): Founder[] | undefined {
+  return founders?.map(f => ({
+    id: f.id || `founder-${Date.now()}`,
+    name: f.name,
+    role: f.role,
+    bio: f.bio,
+    quote: f.quote,
+    imageUrl: f.imageUrl,
+    additionalInfo: f.additionalInfo || [],
+  }));
+}
+
+// Helper function to resolve founders and content
+function resolveFoundersContent(
+  propsFounders: Founder[] | undefined,
+  content: FoundersSectionType | null | undefined,
+  defaultFounders: Founder[]
+) {
+  const cmsFounders = convertFounders(content?.founders);
+  const founders = propsFounders || cmsFounders || defaultFounders;
+  const heading = founders.length > 1 
+    ? (content?.heading || 'The Founders')
+    : (content?.headingSingular || 'The Founder');
+  const animatedWords = content?.animatedWords || ['long', 'story', 'short'];
+  const animatedTextMobile = content?.animatedTextMobile || 'Long story short';
+  
+  return { founders, heading, animatedWords, animatedTextMobile };
+}
+
+// Component for animated words section
+interface AnimatedWordsProps {
+  animatedWords: string[];
+  animatedTextMobile: string;
+  isTextAnimated: boolean;
+  styles: typeof styles;
+}
+
+const AnimatedWords: React.FC<AnimatedWordsProps> = ({ animatedWords, animatedTextMobile, isTextAnimated, styles }) => {
+  return (
+    <div className={`${styles.missionFlex} ${isTextAnimated ? styles.missionFlexAnimated : styles.missionFlexInitial}`}>
+      {animatedWords.length > 0 && (
+        <>
+          <div className={`${styles.subheading} ${styles.subheadingDesktop} ${styles.subheadingLeft} ${isTextAnimated ? styles.subheadingLeftAnimated : styles.subheadingLeftInitial}`}>
+            {animatedWords[0]}
+          </div>
+          {animatedWords.length > 1 && (
+            <div className={`${styles.subheading} ${styles.subheadingDesktop}`}>
+              {animatedWords[1]}
+            </div>
+          )}
+          {animatedWords.length > 2 && (
+            <div className={`${styles.subheading} ${styles.subheadingDesktop} ${styles.subheadingRight} ${isTextAnimated ? styles.subheadingRightAnimated : styles.subheadingRightInitial}`}>
+              {animatedWords[2]}
+            </div>
+          )}
+        </>
+      )}
+      <div className={`${styles.subheading} ${styles.subheadingMobile}`}>
+        {animatedTextMobile}
+      </div>
+    </div>
+  );
+};
+
+// Component for founder image section
+interface FounderImageSectionProps {
+  founders: Founder[];
+  currentFounder: number;
+  imageSrcSet: string;
+  imageRef: React.RefObject<HTMLImageElement | null>;
+  onImageLoad: () => void;
+  onImageError: () => void;
+  onFounderChange: (index: number) => void;
+  styles: typeof styles;
+}
+
+const FounderImageSection: React.FC<FounderImageSectionProps> = ({
+  founders,
+  currentFounder,
+  imageSrcSet,
+  imageRef,
+  onImageLoad,
+  onImageError,
+  onFounderChange,
+  styles,
+}) => {
+  return (
+    <div className={styles.imageContainer}>
+      <img
+        ref={imageRef}
+        src={founders[currentFounder]?.imageUrl}
+        alt={founders[currentFounder]?.name}
+        className={`${styles.imageFull} ${styles.imageFounder}`}
+        loading="eager"
+        sizes="(max-width: 991px) 98vw, 49vw"
+        srcSet={imageSrcSet}
+        onLoad={onImageLoad}
+        onError={onImageError}
+        style={{ opacity: 0 }}
+      />
+      
+      <div className={styles.imageOverlay} />
+      
+      {founders.length > 1 && (
+        <div className={styles.founderDots}>
+          {founders.map((_, index) => (
+            <button
+              key={index}
+              className={`${styles.dot} ${index === currentFounder ? styles.dotActive : ''}`}
+              onClick={() => onFounderChange(index)}
+              aria-label={`View ${founders[index]?.name}`}
+              type="button"
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Component for founder content section
+interface FounderContentSectionProps {
+  founder: Founder;
+  styles: typeof styles;
+}
+
+const FounderContentSection: React.FC<FounderContentSectionProps> = ({ founder, styles }) => {
+  return (
+    <div className={styles.contentContainer}>
+      <div className={styles.quoteContainer}>
+        <h4 className={styles.heading5}>
+          "{founder?.quote}"
+        </h4>
+        <div className={styles.founderNameLarge}>
+          {founder?.name?.toUpperCase()}
+        </div>
+      </div>
+
+      <p className={styles.bodyCopy}>
+        {founder?.bio}
+      </p>
+
+      {founder?.additionalInfo && (
+        <div className={styles.additionalInfo}>
+          {founder.additionalInfo.map((info, index) => (
+            <p key={index} className={styles.additionalText}>
+              {info}
+            </p>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Component for founder navigation
+interface FounderNavigationProps {
+  founders: Founder[];
+  currentFounder: number;
+  isAnimating: boolean;
+  onFounderChange: (index: number) => void;
+  styles: typeof styles;
+}
+
+const FounderNavigation: React.FC<FounderNavigationProps> = ({
+  founders,
+  currentFounder,
+  isAnimating,
+  onFounderChange,
+  styles,
+}) => {
+  const handlePrevious = () => {
+    const prevIndex = currentFounder === 0 ? founders.length - 1 : currentFounder - 1;
+    onFounderChange(prevIndex);
+  };
+
+  const handleNext = () => {
+    const nextIndex = currentFounder === founders.length - 1 ? 0 : currentFounder + 1;
+    onFounderChange(nextIndex);
+  };
+
+  if (founders.length <= 1) {
+    return null;
+  }
+
+  return (
+    <div className={styles.founderNavigation}>
+      <button
+        className={styles.navButton}
+        onClick={handlePrevious}
+        disabled={isAnimating}
+        aria-label="Previous founder"
+        type="button"
+      >
+        <span className={styles.navArrow}>←</span>
+      </button>
+      
+      <div className={styles.founderInfo}>
+        <span className={styles.founderName}>
+          {founders[currentFounder]?.name}
+        </span>
+        <span className={styles.founderRole}>
+          {founders[currentFounder]?.role}
+        </span>
+      </div>
+      
+      <button
+        className={styles.navButton}
+        onClick={handleNext}
+        disabled={isAnimating}
+        aria-label="Next founder"
+        type="button"
+      >
+        <span className={styles.navArrow}>→</span>
+      </button>
+    </div>
+  );
+};
+
 /**
  * Founders section with founder information and mission statement
  * @param className - Additional CSS classes
@@ -52,27 +272,23 @@ export const FoundersSection: React.FC<FoundersSectionProps> = ({
     animatedTextMobile: 'Long story short',
   });
 
-  // Convert FounderItem[] to Founder[] format for component compatibility
-  const cmsFounders: Founder[] | undefined = content?.founders?.map(f => ({
-    id: f.id || `founder-${Date.now()}`,
-    name: f.name,
-    role: f.role,
-    bio: f.bio,
-    quote: f.quote,
-    imageUrl: f.imageUrl,
-    additionalInfo: f.additionalInfo || [],
-  }));
-
-  const founders = propsFounders || cmsFounders || FOUNDERS;
-  const heading = founders.length > 1 
-    ? (content?.heading || 'The Founders')
-    : (content?.headingSingular || 'The Founder');
-  const animatedWords = content?.animatedWords || ['long', 'story', 'short'];
-  const animatedTextMobile = content?.animatedTextMobile || 'Long story short';
+  const { founders, heading, animatedWords, animatedTextMobile } = resolveFoundersContent(
+    propsFounders,
+    content,
+    defaultFounders
+  );
   
   // Get current founder's imageSrcSet if available
   const currentFounderData = content?.founders?.[currentFounder];
   const imageSrcSet = currentFounderData?.imageSrcSet || '/assets/banner/founder.jpg 500w, /assets/banner/founder.jpg 1080w, /assets/banner/founder.jpg 1610w';
+
+  const startAnimation = React.useCallback(() => {
+    setIsAnimating(true);
+    // Reset animation after completion
+    setTimeout(() => {
+      setIsAnimating(false);
+    }, 2000);
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -92,15 +308,7 @@ export const FoundersSection: React.FC<FoundersSectionProps> = ({
     }
 
     return () => observer.disconnect();
-  }, [autoPlay]);
-
-  const startAnimation = () => {
-    setIsAnimating(true);
-    // Reset animation after completion
-    setTimeout(() => {
-      setIsAnimating(false);
-    }, 2000);
-  };
+  }, [autoPlay, startAnimation]);
 
   const handleFounderChange = (index: number) => {
     if (index !== currentFounder && !isAnimating) {
@@ -136,138 +344,44 @@ export const FoundersSection: React.FC<FoundersSectionProps> = ({
 
       {/* Main Content */}
       <div className={`${styles.splitFlex} ${styles.splitFlexReversed}`}>
-        {/* Founder Image */}
-        <div className={styles.imageContainer}>
-          <img
-            ref={imageRef}
-            src={founders[currentFounder]?.imageUrl}
-            alt={founders[currentFounder]?.name}
-            className={`${styles.imageFull} ${styles.imageFounder}`}
-            loading="eager"
-            sizes="(max-width: 991px) 98vw, 49vw"
-            srcSet={imageSrcSet}
-            onLoad={handleImageLoad}
-            onError={handleImageError}
-            style={{ opacity: 0 }}
-          />
-          
-          {/* Image Overlay */}
-          <div className={styles.imageOverlay} />
-          
-          {/* Founder Navigation Dots */}
-          {founders.length > 1 && (
-            <div className={styles.founderDots}>
-              {founders.map((_, index) => (
-                <button
-                  key={index}
-                  className={`${styles.dot} ${index === currentFounder ? styles.dotActive : ''}`}
-                  onClick={() => handleFounderChange(index)}
-                  aria-label={`View ${founders[index]?.name}`}
-                  type="button"
-                />
-              ))}
-            </div>
-          )}
-        </div>
+        <FounderImageSection
+          founders={founders}
+          currentFounder={currentFounder}
+          imageSrcSet={imageSrcSet}
+          imageRef={imageRef}
+          onImageLoad={handleImageLoad}
+          onImageError={handleImageError}
+          onFounderChange={handleFounderChange}
+          styles={styles}
+        />
 
         {/* Text Content */}
         <div className={`${styles.splitColumn} ${styles.splitColumnText}`}>
-          {/* Header */}
           <div className={styles.headerContainer}>
             <h2 className={styles.heading2}>
               {heading}
             </h2>
             
-            <div className={`${styles.missionFlex} ${isTextAnimated ? styles.missionFlexAnimated : styles.missionFlexInitial}`}>
-              {animatedWords.length > 0 && (
-                <>
-                  <div className={`${styles.subheading} ${styles.subheadingDesktop} ${styles.subheadingLeft} ${isTextAnimated ? styles.subheadingLeftAnimated : styles.subheadingLeftInitial}`}>
-                    {animatedWords[0]}
-                  </div>
-                  {animatedWords.length > 1 && (
-                    <div className={`${styles.subheading} ${styles.subheadingDesktop}`}>
-                      {animatedWords[1]}
-                    </div>
-                  )}
-                  {animatedWords.length > 2 && (
-                    <div className={`${styles.subheading} ${styles.subheadingDesktop} ${styles.subheadingRight} ${isTextAnimated ? styles.subheadingRightAnimated : styles.subheadingRightInitial}`}>
-                      {animatedWords[2]}
-                    </div>
-                  )}
-                </>
-              )}
-              <div className={`${styles.subheading} ${styles.subheadingMobile}`}>
-                {animatedTextMobile}
-              </div>
-            </div>
+            <AnimatedWords
+              animatedWords={animatedWords}
+              animatedTextMobile={animatedTextMobile}
+              isTextAnimated={isTextAnimated}
+              styles={styles}
+            />
           </div>
 
-          {/* Founder Content */}
-          <div className={styles.contentContainer}>
-            {/* Quote */}
-            <div className={styles.quoteContainer}>
-              <h4 className={styles.heading5}>
-                "{founders[currentFounder]?.quote}"
-              </h4>
-              <div className={styles.founderNameLarge}>
-                {founders[currentFounder]?.name?.toUpperCase()}
-              </div>
-            </div>
+          <FounderContentSection
+            founder={founders[currentFounder]}
+            styles={styles}
+          />
 
-            {/* Bio */}
-            <p className={styles.bodyCopy}>
-              {founders[currentFounder]?.bio}
-            </p>
-
-            {/* Additional Info */}
-            {founders[currentFounder]?.additionalInfo && (
-              <div className={styles.additionalInfo}>
-                {founders[currentFounder]?.additionalInfo.map((info, index) => (
-                  <p key={index} className={styles.additionalText}>
-                    {info}
-                  </p>
-                ))}
-              </div>
-            )}
-
-            {/* Founder Navigation */}
-            {founders.length > 1 && (
-              <div className={styles.founderNavigation}>
-                <button
-                  className={styles.navButton}
-                  onClick={() => handleFounderChange(
-                    currentFounder === 0 ? founders.length - 1 : currentFounder - 1
-                  )}
-                  disabled={isAnimating}
-                  aria-label="Previous founder"
-                  type="button"
-                >
-                  <span className={styles.navArrow}>←</span>
-                </button>
-                
-                <div className={styles.founderInfo}>
-                  <span className={styles.founderName}>
-                    {founders[currentFounder]?.name}
-                  </span>
-                  <span className={styles.founderRole}>
-                    {founders[currentFounder]?.role}
-                  </span>
-                </div>
-                
-                <button
-                  className={styles.navButton}
-                  onClick={() => handleFounderChange(
-                    currentFounder === founders.length - 1 ? 0 : currentFounder + 1
-                  )}
-                  disabled={isAnimating}
-                  aria-label="Next founder"
-                  type="button"
-                >
-                  <span className={styles.navArrow}>→</span>
-                </button>
-              </div>
-            )}
-          </div>
+          <FounderNavigation
+            founders={founders}
+            currentFounder={currentFounder}
+            isAnimating={isAnimating}
+            onFounderChange={handleFounderChange}
+            styles={styles}
+          />
         </div>
       </div>
 

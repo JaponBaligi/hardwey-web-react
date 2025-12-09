@@ -12,6 +12,22 @@ interface SharesSectionProps {
   className?: string;
 }
 
+// Helper function to resolve content values with defaults
+function resolveSharesContent(content: SharesContent | null | undefined) {
+  const defaultImageUrl = '/assets/img/BUY%20SHARES%20IMAGE.jpg';
+  const defaultImageSrcSet = '/assets/img/shares-500.jpg 500w, /assets/img/shares-800.jpg 800w, /assets/img/shares-800.jpg 1080w, /assets/img/BUY%20SHARES%20IMAGE.jpg 1440w';
+  const defaultSubheadingWords = ['A new way', 'to', 'Invest'];
+
+  return {
+    heading: content?.heading || "Buy shares in artists' brands",
+    subheadingMobile: content?.subheadingMobile || 'A new way to invest',
+    subheadingWords: content?.subheadingWords || defaultSubheadingWords,
+    bodyCopy: content?.bodyCopy || "Artists build brands that generate revenue from their music, shows, merch and more. HARDWEY is the first app that allows you to invest in those brands and own a piece of their success.",
+    imageUrl: content?.imageUrl || defaultImageUrl,
+    imageSrcSet: content?.imageSrcSet || defaultImageSrcSet,
+  };
+}
+
 /**
  * Shares section with exact HTML structure from static site
  * @param className - Additional CSS classes
@@ -34,12 +50,7 @@ export const SharesSection: React.FC<SharesSectionProps> = ({ className = '' }) 
     imageSrcSet: defaultImageSrcSet,
   });
 
-  const heading = content?.heading || "Buy shares in artists' brands";
-  const subheadingMobile = content?.subheadingMobile || 'A new way to invest';
-  const subheadingWords = content?.subheadingWords || defaultSubheadingWords;
-  const bodyCopy = content?.bodyCopy || "Artists build brands that generate revenue from their music, shows, merch and more. HARDWEY is the first app that allows you to invest in those brands and own a piece of their success.";
-  const imageUrl = content?.imageUrl || defaultImageUrl;
-  const imageSrcSet = content?.imageSrcSet || defaultImageSrcSet;
+  const resolvedContent = resolveSharesContent(content);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -70,10 +81,10 @@ export const SharesSection: React.FC<SharesSectionProps> = ({ className = '' }) 
       <div className={styles.splitFlex}>
         {/* Image */}
         <img 
-          src={imageUrl} 
+          src={resolvedContent.imageUrl} 
           loading="eager" 
           sizes="(max-width: 991px) 98vw, 49vw" 
-          srcSet={imageSrcSet} 
+          srcSet={resolvedContent.imageSrcSet} 
           alt="" 
           className={`${styles.imageFull} ${styles.imageFullIntro}`}
         />
@@ -82,27 +93,27 @@ export const SharesSection: React.FC<SharesSectionProps> = ({ className = '' }) 
         <div className={`${styles.splitColumn} ${styles.splitColumnTxt}`}>
           <div className={styles.divBlock4}>
             <h2 className={`${styles.heading2} ${styles.heading2Brands}`}>
-              {heading}
+              {resolvedContent.heading}
             </h2>
             
             {/* Intro Sub Flex Inline */}
             <div className={`${styles.introSubFlex} ${styles.introSubFlexInline} ${isAnimated ? styles.introSubFlexAnimated : styles.introSubFlexInitial}`}>
               <div className={`${styles.subheading} ${styles.subheadingMobile}`}>
-                {subheadingMobile}
+                {resolvedContent.subheadingMobile}
               </div>
-              {subheadingWords.length > 0 && (
+              {resolvedContent.subheadingWords.length > 0 && (
                 <div className={`${styles.subheading} ${styles.subheadingLeft} ${isAnimated ? styles.subheadingLeftAnimated : styles.subheadingLeftInitial}`}>
-                  {subheadingWords[0]}
+                  {resolvedContent.subheadingWords[0]}
                 </div>
               )}
-              {subheadingWords.length > 1 && (
+              {resolvedContent.subheadingWords.length > 1 && (
                 <div className={`${styles.subheading} ${styles.subheadingDesktop}`}>
-                  {subheadingWords[1]}
+                  {resolvedContent.subheadingWords[1]}
                 </div>
               )}
-              {subheadingWords.length > 2 && (
+              {resolvedContent.subheadingWords.length > 2 && (
                 <div className={`${styles.subheading} ${styles.subheadingRight} ${isAnimated ? styles.subheadingRightAnimated : styles.subheadingRightInitial}`}>
-                  {subheadingWords[2]}
+                  {resolvedContent.subheadingWords[2]}
                 </div>
               )}
             </div>
@@ -110,7 +121,7 @@ export const SharesSection: React.FC<SharesSectionProps> = ({ className = '' }) 
 
           {/* Body Copy */}
           <p className={`${styles.bodyCopy} ${styles.bodyCopyLeft}`}>
-            {bodyCopy}
+            {resolvedContent.bodyCopy}
           </p>
         </div>
       </div>

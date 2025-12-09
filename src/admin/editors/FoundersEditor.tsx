@@ -1,6 +1,8 @@
-import { SectionEditorProps } from './types';
+import type { SectionEditorProps } from './types';
 import { FormField, TextInput, TextAreaInput } from '../components/FormField';
 import { ImageUpload } from '../components/ImageUpload';
+import { getStringValue, getArrayValue } from '../utils/dataHelpers';
+import type { FounderItem } from '@/types/content';
 import styles from './FoundersEditor.module.css';
 
 export function FoundersEditor({ 
@@ -9,7 +11,7 @@ export function FoundersEditor({
   setErr,
   uploadImage
 }: SectionEditorProps) {
-  const founders = data.founders || [];
+  const founders = getArrayValue<FounderItem>(data, 'founders');
 
   const addFounder = () => {
     const newFounder = {
@@ -26,11 +28,11 @@ export function FoundersEditor({
   };
 
   const removeFounder = (idx: number) => {
-    const next = founders.filter((_: any, i: number) => i !== idx);
+    const next = founders.filter((_: FounderItem, i: number) => i !== idx);
     setData({ ...data, founders: next });
   };
 
-  const updateFounder = (idx: number, field: string, value: any) => {
+  const updateFounder = (idx: number, field: string, value: string | string[]) => {
     const next = [...founders];
     next[idx] = { ...next[idx], [field]: value };
     setData({ ...data, founders: next });
@@ -41,8 +43,9 @@ export function FoundersEditor({
     try {
       const { url } = await uploadImage(file);
       updateFounder(idx, 'imageUrl', url);
-    } catch (err: any) {
-      setErr(err.message || 'Failed to upload image');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to upload image';
+      setErr(message);
     }
   };
 
@@ -50,7 +53,7 @@ export function FoundersEditor({
     <>
       <FormField label="Heading (Plural)">
         <TextInput
-          value={data.heading || ''}
+          value={getStringValue(data, 'heading')}
           onChange={value => setData({ ...data, heading: value })}
           placeholder="The Founders"
         />
@@ -59,7 +62,7 @@ export function FoundersEditor({
 
       <FormField label="Heading (Singular)">
         <TextInput
-          value={data.headingSingular || ''}
+          value={getStringValue(data, 'headingSingular')}
           onChange={value => setData({ ...data, headingSingular: value })}
           placeholder="The Founder"
         />
@@ -68,7 +71,7 @@ export function FoundersEditor({
 
       <FormField label="Animated Words (comma-separated)">
         <TextInput
-          value={Array.isArray(data.animatedWords) ? data.animatedWords.join(', ') : ''}
+          value={getArrayValue<string>(data, 'animatedWords').join(', ')}
           onChange={value => {
             const words = value.split(',').map(w => w.trim()).filter(w => w);
             setData({ ...data, animatedWords: words });
@@ -80,7 +83,7 @@ export function FoundersEditor({
 
       <FormField label="Animated Text (Mobile)">
         <TextInput
-          value={data.animatedTextMobile || ''}
+          value={getStringValue(data, 'animatedTextMobile')}
           onChange={value => setData({ ...data, animatedTextMobile: value })}
           placeholder="Long story short"
         />
@@ -93,7 +96,7 @@ export function FoundersEditor({
         </button>
       </div>
 
-      {founders.map((founder: any, idx: number) => (
+      {founders.map((founder: FounderItem, idx: number) => (
         <div key={founder.id || idx} className={styles.founderItem}>
           <div className={styles.founderItemHeader}>
             <h4 className={styles.founderItemTitle}>Founder {idx + 1}</h4>

@@ -1,12 +1,14 @@
-import { SectionEditorProps } from './types';
+import type { SectionEditorProps } from './types';
 import { FormField, TextInput, TextAreaInput } from '../components/FormField';
+import { getArrayValue } from '../utils/dataHelpers';
+import type { FaqItem } from '@/types/content';
 import styles from './FaqEditor.module.css';
 
 export function FaqEditor({ data, setData }: SectionEditorProps) {
-  const faqItems = data.faqItems || [];
+  const faqItems = getArrayValue<FaqItem>(data, 'faqItems');
 
   const addFaqItem = () => {
-    const newItem = {
+    const newItem: FaqItem = {
       id: `faq-${Date.now()}`,
       question: '',
       subtitle: '',
@@ -17,7 +19,7 @@ export function FaqEditor({ data, setData }: SectionEditorProps) {
   };
 
   const removeFaqItem = (idx: number) => {
-    const next = faqItems.filter((_: any, i: number) => i !== idx);
+    const next = faqItems.filter((_: FaqItem, i: number) => i !== idx);
     setData({ ...data, faqItems: next });
   };
 
@@ -35,7 +37,7 @@ export function FaqEditor({ data, setData }: SectionEditorProps) {
         </button>
       </div>
       
-      {faqItems.map((faq: any, idx: number) => (
+      {faqItems.map((faq: FaqItem, idx: number) => (
         <div key={faq.id || idx} className={styles.faqItem}>
           <div className={styles.faqItemHeader}>
             <h4 className={styles.faqItemTitle}>FAQ Item {idx + 1}</h4>
