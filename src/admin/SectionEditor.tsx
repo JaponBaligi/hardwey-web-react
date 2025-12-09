@@ -9,6 +9,7 @@ import { InvestmentEditor } from './editors/InvestmentEditor';
 import { SharesEditor } from './editors/SharesEditor';
 import { TickerEditor } from './editors/TickerEditor';
 import { NftDisclaimerEditor } from './editors/NftDisclaimerEditor';
+import { FaqEditor } from './editors/FaqEditor';
 import styles from './SectionEditor.module.css';
 
 export default function SectionEditor({ section }: { section: string }) {
@@ -238,83 +239,11 @@ export default function SectionEditor({ section }: { section: string }) {
         />
       )}
       {!jsonMode && section === 'faq' && (
-        <>
-          <div style={{ marginBottom: 16 }}>
-            <button 
-              onClick={() => {
-                const newItem = {
-                  id: `faq-${Date.now()}`,
-                  question: '',
-                  subtitle: '',
-                  answer: '',
-                  additionalInfo: ['', '']
-                };
-                setData({ ...data, faqItems: [...(data.faqItems || []), newItem] });
-              }}
-              style={{ marginBottom: 12 }}
-            >
-              Add FAQ Item
-            </button>
-            {(data.faqItems || []).map((faq: any, idx: number) => (
-              <div key={faq.id || idx} style={{ marginBottom: 16, padding: 16, backgroundColor: '#2a2a2a', borderRadius: 6, border: '1px solid #444' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-                  <h4 style={{ margin: 0, color: '#fff' }}>FAQ Item {idx + 1}</h4>
-                  <button 
-                    onClick={() => {
-                      const next = (data.faqItems || []).filter((_: any, i: number) => i !== idx);
-                      setData({ ...data, faqItems: next });
-                    }}
-                    style={{ padding: '4px 12px', backgroundColor: '#ff4444', color: 'white', border: 'none', borderRadius: 4 }}
-                  >
-                    Remove
-                  </button>
-                </div>
-                <div style={{ marginBottom: 12 }}>
-                  <label style={{ display: 'block', marginBottom: 4 }}>Heading (Question)</label>
-                  <input 
-                    type="text" 
-                    value={faq.question || ''} 
-                    onChange={e => {
-                      const next = [...(data.faqItems || [])];
-                      next[idx] = { ...next[idx], question: e.target.value };
-                      setData({ ...data, faqItems: next });
-                    }} 
-                    style={{ width: '100%', padding: 8 }} 
-                    placeholder="How does it work?"
-                  />
-                </div>
-                <div style={{ marginBottom: 12 }}>
-                  <label style={{ display: 'block', marginBottom: 4 }}>Supportive Text (Subtitle)</label>
-                  <input 
-                    type="text" 
-                    value={faq.subtitle || ''} 
-                    onChange={e => {
-                      const next = [...(data.faqItems || [])];
-                      next[idx] = { ...next[idx], subtitle: e.target.value };
-                      setData({ ...data, faqItems: next });
-                    }} 
-                    style={{ width: '100%', padding: 8 }} 
-                    placeholder="It's remarkably simple"
-                  />
-                </div>
-                <div style={{ marginBottom: 12 }}>
-                  <label style={{ display: 'block', marginBottom: 4 }}>Description (Answer)</label>
-                  <textarea 
-                    value={faq.answer || ''} 
-                    onChange={e => {
-                      const next = [...(data.faqItems || [])];
-                      next[idx] = { ...next[idx], answer: e.target.value };
-                      setData({ ...data, faqItems: next });
-                    }} 
-                    rows={4} 
-                    style={{ width: '100%', padding: 8 }} 
-                    placeholder="We work closely with artists and their teams to launch their shares on HARDWEY..."
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        </>
+        <FaqEditor
+          data={data}
+          setData={setData}
+          setErr={setErr}
+        />
       )}
       {!jsonMode && section === 'founders' && (
         <>
