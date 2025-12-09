@@ -1,0 +1,59 @@
+.helperText {
+  font-size: 12px;
+  color: #666;
+  margin-left: 8px;
+  display: block;
+  margin-top: 4px;
+}
+
+.actions {
+  margin-bottom: 16px;
+}
+
+.addButton {
+  margin-bottom: 12px;
+  padding: 8px 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.addButton:hover {
+  background-color: #45a049;
+}
+
+.founderItem {
+  margin-bottom: 16px;
+  padding: 16px;
+  background-color: #2a2a2a;
+  border-radius: 6px;
+  border: 1px solid #444;
+}
+
+.founderItemHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.founderItemTitle {
+  margin: 0;
+  color: #fff;
+}
+
+.removeButton {
+  padding: 4px 12px;
+  background-color: #ff4444;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.removeButton:hover {
+  background-color: #cc3333;
+}
+
