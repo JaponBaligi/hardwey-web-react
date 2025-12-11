@@ -106,18 +106,9 @@ function FooterActions({ email, buttonText }: FooterActionsProps) {
   );
 }
 
-/**
- * Privacy policy page with comprehensive privacy information
- * @param className - Additional CSS classes
- */
-export const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({
-  className = '',
-}) => {
+// Hook for visibility observer
+function useVisibilityObserver(ref: React.RefObject<HTMLDivElement>) {
   const [isVisible, setIsVisible] = useState(false);
-  const pageRef = useRef<HTMLDivElement>(null);
-
-  const fallbackContent = getTemplateFor('privacyPolicy') as PrivacyPolicySection;
-  const { data: content } = useContent<PrivacyPolicySection>('privacyPolicy', fallbackContent);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -129,40 +120,97 @@ export const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({
       { threshold: 0.1 }
     );
 
-    if (pageRef.current) {
-      observer.observe(pageRef.current);
+    if (ref.current) {
+      observer.observe(ref.current);
     }
 
     return () => observer.disconnect();
-  }, []);
+  }, [ref]);
 
-  const pageTitle = content?.pageTitle ?? fallbackContent.pageTitle;
-  const lastUpdated = content?.lastUpdated ?? fallbackContent.lastUpdated;
-  const introText = content?.introText ?? fallbackContent.introText ?? [];
-  const sections = content?.sections ?? fallbackContent.sections ?? [];
-  const footerEmail = content?.footerButtonEmail ?? fallbackContent.footerButtonEmail ?? 'hello@hardweyllc.com';
-  const footerText = content?.footerButtonText ?? fallbackContent.footerButtonText ?? 'Contact Us';
+  return isVisible;
+}
+
+// Component for content section
+interface ContentSectionProps {
+  introText: string[];
+  sections: Array<{
+    title: string;
+    paragraphs?: string[];
+    lists?: string[][];
+    contactInfo?: {
+      email?: string;
+      address?: string;
+    };
+  }>;
+  isVisible: boolean;
+}
+
+function ContentSection({ introText, sections, isVisible }: ContentSectionProps) {
+  return (
+    <div className={`${styles.contentContainer} ${isVisible ? styles.contentVisible : ''}`}>
+      <div className={styles.contentWrapper}>
+        <IntroSection introText={introText} />
+        {sections.map((section, sectionIdx) => (
+          <PolicySectionItem key={sectionIdx} section={section} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// Helper to get value with fallback
+function getValue<T>(value: T | null | undefined, fallback: T): T {
+  return value ?? fallback;
+}
+
+// Helper function to normalize privacy policy content
+function normalizePrivacyPolicyContent(
+  content: PrivacyPolicySection | null | undefined,
+  fallbackContent: PrivacyPolicySection
+) {
+  if (!content) {
+    return {
+      pageTitle: fallbackContent.pageTitle,
+      lastUpdated: fallbackContent.lastUpdated,
+      introText: fallbackContent.introText ?? [],
+      sections: fallbackContent.sections ?? [],
+      footerEmail: getValue(fallbackContent.footerButtonEmail, 'hello@hardweyllc.com'),
+      footerText: getValue(fallbackContent.footerButtonText, 'Contact Us'),
+    };
+  }
+
+  return {
+    pageTitle: getValue(content.pageTitle, fallbackContent.pageTitle),
+    lastUpdated: getValue(content.lastUpdated, fallbackContent.lastUpdated),
+    introText: getValue(content.introText, getValue(fallbackContent.introText, [])),
+    sections: getValue(content.sections, getValue(fallbackContent.sections, [])),
+    footerEmail: getValue(content.footerButtonEmail, getValue(fallbackContent.footerButtonEmail, 'hello@hardweyllc.com')),
+    footerText: getValue(content.footerButtonText, getValue(fallbackContent.footerButtonText, 'Contact Us')),
+  };
+}
+
+/**
+ * Privacy policy page with comprehensive privacy information
+ * @param className - Additional CSS classes
+ */
+export const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({
+  className = '',
+}) => {
+  const pageRef = useRef<HTMLDivElement>(null);
+  const isVisible = useVisibilityObserver(pageRef);
+
+  const fallbackContent = getTemplateFor('privacyPolicy') as PrivacyPolicySection;
+  const { data: content } = useContent<PrivacyPolicySection>('privacyPolicy', fallbackContent);
+
+  const normalizedContent = normalizePrivacyPolicyContent(content, fallbackContent);
 
   return (
     <div ref={pageRef} className={`${styles.pageContainer} ${className}`}>
-      <PrivacyPolicyHeader
-        pageTitle={pageTitle}
-        lastUpdated={lastUpdated}
-      />
+      <PrivacyPolicyHeader pageTitle={normalizedContent.pageTitle} lastUpdated={normalizedContent.lastUpdated} />
 
-      <div className={`${styles.contentContainer} ${isVisible ? styles.contentVisible : ''}`}>
-        <div className={styles.contentWrapper}>
-          <IntroSection introText={introText} />
-          {sections.map((section, sectionIdx) => (
-            <PolicySectionItem key={sectionIdx} section={section} />
-          ))}
-        </div>
-      </div>
+      <ContentSection introText={normalizedContent.introText} sections={normalizedContent.sections} isVisible={isVisible} />
 
-      <FooterActions
-        email={footerEmail}
-        buttonText={footerText}
-      />
+      <FooterActions email={normalizedContent.footerEmail} buttonText={normalizedContent.footerText} />
     </div>
   );
 };

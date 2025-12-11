@@ -50,6 +50,20 @@ function getDefaultContentForError(errorCode: number): DefaultContent {
   }
 }
 
+// Helper function to extract error content from error object
+function extractErrorContent(
+  errorObj: { title?: string; description?: string } | undefined,
+  defaultDescription: string
+): DefaultContent | null {
+  if (errorObj && typeof errorObj.title === 'string' && errorObj.title) {
+    return {
+      title: errorObj.title,
+      description: errorObj.description || defaultDescription
+    };
+  }
+  return null;
+}
+
 // Helper function to get error content from section data
 function getErrorContentFromSection(
   content: ErrorPageSection | null | undefined,
@@ -61,36 +75,20 @@ function getErrorContentFromSection(
     return defaultContent;
   }
 
-  switch (errorCode) {
-    case 404: {
-      const error404 = content.error404;
-      if (error404 && typeof error404.title === 'string' && error404.title) {
-        return { title: error404.title, description: error404.description || defaultContent.description };
-      }
-      return defaultContent;
-    }
-    case 500: {
-      const error500 = content.error500;
-      if (error500 && typeof error500.title === 'string' && error500.title) {
-        return { title: error500.title, description: error500.description || defaultContent.description };
-      }
-      return defaultContent;
-    }
-    case 403: {
-      const error403 = content.error403;
-      if (error403 && typeof error403.title === 'string' && error403.title) {
-        return { title: error403.title, description: error403.description || defaultContent.description };
-      }
-      return defaultContent;
-    }
-    default: {
-      const defaultError = content.defaultError;
-      if (defaultError && typeof defaultError.title === 'string' && defaultError.title) {
-        return { title: defaultError.title, description: defaultError.description || defaultContent.description };
-      }
-      return defaultContent;
-    }
+  const errorMap: Record<number, () => DefaultContent | null> = {
+    404: () => extractErrorContent(content.error404, defaultContent.description),
+    500: () => extractErrorContent(content.error500, defaultContent.description),
+    403: () => extractErrorContent(content.error403, defaultContent.description),
+  };
+
+  const getErrorContent = errorMap[errorCode];
+  if (getErrorContent) {
+    const errorContent = getErrorContent();
+    if (errorContent) return errorContent;
   }
+
+  const defaultErrorContent = extractErrorContent(content.defaultError, defaultContent.description);
+  return defaultErrorContent || defaultContent;
 }
 
 // Helper function to resolve final content values

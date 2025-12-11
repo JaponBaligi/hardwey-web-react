@@ -96,6 +96,74 @@ function useLottieAnimation(lottieContainerRef: React.RefObject<HTMLDivElement |
   }, [lottieContainerRef]);
 }
 
+// Helper function to format heading with artist span
+function formatHeadingWithArtist(heading: string | undefined): string {
+  const defaultHeading = 'invest in <span class="artist-heading">artists</span>';
+  if (!heading) return defaultHeading;
+  return heading.replace('artists', '<span class="artist-heading">artists</span>');
+}
+
+// Helper function to extract year from date
+function extractYearFromDate(date: string | undefined): string {
+  if (!date) return '2026)';
+  const parts = date.split('/');
+  return parts.length > 0 ? parts[parts.length - 1] : '2026)';
+}
+
+// Component for intro heading section
+interface IntroHeadingProps {
+  headingHtml: string;
+  headingMobileHtml: string;
+}
+
+function IntroHeading({ headingHtml, headingMobileHtml }: IntroHeadingProps) {
+  return (
+    <div className={`${styles.introHeadingContainer} ${styles.introHeadingContainer1}`}>
+      <h1 
+        className={`${styles.heading1} ${styles.heading1Intro}`}
+        dangerouslySetInnerHTML={{ __html: headingHtml }}
+      />
+      <h1 className={styles.introHeadingMob} dangerouslySetInnerHTML={{ __html: headingMobileHtml }} />
+    </div>
+  );
+}
+
+// Component for date section with spray
+interface DateSectionProps {
+  comingSoon: string;
+  dateYear: string;
+  lottieContainerRef: React.RefObject<HTMLDivElement | null>;
+}
+
+function DateSection({ comingSoon, dateYear, lottieContainerRef }: DateSectionProps) {
+  return (
+    <div className={`${styles.introHeadingContainer} ${styles.introHeadingContainerSecond}`}>
+      <div>
+        <h2 className={`${styles.heading2} ${styles.heading2Intro}`}>
+          {comingSoon}
+        </h2>
+      </div>
+      <div className={styles.textWrap}>
+        <div className={styles.dateContainer}>
+          <div className={styles.sprayWrapper}>
+            <h2 className={`${styles.heading2} ${styles.heading2Intro} ${styles.dateSpray}`}>
+              <span className={styles.sprayChar}>(</span>
+              <span className={styles.sprayChar}>?</span>
+              <span className={styles.sprayChar}>/</span>
+              <span className={styles.sprayChar}>?</span>
+              <span className={styles.sprayChar}>/</span>
+            </h2>
+            <div className={styles.jsonContain}>
+              <div ref={lottieContainerRef} className={styles.lottieAnimation} />
+            </div>
+          </div>
+          <h2 className={`${styles.heading2} ${styles.heading2Intro}`}>{dateYear}</h2>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /**
  * @param className 
  */
@@ -115,6 +183,13 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ className = '' }) =>
   useSubheadingAnimation(subFlexRef);
   useLottieAnimation(lottieContainerRef);
 
+  const headingHtml = formatHeadingWithArtist(content?.heading);
+  const headingMobileHtml = content?.headingMobile || 'Invest in artists,<br /><span class="subheading-mobile-text">it hits different.</span>';
+  const subheadingWords = content?.subheadingWords || ['it', 'hits', 'different'];
+  const comingSoon = content?.comingSoon || 'Coming soon';
+  const dateYear = extractYearFromDate(content?.date);
+  const welcomeText = content?.welcomeText || 'Welcome to HARDWEY';
+
   return (
     <section
       ref={sectionRef}
@@ -133,45 +208,14 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ className = '' }) =>
         </div>
       </div>
 
-      {/* Intro Heading Container 1 */}
-      <div className={`${styles.introHeadingContainer} ${styles.introHeadingContainer1}`}>
-        <h1 
-          className={`${styles.heading1} ${styles.heading1Intro}`}
-          dangerouslySetInnerHTML={{ __html: content?.heading?.replace('artists', '<span class="artist-heading">artists</span>') || 'invest in <span class="artist-heading">artists</span>' }}
-        />
-        <h1 className={styles.introHeadingMob} dangerouslySetInnerHTML={{ __html: content?.headingMobile || 'Invest in artists,<br /><span class="subheading-mobile-text">it hits different.</span>' }} />
-      </div>
+      <IntroHeading headingHtml={headingHtml} headingMobileHtml={headingMobileHtml} />
 
       {/* Intro Sub Flex */}
       <div ref={subFlexRef} className={`${styles.introSubFlex} ${styles.introSubFlexIntro}`}>
-        <SubheadingWords words={content?.subheadingWords || ['it', 'hits', 'different']} />
+        <SubheadingWords words={subheadingWords} />
       </div>
 
-      {/* Intro Heading Container Second */}
-      <div className={`${styles.introHeadingContainer} ${styles.introHeadingContainerSecond}`}>
-        <div>
-          <h2 className={`${styles.heading2} ${styles.heading2Intro}`}>
-            {content?.comingSoon || 'Coming soon'}
-          </h2>
-        </div>
-        <div className={styles.textWrap}>
-          <div className={styles.dateContainer}>
-            <div className={styles.sprayWrapper}>
-              <h2 className={`${styles.heading2} ${styles.heading2Intro} ${styles.dateSpray}`}>
-                <span className={styles.sprayChar}>(</span>
-                <span className={styles.sprayChar}>?</span>
-                <span className={styles.sprayChar}>/</span>
-                <span className={styles.sprayChar}>?</span>
-                <span className={styles.sprayChar}>/</span>
-              </h2>
-              <div className={styles.jsonContain}>
-                <div ref={lottieContainerRef} className={styles.lottieAnimation} />
-              </div>
-            </div>
-            <h2 className={`${styles.heading2} ${styles.heading2Intro}`}>{content?.date?.split('/').pop() || '2026)'}</h2>
-          </div>
-        </div>
-      </div>
+      <DateSection comingSoon={comingSoon} dateYear={dateYear} lottieContainerRef={lottieContainerRef} />
 
       {/* Intro Video Container */}
       <div className={styles.introVideoContainer}>
@@ -183,7 +227,7 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ className = '' }) =>
       <div className={styles.introBodyContain}>
         <div className={`${styles.bodyTextContain} ${styles.bodyTextContainWide} ${styles.bodyTextContainIntro}`}>
           <p className={`${styles.bodyCopy} ${styles.bodyCopyLam}`}>
-            {content?.welcomeText || 'Welcome to HARDWEY'}
+            {welcomeText}
           </p>
         </div>
       </div>

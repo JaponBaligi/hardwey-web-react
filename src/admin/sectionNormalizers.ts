@@ -181,24 +181,32 @@ function getPolicyIntroText(d: Record<string, unknown>): string[] {
   return [];
 }
 
-function normalizePrivacyPolicy(d: Record<string, unknown>): PrivacyPolicySection {
+// Helper function to check and handle old format
+function handleOldFormat(d: Record<string, unknown>, templateType: 'privacyPolicy' | 'terms'): Record<string, unknown> {
   const hasOldFormat = d?.text && !d?.sections && !d?.introText && !d?.pageTitle;
-  if (hasOldFormat) {
-    d = getTemplateFor('privacyPolicy') as Record<string, unknown>;
-  }
-  
-  const sections = d?.sections && Array.isArray(d.sections)
-    ? d.sections.map(normalizePolicySection)
-    : [];
-  const introText = getPolicyIntroText(d);
+  return hasOldFormat ? (getTemplateFor(templateType) as Record<string, unknown>) : d;
+}
+
+// Helper function to normalize sections array
+function normalizeSections<T>(
+  sections: unknown,
+  normalizer: (s: unknown) => T
+): T[] {
+  return Array.isArray(sections) ? sections.map(normalizer) : [];
+}
+
+function normalizePrivacyPolicy(d: Record<string, unknown>): PrivacyPolicySection {
+  const normalizedData = handleOldFormat(d, 'privacyPolicy');
+  const sections = normalizeSections(normalizedData?.sections, normalizePolicySection);
+  const introText = getPolicyIntroText(normalizedData);
   
   return {
-    pageTitle: getString(d?.pageTitle, 'Privacy Policy'),
-    lastUpdated: getString(d?.lastUpdated),
+    pageTitle: getString(normalizedData?.pageTitle, 'Privacy Policy'),
+    lastUpdated: getString(normalizedData?.lastUpdated),
     introText: introText,
     sections: sections,
-    footerButtonText: getString(d?.footerButtonText),
-    footerButtonEmail: getString(d?.footerButtonEmail)
+    footerButtonText: getString(normalizedData?.footerButtonText),
+    footerButtonEmail: getString(normalizedData?.footerButtonEmail)
   };
 }
 
@@ -229,23 +237,17 @@ function normalizeTermsSection(s: unknown): TermsSectionItem {
 }
 
 function normalizeTerms(d: Record<string, unknown>): TermsSection {
-  const hasOldFormat = d?.text && !d?.sections && !d?.introText && !d?.pageTitle;
-  if (hasOldFormat) {
-    d = getTemplateFor('terms') as Record<string, unknown>;
-  }
-  
-  const sections = d?.sections && Array.isArray(d.sections)
-    ? d.sections.map(normalizeTermsSection)
-    : [];
-  const introText = getPolicyIntroText(d);
+  const normalizedData = handleOldFormat(d, 'terms');
+  const sections = normalizeSections(normalizedData?.sections, normalizeTermsSection);
+  const introText = getPolicyIntroText(normalizedData);
   
   return {
-    pageTitle: getString(d?.pageTitle, 'Terms of Service'),
-    lastUpdated: getString(d?.lastUpdated),
+    pageTitle: getString(normalizedData?.pageTitle, 'Terms of Service'),
+    lastUpdated: getString(normalizedData?.lastUpdated),
     introText: introText,
     sections: sections,
-    footerButtonText: getString(d?.footerButtonText),
-    footerButtonEmail: getString(d?.footerButtonEmail)
+    footerButtonText: getString(normalizedData?.footerButtonText),
+    footerButtonEmail: getString(normalizedData?.footerButtonEmail)
   };
 }
 

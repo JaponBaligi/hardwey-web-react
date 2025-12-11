@@ -69,24 +69,9 @@ function SectionHeader({ heading }: SectionHeaderProps) {
   );
 }
 
-/**
- * Partners page displaying all partner cards
- * @param className - Additional CSS classes
- */
-export const PartnersPage: React.FC<PartnersPageProps> = ({
-  className = '',
-}) => {
+// Hook for visibility observer
+function useVisibilityObserver(ref: React.RefObject<HTMLDivElement>) {
   const [isVisible, setIsVisible] = useState(false);
-  const pageRef = useRef<HTMLDivElement>(null);
-
-  const fallbackContent = getTemplateFor('partners') as PartnersSectionType;
-  const { data: content } = useContent<PartnersSectionType>('partners', fallbackContent);
-
-  const fallbackCollaboratives = getTemplateFor('collaboratives') as CollaborativesSectionType;
-  const { data: collaborativesContent } = useContent<CollaborativesSectionType>('collaboratives', fallbackCollaboratives);
-
-  const partners = content?.partners || [];
-  const collaboratives = collaborativesContent?.collaboratives || [];
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -98,41 +83,94 @@ export const PartnersPage: React.FC<PartnersPageProps> = ({
       { threshold: 0.1 }
     );
 
-    if (pageRef.current) {
-      observer.observe(pageRef.current);
+    if (ref.current) {
+      observer.observe(ref.current);
     }
 
     return () => observer.disconnect();
-  }, []);
+  }, [ref]);
+
+  return isVisible;
+}
+
+// Component for partners section list
+interface PartnersSectionListProps {
+  partners: Array<{ id: string }>;
+  collaboratives: Array<{ id: string }>;
+  collaborativesHeading: string | undefined;
+  isVisible: boolean;
+}
+
+function PartnersSectionList({
+  partners,
+  collaboratives,
+  collaborativesHeading,
+  isVisible,
+}: PartnersSectionListProps) {
+  const hasPartners = partners.length > 0;
+  const hasCollaboratives = collaboratives.length > 0;
+
+  if (!hasPartners && !hasCollaboratives) {
+    return (
+      <div className={styles.emptyState}>
+        <p className={styles.emptyText}>No partners or collaboratives available at this time.</p>
+      </div>
+    );
+  }
 
   return (
-    <div ref={pageRef} className={`${styles.pageContainer} ${className}`}>
-      <PartnersPageHeader
-        pageTitle={content?.pageTitle ?? fallbackContent.pageTitle ?? ''}
-        pageSubtitle={content?.pageSubtitle}
-      />
-
-      <div className={styles.separator}></div>
-
-      {partners.length > 0 && (
+    <>
+      {hasPartners && (
         <>
           <SectionHeader heading="Partners" />
           <PartnerGrid items={partners} isVisible={isVisible} startIndex={0} />
         </>
       )}
 
-      {collaboratives.length > 0 && (
+      {hasCollaboratives && (
         <>
-          <SectionHeader heading={collaborativesContent?.heading ?? 'Collaboratives'} />
+          <SectionHeader heading={collaborativesHeading ?? 'Collaboratives'} />
           <PartnerGrid items={collaboratives} isVisible={isVisible} startIndex={partners.length} />
         </>
       )}
+    </>
+  );
+}
 
-      {partners.length === 0 && collaboratives.length === 0 && (
-        <div className={styles.emptyState}>
-          <p className={styles.emptyText}>No partners or collaboratives available at this time.</p>
-        </div>
-      )}
+/**
+ * Partners page displaying all partner cards
+ * @param className - Additional CSS classes
+ */
+export const PartnersPage: React.FC<PartnersPageProps> = ({
+  className = '',
+}) => {
+  const pageRef = useRef<HTMLDivElement>(null);
+  const isVisible = useVisibilityObserver(pageRef);
+
+  const fallbackContent = getTemplateFor('partners') as PartnersSectionType;
+  const { data: content } = useContent<PartnersSectionType>('partners', fallbackContent);
+
+  const fallbackCollaboratives = getTemplateFor('collaboratives') as CollaborativesSectionType;
+  const { data: collaborativesContent } = useContent<CollaborativesSectionType>('collaboratives', fallbackCollaboratives);
+
+  const partners = content?.partners || [];
+  const collaboratives = collaborativesContent?.collaboratives || [];
+  const pageTitle = content?.pageTitle ?? fallbackContent.pageTitle ?? '';
+  const pageSubtitle = content?.pageSubtitle;
+  const collaborativesHeading = collaborativesContent?.heading;
+
+  return (
+    <div ref={pageRef} className={`${styles.pageContainer} ${className}`}>
+      <PartnersPageHeader pageTitle={pageTitle} pageSubtitle={pageSubtitle} />
+
+      <div className={styles.separator}></div>
+
+      <PartnersSectionList
+        partners={partners}
+        collaboratives={collaboratives}
+        collaborativesHeading={collaborativesHeading}
+        isVisible={isVisible}
+      />
     </div>
   );
 };

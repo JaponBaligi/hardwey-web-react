@@ -63,6 +63,10 @@ function App() {
     return () => clearTimeout(timer);
   }, []);
 
+  const handleLoadingComplete = () => {
+    setIsLoading(false);
+  };
+
   const handleJoinUsClick = () => {
     // This is now handled by the Navigation component internally
   };
@@ -71,13 +75,14 @@ function App() {
     closeMobileMenu();
   };
 
-  if (isLoading) {
-    return <LoadingScreen isLoading={isLoading} />;
-  }
-
   return (
-    <Router>
-      <div className={styles.app}>
+    <>
+      <LoadingScreen 
+        isLoading={isLoading} 
+        onLoadingComplete={handleLoadingComplete}
+      />
+      <Router>
+        <div className={styles.app} style={{ display: isLoading ? 'none' : 'block' }}>
         {/* WebGL Animation Background */}
         {features.webglAnimation && (
           <div className={styles.webglBackground}>
@@ -138,8 +143,9 @@ function App() {
 
         {/* Cookie Consent */}
         {features.cookieConsent && <CookieConsent />}
-      </div>
-    </Router>
+        </div>
+      </Router>
+    </>
   );
 }
 

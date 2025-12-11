@@ -120,18 +120,9 @@ function TermsFooterActions({ email, buttonText }: TermsFooterActionsProps) {
   );
 }
 
-/**
- * Terms of service page with comprehensive terms and conditions
- * @param className - Additional CSS classes
- */
-export const TermsOfService: React.FC<TermsOfServiceProps> = ({
-  className = '',
-}) => {
+// Hook for visibility observer
+function useVisibilityObserver(ref: React.RefObject<HTMLDivElement>) {
   const [isVisible, setIsVisible] = useState(false);
-  const pageRef = useRef<HTMLDivElement>(null);
-
-  const fallbackContent = getTemplateFor('terms') as TermsSection;
-  const { data: content } = useContent<TermsSection>('terms', fallbackContent);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -143,40 +134,101 @@ export const TermsOfService: React.FC<TermsOfServiceProps> = ({
       { threshold: 0.1 }
     );
 
-    if (pageRef.current) {
-      observer.observe(pageRef.current);
+    if (ref.current) {
+      observer.observe(ref.current);
     }
 
     return () => observer.disconnect();
-  }, []);
+  }, [ref]);
 
-  const pageTitle = content?.pageTitle ?? fallbackContent.pageTitle;
-  const lastUpdated = content?.lastUpdated ?? fallbackContent.lastUpdated;
-  const introText = content?.introText ?? fallbackContent.introText ?? [];
-  const sections = content?.sections ?? fallbackContent.sections ?? [];
-  const footerEmail = content?.footerButtonEmail ?? fallbackContent.footerButtonEmail ?? 'hello@hardweyllc.com';
-  const footerText = content?.footerButtonText ?? fallbackContent.footerButtonText ?? 'Contact Us';
+  return isVisible;
+}
+
+// Component for content section
+interface TermsContentSectionProps {
+  introText: string[];
+  sections: Array<{
+    title: string;
+    paragraphs?: string[];
+    lists?: string[][];
+    disclaimer?: {
+      title?: string;
+      text?: string;
+    };
+    contactInfo?: {
+      email?: string;
+      address?: string;
+    };
+  }>;
+  isVisible: boolean;
+}
+
+function TermsContentSection({ introText, sections, isVisible }: TermsContentSectionProps) {
+  return (
+    <div className={`${styles.contentContainer} ${isVisible ? styles.contentVisible : ''}`}>
+      <div className={styles.contentWrapper}>
+        <TermsIntroSection introText={introText} />
+        {sections.map((section, sectionIdx) => (
+          <TermsSectionItem key={sectionIdx} section={section} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// Helper to get value with fallback
+function getValue<T>(value: T | null | undefined, fallback: T): T {
+  return value ?? fallback;
+}
+
+// Helper function to normalize terms of service content
+function normalizeTermsContent(
+  content: TermsSection | null | undefined,
+  fallbackContent: TermsSection
+) {
+  if (!content) {
+    return {
+      pageTitle: fallbackContent.pageTitle,
+      lastUpdated: fallbackContent.lastUpdated,
+      introText: fallbackContent.introText ?? [],
+      sections: fallbackContent.sections ?? [],
+      footerEmail: getValue(fallbackContent.footerButtonEmail, 'hello@hardweyllc.com'),
+      footerText: getValue(fallbackContent.footerButtonText, 'Contact Us'),
+    };
+  }
+
+  return {
+    pageTitle: getValue(content.pageTitle, fallbackContent.pageTitle),
+    lastUpdated: getValue(content.lastUpdated, fallbackContent.lastUpdated),
+    introText: getValue(content.introText, getValue(fallbackContent.introText, [])),
+    sections: getValue(content.sections, getValue(fallbackContent.sections, [])),
+    footerEmail: getValue(content.footerButtonEmail, getValue(fallbackContent.footerButtonEmail, 'hello@hardweyllc.com')),
+    footerText: getValue(content.footerButtonText, getValue(fallbackContent.footerButtonText, 'Contact Us')),
+  };
+}
+
+/**
+ * Terms of service page with comprehensive terms and conditions
+ * @param className - Additional CSS classes
+ */
+export const TermsOfService: React.FC<TermsOfServiceProps> = ({
+  className = '',
+}) => {
+  const pageRef = useRef<HTMLDivElement>(null);
+  const isVisible = useVisibilityObserver(pageRef);
+
+  const fallbackContent = getTemplateFor('terms') as TermsSection;
+  const { data: content } = useContent<TermsSection>('terms', fallbackContent);
+
+  const normalizedContent = normalizeTermsContent(content, fallbackContent);
 
   return (
     <div ref={pageRef} className={`${styles.pageContainer} ${className}`}>
-      <TermsPageHeader
-        pageTitle={pageTitle}
-        lastUpdated={lastUpdated}
-      />
+      <TermsPageHeader pageTitle={normalizedContent.pageTitle} lastUpdated={normalizedContent.lastUpdated} />
 
-      <div className={`${styles.contentContainer} ${isVisible ? styles.contentVisible : ''}`}>
-        <div className={styles.contentWrapper}>
-          <TermsIntroSection introText={introText} />
-          {sections.map((section, sectionIdx) => (
-            <TermsSectionItem key={sectionIdx} section={section} />
-          ))}
-        </div>
-      </div>
+      <TermsContentSection introText={normalizedContent.introText} sections={normalizedContent.sections} isVisible={isVisible} />
 
-      <TermsFooterActions
-        email={footerEmail}
-        buttonText={footerText}
-      />
+      <TermsFooterActions email={normalizedContent.footerEmail} buttonText={normalizedContent.footerText} />
     </div>
   );
 };

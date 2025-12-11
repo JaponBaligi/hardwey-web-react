@@ -1,5 +1,5 @@
 /* LoadingScreen Component Styles */
-/* Animated loading screen with logo and background video */
+/* Terminal-style loader with randomized letters */
 
 .loadingScreen {
   position: fixed;
@@ -7,44 +7,18 @@
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: var(--z-toast);
+  z-index: var(--z-toast, 9999);
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--color-background-dark);
+  background-color: #000000;
   animation: fadeIn 0.5s ease-out;
+  padding: 2rem;
+  box-sizing: border-box;
 }
 
 .loadingScreenExit {
   animation: fadeOut 0.5s ease-in forwards;
-}
-
-.backgroundVideo {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  overflow: hidden;
-}
-
-.video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0.3;
-}
-
-.videoFallback {
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    135deg,
-    var(--color-primary) 0%,
-    var(--color-accent) 50%,
-    var(--color-primary) 100%
-  );
-  animation: gradientShift 3s ease-in-out infinite;
 }
 
 .loadingContent {
@@ -53,135 +27,110 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--spacing-xl);
-  text-align: center;
-  max-width: 500px;
-  padding: var(--spacing-lg);
+  justify-content: center;
+  width: 100%;
+  max-width: 100%;
+  gap: 1.5rem;
 }
 
-.logoContainer {
-  position: relative;
-  animation: logoFloat 2s ease-in-out infinite;
-}
-
-.logo {
-  width: 120px;
-  height: 120px;
-  object-fit: contain;
-  filter: drop-shadow(0 0 20px rgba(0, 102, 255, 0.5));
-}
-
-.logoGlow {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 140px;
-  height: 140px;
-  background: radial-gradient(
-    circle,
-    rgba(0, 102, 255, 0.3) 0%,
-    transparent 70%
-  );
-  border-radius: 50%;
-  animation: pulse 2s ease-in-out infinite;
-}
-
-.loadingText {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-}
-
-.brandName {
-  font-family: var(--font-family-heading);
-  font-size: var(--font-size-4xl);
-  font-weight: var(--font-weight-extrabold);
-  color: var(--color-text-inverse);
-  margin: 0;
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  text-shadow: 0 0 20px rgba(0, 102, 255, 0.5);
-  animation: textGlow 2s ease-in-out infinite alternate;
-}
-
-.tagline {
-  font-family: var(--font-family-primary);
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-text-inverse);
-  margin: 0;
-  opacity: 0.8;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
-
-.progressContainer {
+/* Loading Text Container */
+.loadingTextContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--spacing-sm);
-  width: 100%;
-  max-width: 300px;
+  gap: 0.5rem;
 }
 
-.progressBar {
-  width: 100%;
-  height: 4px;
-  background-color: rgba(255, 255, 255, 0.2);
-  border-radius: var(--border-radius-full);
-  overflow: hidden;
+.loadingLabel {
+  font-family: 'Courier New', 'Monaco', monospace;
+  font-size: clamp(0.875rem, 1.5vw, 1.125rem);
+  font-weight: 400;
+  color: #bbdbfa;
+  margin: 0;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
-.progressFill {
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    var(--color-accent) 0%,
-    var(--color-accent-green) 50%,
-    var(--color-accent) 100%
-  );
-  border-radius: var(--border-radius-full);
-  transition: width 0.3s ease-out;
-  animation: progressGlow 1s ease-in-out infinite alternate;
-}
-
-.progressText {
-  font-family: var(--font-family-primary);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-text-inverse);
-  opacity: 0.8;
-}
-
-.loadingAnimation {
+/* HWMG Text Container */
+.hwmgTextContainer {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid rgba(255, 255, 255, 0.2);
-  border-top: 3px solid var(--color-accent);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
+.hwmgText {
+  font-family: 'Courier New', 'Monaco', monospace;
+  font-size: clamp(1.5rem, 4vw, 3rem);
+  font-weight: 400;
+  color: #bbdbfa;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+  line-height: 1;
 }
 
-.overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(0, 0, 0, 0.7) 0%,
-    rgba(0, 102, 255, 0.1) 50%,
-    rgba(0, 0, 0, 0.7) 100%
-  );
-  z-index: 1;
+.hwmgLetter {
+  display: inline-block;
+  min-width: 0.6em;
+  text-align: center;
+  transition: none;
+}
+
+.hwmgLetter.settled {
+  transition: color 0.3s ease;
+}
+
+.expandedText {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.expandedText .space {
+  margin: 0 0.2em;
+}
+
+.hwmgPeriod {
+  display: inline-block;
+  margin-left: 0.1em;
+}
+
+/* Progress Bar */
+.progressContainer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  max-width: 600px;
+}
+
+.progressBar {
+  flex: 1;
+  height: 6px;
+  background-color: rgba(187, 219, 250, 0.2);
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progressFill {
+  height: 100%;
+  background-color: #bbdbfa;
+  border-radius: 3px;
+  transition: width 0.1s linear;
+  box-shadow: 0 0 4px rgba(187, 219, 250, 0.5);
+}
+
+.progressText {
+  font-family: 'Courier New', 'Monaco', monospace;
+  font-size: clamp(0.875rem, 1.5vw, 1.125rem);
+  font-weight: 400;
+  color: #bbdbfa;
+  min-width: 3.5em;
+  text-align: center;
+  letter-spacing: 0.05em;
 }
 
 /* Animations */
@@ -203,112 +152,42 @@
   }
 }
 
-@keyframes logoFloat {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-@keyframes pulse {
-  0%, 100% {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 0.3;
-  }
-  50% {
-    transform: translate(-50%, -50%) scale(1.1);
-    opacity: 0.6;
-  }
-}
-
-@keyframes textGlow {
-  from {
-    text-shadow: 0 0 20px rgba(0, 102, 255, 0.5);
-  }
-  to {
-    text-shadow: 0 0 30px rgba(0, 102, 255, 0.8);
-  }
-}
-
-@keyframes gradientShift {
-  0%, 100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-}
-
-@keyframes progressGlow {
-  from {
-    box-shadow: 0 0 10px rgba(0, 102, 255, 0.5);
-  }
-  to {
-    box-shadow: 0 0 20px rgba(0, 102, 255, 0.8);
-  }
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
+  .loadingScreen {
+    padding: 1.5rem;
+  }
+
   .loadingContent {
-    gap: var(--spacing-lg);
-    padding: var(--spacing-md);
+    gap: 1.25rem;
   }
 
-  .logo {
-    width: 80px;
-    height: 80px;
-  }
-
-  .logoGlow {
-    width: 100px;
-    height: 100px;
-  }
-
-  .brandName {
-    font-size: var(--font-size-3xl);
-  }
-
-  .tagline {
-    font-size: var(--font-size-base);
-  }
-
-  .progressContainer {
-    max-width: 250px;
+  .hwmgText {
+    font-size: clamp(1.25rem, 5vw, 2.5rem);
   }
 }
 
 @media (max-width: 480px) {
-  .logo {
-    width: 60px;
-    height: 60px;
+  .loadingScreen {
+    padding: 1rem;
   }
 
-  .logoGlow {
-    width: 80px;
-    height: 80px;
+  .loadingContent {
+    gap: 1rem;
   }
 
-  .brandName {
-    font-size: var(--font-size-2xl);
-  }
-
-  .tagline {
-    font-size: var(--font-size-sm);
+  .hwmgText {
+    font-size: clamp(1rem, 6vw, 2rem);
   }
 
   .progressContainer {
-    max-width: 200px;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .progressText {
+    text-align: center;
   }
 }

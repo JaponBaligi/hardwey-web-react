@@ -117,6 +117,206 @@ function SubmitButton({ buttonText, reassuranceText }: SubmitButtonProps) {
   );
 }
 
+// Hook for modal animation state
+function useModalAnimation(isOpen: boolean) {
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [shouldRender, setShouldRender] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setShouldRender(true);
+      setTimeout(() => {
+        setIsAnimating(true);
+      }, 10);
+    } else {
+      setIsAnimating(false);
+      const timer = setTimeout(() => {
+        setShouldRender(false);
+      }, 800);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen]);
+
+  return { isAnimating, shouldRender };
+}
+
+// Helper function to normalize movement text
+function normalizeMovementText(movementText: Array<{ text: string; isAbsolute?: boolean }> | undefined) {
+  const defaultText = [
+    { text: 'A movement', isAbsolute: false },
+    { text: 'in', isAbsolute: true },
+    { text: 'music', isAbsolute: false }
+  ];
+  const text = movementText || defaultText;
+  return text.map(item => ({
+    text: item.text,
+    isAbsolute: item.isAbsolute ?? false
+  }));
+}
+
+// Helper to get value with fallback
+function getValue<T>(value: T | null | undefined, fallback: T): T {
+  return value ?? fallback;
+}
+
+// Helper function to normalize all modal content
+function normalizeModalContent(content: JoinUsModalType | null | undefined) {
+  const defaultValues = {
+    heading: 'Join us',
+    movementText: [
+      { text: 'A movement', isAbsolute: false },
+      { text: 'in', isAbsolute: true },
+      { text: 'music', isAbsolute: false }
+    ],
+    formDescription: "Type your name, email and an emerging artist you'd invest in below to Pre-register for Join Us...",
+    namePlaceholder: 'Your name...',
+    emailPlaceholder: 'Your email...',
+    artistPlaceholder: 'Your artist...',
+    artistLabel: "Name an emerging artist you'd invest in",
+    submitButtonText: 'Pre-Register',
+    submitReassurance: "Don't worry, we won't spam you",
+  };
+
+  if (!content) {
+    return {
+      heading: defaultValues.heading,
+      movementText: normalizeMovementText(undefined),
+      formDescription: defaultValues.formDescription,
+      namePlaceholder: defaultValues.namePlaceholder,
+      emailPlaceholder: defaultValues.emailPlaceholder,
+      artistPlaceholder: defaultValues.artistPlaceholder,
+      artistLabel: defaultValues.artistLabel,
+      submitButtonText: defaultValues.submitButtonText,
+      submitReassurance: defaultValues.submitReassurance,
+    };
+  }
+
+  return {
+    heading: getValue(content.heading, defaultValues.heading),
+    movementText: normalizeMovementText(content.movementText),
+    formDescription: getValue(content.formDescription, defaultValues.formDescription),
+    namePlaceholder: getValue(content.namePlaceholder, defaultValues.namePlaceholder),
+    emailPlaceholder: getValue(content.emailPlaceholder, defaultValues.emailPlaceholder),
+    artistPlaceholder: getValue(content.artistPlaceholder, defaultValues.artistPlaceholder),
+    artistLabel: getValue(content.artistLabel, defaultValues.artistLabel),
+    submitButtonText: getValue(content.submitButtonText, defaultValues.submitButtonText),
+    submitReassurance: getValue(content.submitReassurance, defaultValues.submitReassurance),
+  };
+}
+
+// Component for modal header
+interface ModalHeaderProps {
+  heading: string;
+  movementText: Array<{ text: string; isAbsolute: boolean }>;
+  onClose: () => void;
+}
+
+function ModalHeader({ heading, movementText, onClose }: ModalHeaderProps) {
+  return (
+    <div className={styles.overlayFormTop}>
+      <div className={styles.closeContainer}>
+        <div className={styles.rotateTarget}>
+          <div 
+            className={styles.closeIcon}
+            onClick={onClose}
+            role="button"
+            tabIndex={0}
+            aria-label="Close modal"
+          >
+            <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M18 6L6 18M6 6L18 18" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <h3 className={styles.footerHeadingWhite}>{heading}</h3>
+      <MovementText movementText={movementText} />
+    </div>
+  );
+}
+
+// Component for form section
+interface FormSectionProps {
+  formDescription: string;
+  formData: FormData;
+  onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onSubmit: (e: React.FormEvent) => void;
+  namePlaceholder: string;
+  emailPlaceholder: string;
+  artistPlaceholder: string;
+  artistLabel: string;
+  submitButtonText: string;
+  submitReassurance: string;
+  showSuccess: boolean;
+}
+
+function FormSection({
+  formDescription,
+  formData,
+  onInputChange,
+  onSubmit,
+  namePlaceholder,
+  emailPlaceholder,
+  artistPlaceholder,
+  artistLabel,
+  submitButtonText,
+  submitReassurance,
+  showSuccess,
+}: FormSectionProps) {
+  return (
+    <div className={styles.overlayFormWrap}>
+      <div className={styles.formExplainerDiv}>
+        <p className={styles.bodyCopyBlackLeftFormWhite}>
+          {formDescription}
+        </p>
+      </div>
+      <div className={styles.footerFormContainerOverlay}>
+        <form className={styles.formContainer} onSubmit={onSubmit}>
+          <FormField
+            name="name"
+            type="text"
+            placeholder={namePlaceholder}
+            value={formData.name}
+            onChange={onInputChange}
+            required
+          />
+          <FormField
+            name="email"
+            type="email"
+            placeholder={emailPlaceholder}
+            value={formData.email}
+            onChange={onInputChange}
+            required
+          />
+          <FormField
+            name="artist"
+            type="text"
+            placeholder={artistPlaceholder}
+            value={formData.artist}
+            onChange={onInputChange}
+            label={artistLabel}
+            className={styles.formFieldTpArt}
+          />
+          <SubmitButton
+            buttonText={submitButtonText}
+            reassuranceText={submitReassurance}
+          />
+        </form>
+        
+        {showSuccess && (
+          <div className={styles.formSuccess}>
+            <div>Thank you! Your submission has been received!</div>
+          </div>
+        )}
+        
+        <div className={styles.formFail} style={{ display: 'none' }}>
+          <div>Oops! Something went wrong while submitting the form.</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /**
  * Join Us Modal Component
  * Exact recreation of the live Hardwey website modal from static HTML
@@ -132,26 +332,8 @@ export const JoinUsModal: React.FC<JoinUsModalProps> = ({
     email: '',
     artist: '',
   });
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [shouldRender, setShouldRender] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-
-  useEffect(() => {
-    if (isOpen) {
-      setShouldRender(true);
-      // Trigger animation after modal is shown
-      setTimeout(() => {
-        setIsAnimating(true);
-      }, 10);
-    } else {
-      setIsAnimating(false);
-      // Delay unmounting to allow closing animation
-      const timer = setTimeout(() => {
-        setShouldRender(false);
-      }, 800);
-      return () => clearTimeout(timer);
-    }
-  }, [isOpen]);
+  const { isAnimating, shouldRender } = useModalAnimation(isOpen);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -164,19 +346,15 @@ export const JoinUsModal: React.FC<JoinUsModalProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Always create mailto link and open email client (matches HTML algorithm exactly)
     const mailtoLink = createMailtoLink(formData);
     window.location.href = mailtoLink;
     
-    // Call onSubmit callback if provided (for additional tracking/logging)
     if (onSubmit) {
       onSubmit(formData);
     }
     
-    // Show success message
     setShowSuccess(true);
     
-    // Reset form after a delay to show success message
     setTimeout(() => {
       setFormData({ name: '', email: '', artist: '' });
       setShowSuccess(false);
@@ -214,6 +392,8 @@ export const JoinUsModal: React.FC<JoinUsModalProps> = ({
 
   if (!shouldRender) return null;
 
+  const normalizedContent = normalizeModalContent(content);
+
   return (
     <div 
       className={`${styles.formOverlayWrapper} ${isAnimating ? styles.isOpen : ''}`}
@@ -223,86 +403,20 @@ export const JoinUsModal: React.FC<JoinUsModalProps> = ({
       aria-modal="true"
       aria-labelledby="modal-title"
     >
-      <div className={styles.overlayFormTop}>
-        <div className={styles.closeContainer}>
-          <div className={styles.rotateTarget}>
-            <div 
-              className={styles.closeIcon}
-              onClick={onClose}
-              role="button"
-              tabIndex={0}
-              aria-label="Close modal"
-            >
-              <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M18 6L6 18M6 6L18 18" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </div>
-          </div>
-        </div>
-        <h3 className={styles.footerHeadingWhite}>{content?.heading || 'Join us'}</h3>
-        <MovementText
-          movementText={(content?.movementText || [
-            { text: 'A movement', isAbsolute: false },
-            { text: 'in', isAbsolute: true },
-            { text: 'music', isAbsolute: false }
-          ]).map(item => ({
-            text: item.text,
-            isAbsolute: item.isAbsolute ?? false
-          }))}
-        />
-      </div>
-      <div className={styles.overlayFormWrap}>
-        <div className={styles.formExplainerDiv}>
-          <p className={styles.bodyCopyBlackLeftFormWhite}>
-            {content?.formDescription || "Type your name, email and an emerging artist you'd invest in below to Pre-register for Join Us..."}
-          </p>
-        </div>
-        <div className={styles.footerFormContainerOverlay}>
-          <form className={styles.formContainer} onSubmit={handleSubmit}>
-            <FormField
-              name="name"
-              type="text"
-              placeholder={content?.namePlaceholder || 'Your name...'}
-              value={formData.name}
-              onChange={handleInputChange}
-              required
-            />
-            <FormField
-              name="email"
-              type="email"
-              placeholder={content?.emailPlaceholder || 'Your email...'}
-              value={formData.email}
-              onChange={handleInputChange}
-              required
-            />
-            <FormField
-              name="artist"
-              type="text"
-              placeholder={content?.artistPlaceholder || 'Your artist...'}
-              value={formData.artist}
-              onChange={handleInputChange}
-              label={content?.artistLabel || "Name an emerging artist you'd invest in"}
-              className={styles.formFieldTpArt}
-            />
-            <SubmitButton
-              buttonText={content?.submitButtonText || 'Pre-Register'}
-              reassuranceText={content?.submitReassurance || "Don't worry, we won't spam you"}
-            />
-          </form>
-          
-          {/* Success Message */}
-          {showSuccess && (
-            <div className={styles.formSuccess}>
-              <div>Thank you! Your submission has been received!</div>
-            </div>
-          )}
-          
-          {/* Error Message */}
-          <div className={styles.formFail} style={{ display: 'none' }}>
-            <div>Oops! Something went wrong while submitting the form.</div>
-          </div>
-        </div>
-      </div>
+      <ModalHeader heading={normalizedContent.heading} movementText={normalizedContent.movementText} onClose={onClose} />
+      <FormSection
+        formDescription={normalizedContent.formDescription}
+        formData={formData}
+        onInputChange={handleInputChange}
+        onSubmit={handleSubmit}
+        namePlaceholder={normalizedContent.namePlaceholder}
+        emailPlaceholder={normalizedContent.emailPlaceholder}
+        artistPlaceholder={normalizedContent.artistPlaceholder}
+        artistLabel={normalizedContent.artistLabel}
+        submitButtonText={normalizedContent.submitButtonText}
+        submitReassurance={normalizedContent.submitReassurance}
+        showSuccess={showSuccess}
+      />
     </div>
   );
 };

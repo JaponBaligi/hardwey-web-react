@@ -64,6 +64,111 @@ function renderEditorWithBackground(
   );
 }
 
+// Helper function to render simple editors
+function renderSimpleEditor(
+  section: string,
+  commonProps: { data: Record<string, unknown>; setData: React.Dispatch<React.SetStateAction<Record<string, unknown>>>; setErr: (err: string) => void }
+) {
+  const simpleEditors: Record<string, React.ComponentType<typeof commonProps>> = {
+    errorPage: ErrorPageEditor,
+    investmentIntro: InvestmentIntroEditor,
+    ticker: TickerEditor,
+    faq: FaqEditor,
+  };
+
+  const Editor = simpleEditors[section];
+  return Editor ? <Editor {...commonProps} /> : null;
+}
+
+// Helper function to render editors with upload
+function renderUploadEditor(
+  section: string,
+  commonProps: { data: Record<string, unknown>; setData: React.Dispatch<React.SetStateAction<Record<string, unknown>>>; setErr: (err: string) => void }
+) {
+  const uploadEditors: Record<string, React.ComponentType<typeof commonProps & { uploadImage: (file: File) => Promise<{ url: string }> }>> = {
+    faqIntro: FaqIntroEditor,
+    founders: FoundersEditor,
+    moreFaq: MoreFaqEditor,
+    partners: PartnersEditor,
+    collaboratives: CollaborativesEditor,
+  };
+
+  const Editor = uploadEditors[section];
+  if (!Editor) return null;
+
+  if (section === 'faqIntro') {
+    return renderEditorWithUpload(Editor, commonProps, uploadImage as (file: File) => Promise<{ url: string }>);
+  }
+  return renderEditorWithUpload(Editor, commonProps, uploadImage);
+}
+
+// Helper function to render special case editors
+function renderSpecialEditor(
+  section: string,
+  commonProps: { data: Record<string, unknown>; setData: React.Dispatch<React.SetStateAction<Record<string, unknown>>>; setErr: (err: string) => void },
+  props: Omit<SectionEditorRenderProps, 'section' | 'data' | 'setData' | 'setErr'>
+) {
+  if (section === 'fredAgain') {
+    return (
+      <FredAgainEditor
+        {...commonProps}
+        onUpload={props.onUpload}
+        onUploadBackground={props.onUploadBackground}
+        fileRef={props.fileRef}
+        backgroundFileRef={props.backgroundFileRef}
+        uploadImage={uploadImage}
+      />
+    );
+  }
+
+  if (section === 'hero') {
+    return (
+      <HeroEditor
+        {...commonProps}
+        onUpload={props.onUpload}
+        onUploadBackground={props.onUploadBackground}
+        onUploadLogo={props.onUploadLogo}
+        fileRef={props.fileRef}
+        backgroundFileRef={props.backgroundFileRef}
+        logoFileRef={props.logoFileRef}
+        uploadImage={uploadImage}
+      />
+    );
+  }
+
+  if (section === 'investment') {
+    return (
+      <InvestmentEditor
+        {...commonProps}
+        onUploadBackground={props.onUploadBackground}
+        backgroundFileRef={props.backgroundFileRef}
+        onUploadLogo={props.onUploadLogo}
+        logoFileRef={props.logoFileRef}
+      />
+    );
+  }
+
+  if (section === 'nftDisclaimer') {
+    return (
+      <NftDisclaimerEditor
+        {...commonProps}
+        onUploadBackground={props.onUploadBackground}
+        backgroundFileRef={props.backgroundFileRef}
+        onUploadGif={props.onUploadGif}
+        gifFileRef={props.gifFileRef}
+        onUploadLogo={props.onUploadLogo}
+        starFileRef={props.starFileRef}
+      />
+    );
+  }
+
+  if (section === 'privacyPolicy' || section === 'terms') {
+    return <PrivacyPolicyTermsEditor {...commonProps} section={section} />;
+  }
+
+  return null;
+}
+
 function renderSectionEditor({
   section,
   data,
@@ -80,99 +185,19 @@ function renderSectionEditor({
   starFileRef,
 }: SectionEditorRenderProps) {
   const commonProps = { data, setData, setErr };
+  const specialProps = { onUpload, onUploadBackground, onUploadLogo, onUploadGif, fileRef, backgroundFileRef, logoFileRef, gifFileRef, starFileRef };
 
-  // Simple editors (no special props)
-  if (section === 'errorPage') {
-    return <ErrorPageEditor {...commonProps} />;
-  }
-  if (section === 'investmentIntro') {
-    return <InvestmentIntroEditor {...commonProps} />;
-  }
-  if (section === 'ticker') {
-    return <TickerEditor {...commonProps} />;
-  }
-  if (section === 'faq') {
-    return <FaqEditor {...commonProps} />;
-  }
+  const simpleEditor = renderSimpleEditor(section, commonProps);
+  if (simpleEditor) return simpleEditor;
 
-  // Editors with uploadImage
-  if (section === 'faqIntro') {
-    return renderEditorWithUpload(FaqIntroEditor, commonProps, uploadImage as (file: File) => Promise<{ url: string }>);
-  }
-  if (section === 'founders') {
-    return renderEditorWithUpload(FoundersEditor, commonProps, uploadImage);
-  }
-  if (section === 'moreFaq') {
-    return renderEditorWithUpload(MoreFaqEditor, commonProps, uploadImage);
-  }
-  if (section === 'partners') {
-    return renderEditorWithUpload(PartnersEditor, commonProps, uploadImage);
-  }
-  if (section === 'collaboratives') {
-    return renderEditorWithUpload(CollaborativesEditor, commonProps, uploadImage);
-  }
+  const uploadEditor = renderUploadEditor(section, commonProps);
+  if (uploadEditor) return uploadEditor;
 
-  // Editors with background upload
   if (section === 'shares') {
     return renderEditorWithBackground(SharesEditor, commonProps, onUploadBackground, backgroundFileRef);
   }
 
-  // Special cases with multiple props
-  if (section === 'fredAgain') {
-    return (
-      <FredAgainEditor
-        {...commonProps}
-        onUpload={onUpload}
-        onUploadBackground={onUploadBackground}
-        fileRef={fileRef}
-        backgroundFileRef={backgroundFileRef}
-        uploadImage={uploadImage}
-      />
-    );
-  }
-  if (section === 'hero') {
-    return (
-      <HeroEditor
-        {...commonProps}
-        onUpload={onUpload}
-        onUploadBackground={onUploadBackground}
-        onUploadLogo={onUploadLogo}
-        fileRef={fileRef}
-        backgroundFileRef={backgroundFileRef}
-        logoFileRef={logoFileRef}
-        uploadImage={uploadImage}
-      />
-    );
-  }
-  if (section === 'investment') {
-    return (
-      <InvestmentEditor
-        {...commonProps}
-        onUploadBackground={onUploadBackground}
-        backgroundFileRef={backgroundFileRef}
-        onUploadLogo={onUploadLogo}
-        logoFileRef={logoFileRef}
-      />
-    );
-  }
-  if (section === 'nftDisclaimer') {
-    return (
-      <NftDisclaimerEditor
-        {...commonProps}
-        onUploadBackground={onUploadBackground}
-        backgroundFileRef={backgroundFileRef}
-        onUploadGif={onUploadGif}
-        gifFileRef={gifFileRef}
-        onUploadLogo={onUploadLogo}
-        starFileRef={starFileRef}
-      />
-    );
-  }
-  if (section === 'privacyPolicy' || section === 'terms') {
-    return <PrivacyPolicyTermsEditor {...commonProps} section={section} />;
-  }
-
-  return null;
+  return renderSpecialEditor(section, commonProps, specialProps);
 }
 
 const SECTIONS_WITH_CUSTOM_EDITOR = new Set([

@@ -178,27 +178,9 @@ function ImageContactSection({ imageUrl, contactHeading, contactEmail, contactBu
   );
 }
 
-/**
- * Extended FAQ page with comprehensive questions and answers
- * @param className - Additional CSS classes
- */
-export const MoreFaqPage: React.FC<MoreFaqPageProps> = ({
-  className = '',
-}) => {
-  const [openItem, setOpenItem] = useState<number | null>(null);
-  const accordionRefs = useRef<(HTMLDivElement | null)[]>([]);
+// Hook for visibility observer
+function useVisibilityObserver(ref: React.RefObject<HTMLDivElement>) {
   const [isVisible, setIsVisible] = useState(false);
-  const pageRef = useRef<HTMLDivElement>(null);
-
-  const fallbackContent = getTemplateFor('moreFaq') as MoreFaqPageSection;
-  const { data: content } = useContent<MoreFaqPageSection>('moreFaq', fallbackContent);
-
-  // Get main FAQ section to count items for numbering
-  const { data: mainFaqContent } = useContent<FaqSectionType>('faq', { faqItems: [] });
-  const mainFaqCount = mainFaqContent?.faqItems?.length || 0;
-
-  // Extended FAQ items
-  const extendedFaqItems: FaqItem[] = content?.faqItems || fallbackContent.faqItems || [];
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -210,12 +192,21 @@ export const MoreFaqPage: React.FC<MoreFaqPageProps> = ({
       { threshold: 0.1 }
     );
 
-    if (pageRef.current) {
-      observer.observe(pageRef.current);
+    if (ref.current) {
+      observer.observe(ref.current);
     }
 
     return () => observer.disconnect();
-  }, []);
+  }, [ref]);
+
+  return isVisible;
+}
+
+// Hook for accordion state management
+function useAccordionState(
+  accordionRefs: React.MutableRefObject<(HTMLDivElement | null)[]>
+) {
+  const [openItem, setOpenItem] = useState<number | null>(null);
 
   const handleToggle = (index: number) => {
     const accordionPane = accordionRefs.current[index];
@@ -232,6 +223,103 @@ export const MoreFaqPage: React.FC<MoreFaqPageProps> = ({
     }
   };
 
+  return { openItem, handleToggle };
+}
+
+// Component for FAQ list
+interface FaqListProps {
+  items: FaqItem[];
+  mainFaqCount: number;
+  isVisible: boolean;
+  openItem: number | null;
+  accordionRefs: React.MutableRefObject<(HTMLDivElement | null)[]>;
+  onToggle: (index: number) => void;
+  onKeyDown: (event: React.KeyboardEvent, index: number) => void;
+}
+
+function FaqList({
+  items,
+  mainFaqCount,
+  isVisible,
+  openItem,
+  accordionRefs,
+  onToggle,
+  onKeyDown,
+}: FaqListProps) {
+  return (
+    <div className={`${styles.collectionList} ${isVisible ? styles.collectionListVisible : ''}`}>
+      {items.map((item, index) => (
+        <FaqAccordionItem
+          key={item.id}
+          item={item}
+          index={index}
+          mainFaqCount={mainFaqCount}
+          isOpen={openItem === index}
+          isVisible={isVisible}
+          accordionRef={(el) => {
+            if (el) accordionRefs.current[index] = el;
+          }}
+          onToggle={() => onToggle(index)}
+          onKeyDown={(e) => onKeyDown(e, index)}
+        />
+      ))}
+    </div>
+  );
+}
+
+// Helper to get value with fallback
+function getValue<T>(value: T | null | undefined, fallback: T): T {
+  return value ?? fallback;
+}
+
+// Helper function to normalize FAQ page content
+function normalizeFaqPageContent(
+  content: MoreFaqPageSection | null | undefined,
+  fallbackContent: MoreFaqPageSection
+) {
+  if (!content) {
+    return {
+      pageTitle: fallbackContent.pageTitle,
+      pageSubtitle: fallbackContent.pageSubtitle,
+      faqItems: fallbackContent.faqItems || [],
+      imageUrl: fallbackContent.imageUrl,
+      contactHeading: fallbackContent.contactHeading,
+      contactEmail: getValue(fallbackContent.contactEmail, 'hello@hardweyllc.com'),
+      contactButtonText: fallbackContent.contactButtonText,
+    };
+  }
+
+  return {
+    pageTitle: getValue(content.pageTitle, fallbackContent.pageTitle),
+    pageSubtitle: getValue(content.pageSubtitle, fallbackContent.pageSubtitle),
+    faqItems: content.faqItems || fallbackContent.faqItems || [],
+    imageUrl: getValue(content.imageUrl, fallbackContent.imageUrl),
+    contactHeading: getValue(content.contactHeading, fallbackContent.contactHeading),
+    contactEmail: getValue(content.contactEmail, getValue(fallbackContent.contactEmail, 'hello@hardweyllc.com')),
+    contactButtonText: getValue(content.contactButtonText, fallbackContent.contactButtonText),
+  };
+}
+
+/**
+ * Extended FAQ page with comprehensive questions and answers
+ * @param className - Additional CSS classes
+ */
+export const MoreFaqPage: React.FC<MoreFaqPageProps> = ({
+  className = '',
+}) => {
+  const accordionRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const pageRef = useRef<HTMLDivElement>(null);
+  const isVisible = useVisibilityObserver(pageRef);
+
+  const fallbackContent = getTemplateFor('moreFaq') as MoreFaqPageSection;
+  const { data: content } = useContent<MoreFaqPageSection>('moreFaq', fallbackContent);
+
+  const { data: mainFaqContent } = useContent<FaqSectionType>('faq', { faqItems: [] });
+  const mainFaqCount = mainFaqContent?.faqItems?.length || 0;
+  const normalizedContent = normalizeFaqPageContent(content, fallbackContent);
+
+  const { openItem, handleToggle } = useAccordionState(accordionRefs);
+
   const handleKeyDown = (event: React.KeyboardEvent, index: number) => {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
@@ -241,35 +329,23 @@ export const MoreFaqPage: React.FC<MoreFaqPageProps> = ({
 
   return (
     <div ref={pageRef} className={`${styles.pageContainer} ${className}`}>
-      <PageHeader
-        pageTitle={content?.pageTitle ?? fallbackContent.pageTitle}
-        pageSubtitle={content?.pageSubtitle ?? fallbackContent.pageSubtitle}
+      <PageHeader pageTitle={normalizedContent.pageTitle} pageSubtitle={normalizedContent.pageSubtitle} />
+
+      <FaqList
+        items={normalizedContent.faqItems}
+        mainFaqCount={mainFaqCount}
+        isVisible={isVisible}
+        openItem={openItem}
+        accordionRefs={accordionRefs}
+        onToggle={handleToggle}
+        onKeyDown={handleKeyDown}
       />
 
-      {/* FAQ Content */}
-      <div className={`${styles.collectionList} ${isVisible ? styles.collectionListVisible : ''}`}>
-        {extendedFaqItems.map((item, index) => (
-          <FaqAccordionItem
-            key={item.id}
-            item={item}
-            index={index}
-            mainFaqCount={mainFaqCount}
-            isOpen={openItem === index}
-            isVisible={isVisible}
-            accordionRef={(el) => {
-              if (el) accordionRefs.current[index] = el;
-            }}
-            onToggle={() => handleToggle(index)}
-            onKeyDown={(e) => handleKeyDown(e, index)}
-          />
-        ))}
-      </div>
-
       <ImageContactSection
-        imageUrl={content?.imageUrl ?? fallbackContent.imageUrl}
-        contactHeading={content?.contactHeading ?? fallbackContent.contactHeading}
-        contactEmail={content?.contactEmail ?? fallbackContent.contactEmail ?? 'hello@hardweyllc.com'}
-        contactButtonText={content?.contactButtonText ?? fallbackContent.contactButtonText}
+        imageUrl={normalizedContent.imageUrl}
+        contactHeading={normalizedContent.contactHeading}
+        contactEmail={normalizedContent.contactEmail}
+        contactButtonText={normalizedContent.contactButtonText}
       />
     </div>
   );
