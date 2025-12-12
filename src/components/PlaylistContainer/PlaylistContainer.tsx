@@ -96,7 +96,10 @@ export const PlaylistContainer: React.FC<PlaylistContainerProps> = ({
               className={styles.discImg}
               loading="lazy"
               sizes="(max-width: 479px) 30vw, (max-width: 767px) 28vw, (max-width: 991px) 22vw, 16vw"
-              srcSet="/assets/img/Playlist500x.png 500w, /assets/img/playlist800px.png 800w, /assets/img/playlist1151px.png 1151w"
+              {...(!playlist.imageUrl || playlist.imageUrl.includes('/assets/img/Playlist')
+                ? { srcSet: "/assets/img/Playlist500x.png 500w, /assets/img/playlist800px.png 800w, /assets/img/playlist1151px.png 1151w" }
+                : {}
+              )}
             />
           </div>
         </a>

@@ -112,7 +112,10 @@ const FounderImageSection: React.FC<FounderImageSectionProps> = ({
         className={`${styles.imageFull} ${styles.imageFounder}`}
         loading="eager"
         sizes="(max-width: 991px) 98vw, 49vw"
-        srcSet={imageSrcSet}
+        {...(founders[currentFounder]?.imageUrl && !founders[currentFounder]?.imageUrl.startsWith('/assets/') && !founders[currentFounder]?.imageUrl.startsWith('./')
+          ? {}
+          : { srcSet: imageSrcSet }
+        )}
         onLoad={onImageLoad}
         onError={onImageError}
         style={{ opacity: 0 }}

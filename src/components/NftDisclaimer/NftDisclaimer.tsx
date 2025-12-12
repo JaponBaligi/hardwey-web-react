@@ -73,7 +73,10 @@ function NftFirstRow({ nopeText, monaImageUrl, monaImageSrcSet, isVisible, onIma
         loading="lazy"
         onLoad={onImageLoad}
         sizes="(max-width: 767px) 100vw, 21vw"
-        srcSet={monaImageSrcSet}
+        {...(monaImageUrl && !monaImageUrl.startsWith('/assets/') && !monaImageUrl.startsWith('./')
+          ? {}
+          : { srcSet: monaImageSrcSet }
+        )}
       />
     </div>
   );
@@ -160,7 +163,10 @@ function NftThirdRow({ nftsText, gifImageUrl, valueMusicText, resonateTextMobile
           className={`${styles.imageFull} ${styles.imageFullFit} ${isVisible ? styles.imageVisible : ''}`}
           loading="lazy"
           sizes="(max-width: 767px) 98vw, 100vw"
-          srcSet={monaImageSrcSet}
+          {...(monaImageUrl && !monaImageUrl.startsWith('/assets/') && !monaImageUrl.startsWith('./')
+            ? {}
+            : { srcSet: monaImageSrcSet }
+          )}
         />
       </div>
     </div>

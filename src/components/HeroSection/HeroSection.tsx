@@ -259,7 +259,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ className = '' }) => {
         loading="lazy" 
         sizes="100vw" 
         alt="" 
-        srcSet={resolvedContent.backgroundImageSrcSet} 
+        {...(resolvedContent.backgroundImage && !resolvedContent.backgroundImage.startsWith('/assets/') && !resolvedContent.backgroundImage.startsWith('./')
+          ? {}
+          : { srcSet: resolvedContent.backgroundImageSrcSet }
+        )}
         className={styles.image}
       />
     </section>

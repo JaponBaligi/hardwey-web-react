@@ -70,7 +70,10 @@ export const FredAgainSection: React.FC<FredAgainSectionProps> = ({ className = 
         src={backgroundImage || undefined}
         loading="lazy"
         sizes="100vw"
-        srcSet={backgroundImageSrcSet}
+        {...(backgroundImage && !backgroundImage.startsWith('/assets/') && !backgroundImage.startsWith('./')
+          ? {}
+          : { srcSet: backgroundImageSrcSet }
+        )}
         alt="Fred Again concert image"
         className={styles.imageFull}
       />

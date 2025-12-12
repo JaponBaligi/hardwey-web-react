@@ -84,7 +84,10 @@ export const SharesSection: React.FC<SharesSectionProps> = ({ className = '' }) 
           src={resolvedContent.imageUrl || undefined} 
           loading="eager" 
           sizes="(max-width: 991px) 98vw, 49vw" 
-          srcSet={resolvedContent.imageSrcSet} 
+          {...(resolvedContent.imageUrl && !resolvedContent.imageUrl.startsWith('/assets/') && !resolvedContent.imageUrl.startsWith('./')
+            ? {}
+            : { srcSet: resolvedContent.imageSrcSet }
+          )}
           alt="" 
           className={`${styles.imageFull} ${styles.imageFullIntro}`}
         />
