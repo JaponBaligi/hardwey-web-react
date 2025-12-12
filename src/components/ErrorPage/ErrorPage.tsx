@@ -146,7 +146,7 @@ const BackButton: React.FC<BackButtonProps> = ({ text, arrowIcon, onNavigate }) 
       {/* Arrow Icon */}
       <div className={styles.arrowDivWrapper}>
         <img
-          src={arrowIcon}
+          src={arrowIcon || undefined}
           alt=""
           className={`${styles.arrowDiv} ${buttonHovered ? styles.arrowDivInvert : ''}`}
           loading="lazy"

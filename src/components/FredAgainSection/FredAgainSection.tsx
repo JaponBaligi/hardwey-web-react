@@ -67,7 +67,7 @@ export const FredAgainSection: React.FC<FredAgainSectionProps> = ({ className = 
     >
       {/* Background Image */}
       <img
-        src={backgroundImage}
+        src={backgroundImage || undefined}
         loading="lazy"
         sizes="100vw"
         srcSet={backgroundImageSrcSet}
@@ -91,7 +91,7 @@ export const FredAgainSection: React.FC<FredAgainSectionProps> = ({ className = 
           {logoUrls.map((logoUrl, idx) => (
             <img
               key={idx}
-              src={logoUrl}
+              src={logoUrl || undefined}
               width="150"
               height="150"
               loading="lazy"

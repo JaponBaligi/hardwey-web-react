@@ -9,12 +9,12 @@ export function TickerEditor({ data, setData }: SectionEditorProps) {
         <div className={styles.colorPicker}>
           <input
             type="color"
-            value={data.backgroundColor || '#bbdbfa'}
+            value={(data.backgroundColor as string) || '#bbdbfa'}
             onChange={e => setData({ ...data, backgroundColor: e.target.value })}
             className={styles.colorInput}
           />
           <TextInput
-            value={data.backgroundColor || '#bbdbfa'}
+            value={(data.backgroundColor as string) || '#bbdbfa'}
             onChange={value => setData({ ...data, backgroundColor: value })}
             placeholder="#bbdbfa"
             className={styles.colorTextInput}
@@ -25,7 +25,7 @@ export function TickerEditor({ data, setData }: SectionEditorProps) {
       <div className={styles.field}>
         <FormField label="Ticker Words (comma-separated)">
           <TextInput
-            value={(data.tickerWords || []).join(', ')}
+            value={Array.isArray(data.tickerWords) ? (data.tickerWords as string[]).join(', ') : ''}
             onChange={value => {
               const words = value.split(',').map(w => w.trim()).filter(w => w);
               setData({ ...data, tickerWords: words });

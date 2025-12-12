@@ -326,7 +326,7 @@ export const PartnerCard: React.FC<PartnerCardProps> = ({
           <div className={`${styles.content} ${styles.avatarContent}`}>
             <img
               className={styles.avatar}
-              src={partner.imageUrl}
+              src={partner.imageUrl || undefined}
               alt={`${partner.name} avatar`}
               loading="lazy"
               onError={e => {

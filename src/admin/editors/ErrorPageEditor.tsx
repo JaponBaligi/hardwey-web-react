@@ -59,7 +59,7 @@ function ImageField({ label, value, onChange, placeholder, previewClassName, alt
       />
       {value && (
         <div className={previewClassName}>
-          <img src={value} alt={alt} />
+          <img src={value || undefined} alt={alt} />
         </div>
       )}
     </FormField>

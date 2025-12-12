@@ -107,7 +107,7 @@ const FounderImageSection: React.FC<FounderImageSectionProps> = ({
     <div className={styles.imageContainer}>
       <img
         ref={imageRef}
-        src={founders[currentFounder]?.imageUrl}
+        src={founders[currentFounder]?.imageUrl || undefined}
         alt={founders[currentFounder]?.name}
         className={`${styles.imageFull} ${styles.imageFounder}`}
         loading="eager"

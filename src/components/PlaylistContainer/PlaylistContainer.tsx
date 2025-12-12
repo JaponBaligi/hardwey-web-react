@@ -91,7 +91,7 @@ export const PlaylistContainer: React.FC<PlaylistContainerProps> = ({
           {/* Disc Fill */}
           <div className={styles.discFill}>
             <img
-              src={playlist.imageUrl}
+              src={playlist.imageUrl || undefined}
               alt={playlist.title}
               className={styles.discImg}
               loading="lazy"

@@ -26,7 +26,7 @@ export function ImageUpload({
       <span className={styles.hint}>{hint}</span>
       {previewUrl && (
         <div className={styles.preview}>
-          <img src={previewUrl} alt="Preview" />
+          <img src={previewUrl || undefined} alt="Preview" />
         </div>
       )}
     </div>

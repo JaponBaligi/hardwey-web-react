@@ -155,7 +155,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ className = '' }) => {
       {/* Hero Logo Div */}
       <div ref={logoRef} className={styles.heroLogoDiv}>
         <img 
-          src={resolvedContent.logoUrl} 
+          src={resolvedContent.logoUrl || undefined} 
           loading="lazy" 
           alt="Hardwey LOGO" 
           className={styles.heroLogo}
@@ -167,7 +167,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ className = '' }) => {
         {/* Outer Identifiers */}
         {resolvedContent.leftIdentifier && (
           <img 
-            src={resolvedContent.leftIdentifier} 
+            src={resolvedContent.leftIdentifier || undefined} 
             loading="lazy" 
             alt="" 
             className={`${styles.outerIdent} ${styles.outerIdentLeft}`}
@@ -175,7 +175,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ className = '' }) => {
         )}
         {resolvedContent.rightIdentifier && (
           <img 
-            src={resolvedContent.rightIdentifier} 
+            src={resolvedContent.rightIdentifier || undefined} 
             loading="lazy" 
             alt="" 
             className={styles.outerIdent}
@@ -192,14 +192,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ className = '' }) => {
           {resolvedContent.motifs.length > 0 && (
             <>
               <img 
-                src={resolvedContent.motifs[0]} 
+                src={resolvedContent.motifs[0] || undefined} 
                 loading="lazy" 
                 alt="" 
                 className={`${styles.motif} ${styles.motif2k23}`}
               />
               {resolvedContent.motifs.length > 1 && (
                 <img 
-                  src={resolvedContent.motifs[1]} 
+                  src={resolvedContent.motifs[1] || undefined} 
                   loading="lazy" 
                   alt="" 
                   className={`${styles.motif} ${styles.motifRestricted}`}
@@ -216,14 +216,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ className = '' }) => {
           {resolvedContent.motifs.length > 2 && (
             <>
               <img 
-                src={resolvedContent.motifs[2]} 
+                src={resolvedContent.motifs[2] || undefined} 
                 loading="lazy" 
                 alt="" 
                 className={`${styles.motif} ${styles.motifGlobal}`}
               />
               {resolvedContent.motifs.length > 3 && (
                 <img 
-                  src={resolvedContent.motifs[3]} 
+                  src={resolvedContent.motifs[3] || undefined} 
                   loading="lazy" 
                   alt="" 
                   className={`${styles.motif} ${styles.motifRights}`}
@@ -231,7 +231,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ className = '' }) => {
               )}
               {resolvedContent.motifs.length > 4 && (
                 <img 
-                  src={resolvedContent.motifs[4]} 
+                  src={resolvedContent.motifs[4] || undefined} 
                   loading="lazy" 
                   alt="" 
                   className={`${styles.motif} ${styles.motifStars}`}
@@ -255,7 +255,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ className = '' }) => {
       {/* Background Image */}
       <img 
         ref={backgroundRef}
-        src={resolvedContent.backgroundImage} 
+        src={resolvedContent.backgroundImage || undefined} 
         loading="lazy" 
         sizes="100vw" 
         alt="" 

@@ -81,7 +81,7 @@ export const SharesSection: React.FC<SharesSectionProps> = ({ className = '' }) 
       <div className={styles.splitFlex}>
         {/* Image */}
         <img 
-          src={resolvedContent.imageUrl} 
+          src={resolvedContent.imageUrl || undefined} 
           loading="eager" 
           sizes="(max-width: 991px) 98vw, 49vw" 
           srcSet={resolvedContent.imageSrcSet} 

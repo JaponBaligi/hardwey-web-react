@@ -126,7 +126,7 @@ export function HeroEditor({
               {motif && (
                 <div style={{ marginTop: 4, width: '100%' }}>
                   <img 
-                    src={motif} 
+                    src={motif || undefined} 
                     alt={`Motif ${idx + 1}`} 
                     style={{ maxHeight: 40, maxWidth: 100, border: '1px solid #eee' }} 
                   />

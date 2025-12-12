@@ -14,7 +14,7 @@ export default function Preview({ data }: { data: PreviewData | null | undefined
       {data.text && <p>{data.text}</p>}
       {Array.isArray(data.images) && data.images.length > 0 && (
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-          {data.images.map((src: string, i: number) => (<img key={i} src={src} alt="" style={{ maxHeight: 80 }} />))}
+          {data.images.map((src: string, i: number) => (<img key={i} src={src || undefined} alt="" style={{ maxHeight: 80 }} />))}
         </div>
       )}
       {Array.isArray(data.links) && data.links.length > 0 && (

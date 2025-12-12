@@ -67,7 +67,7 @@ function NftFirstRow({ nopeText, monaImageUrl, monaImageSrcSet, isVisible, onIma
         {nopeText}
       </div>
       <img
-        src={monaImageUrl}
+        src={monaImageUrl || undefined}
         alt="HARDWEY MONA - Not NFTs, real music investment"
         className={`${styles.imageFull} ${styles.imageFullFit} ${styles.imageFullNft} ${isVisible ? styles.imageVisible : ''}`}
         loading="lazy"
@@ -99,7 +99,7 @@ function NftSecondRow({ valueMusicText, resonateText, starIconUrl, notGraphicUrl
           {resonateText}
         </p>
         <img
-          src={starIconUrl}
+          src={starIconUrl || undefined}
           alt="HARDWEY STAR"
           className={`${styles.nftStar} ${isVisible ? styles.starVisible : ''}`}
           loading="lazy"
@@ -128,7 +128,7 @@ function NftThirdRow({ nftsText, gifImageUrl, valueMusicText, resonateTextMobile
   return (
     <div className={styles.nftFlex}>
       <img
-        src={gifImageUrl}
+        src={gifImageUrl || undefined}
         alt=""
         className={`${styles.imageFull} ${styles.imageFullGif} ${styles.nftGif} ${isVisible ? styles.nftGifVisible : ''}`}
         loading="lazy"
@@ -155,7 +155,7 @@ function NftThirdRow({ nftsText, gifImageUrl, valueMusicText, resonateTextMobile
       {/* Mobile Image Container */}
       <div className={`${styles.nftImageContainer} ${styles.nftImageContainerMobile}`}>
         <img
-          src={monaImageUrl}
+          src={monaImageUrl || undefined}
           alt="HARDWEY MONA - Real music investment, not NFTs"
           className={`${styles.imageFull} ${styles.imageFullFit} ${isVisible ? styles.imageVisible : ''}`}
           loading="lazy"

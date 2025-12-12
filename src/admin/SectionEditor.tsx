@@ -267,7 +267,7 @@ function ImagesSection({ data, setData, onUpload, fileRef }: ImagesSectionProps)
       <ul>
         {images.map((src: string, idx: number) => (
           <li key={idx}>
-            <img src={src} alt="" style={{ maxHeight: 40, verticalAlign: 'middle' }} /> {src}
+            <img src={src || undefined} alt="" style={{ maxHeight: 40, verticalAlign: 'middle' }} /> {src}
             <button onClick={() => removeImage(idx)} style={{ marginLeft: 8 }}>Remove</button>
           </li>
         ))}

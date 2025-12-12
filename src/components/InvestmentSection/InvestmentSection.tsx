@@ -78,7 +78,7 @@ export const InvestmentSection: React.FC<InvestmentSectionProps> = ({ className 
         {/* Background Image */}
         <div className={styles.backgroundImage}>
           <img
-            src={resolvedContent.backgroundImage}
+            src={resolvedContent.backgroundImage || undefined}
             alt="Investment Background"
             className={styles.backgroundImg}
             loading="lazy"
@@ -105,7 +105,7 @@ export const InvestmentSection: React.FC<InvestmentSectionProps> = ({ className 
             <div className={styles.launchDate}>
               <h2 className={styles.dateText}>{resolvedContent.dateText}</h2>
               <img
-                src={resolvedContent.logoImage}
+                src={resolvedContent.logoImage || undefined}
                 alt="HARDWEY Logo"
                 className={styles.logoImg}
                 loading="lazy"

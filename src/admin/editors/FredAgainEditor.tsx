@@ -68,7 +68,7 @@ export function FredAgainEditor({
             return (
             <li key={idx} className={styles.listItem}>
               <img 
-                src={url} 
+                src={url || undefined} 
                 alt={`Logo ${idx + 1}`} 
                 className={styles.listImage}
               />

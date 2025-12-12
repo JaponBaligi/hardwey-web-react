@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useRef, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import type { FaqItem } from '@/types';
 import { useContent } from '@/hooks/useContent';
 import type { MoreFaqPageSection, FaqSectionType } from '@/types/content';
@@ -158,7 +159,7 @@ function ImageContactSection({ imageUrl, contactHeading, contactEmail, contactBu
     <section className={styles.imageSection}>
       {imageUrl && (
         <img
-          src={imageUrl}
+          src={imageUrl || undefined}
           alt=""
           className={styles.imageFull}
           loading="lazy"
@@ -179,7 +180,7 @@ function ImageContactSection({ imageUrl, contactHeading, contactEmail, contactBu
 }
 
 // Hook for visibility observer
-function useVisibilityObserver(ref: React.RefObject<HTMLDivElement>) {
+function useVisibilityObserver(ref: React.RefObject<HTMLDivElement | null>) {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -309,6 +310,7 @@ export const MoreFaqPage: React.FC<MoreFaqPageProps> = ({
 }) => {
   const accordionRefs = useRef<(HTMLDivElement | null)[]>([]);
   const pageRef = useRef<HTMLDivElement>(null);
+  const location = useLocation();
   const isVisible = useVisibilityObserver(pageRef);
 
   const fallbackContent = getTemplateFor('moreFaq') as MoreFaqPageSection;
@@ -319,6 +321,11 @@ export const MoreFaqPage: React.FC<MoreFaqPageProps> = ({
   const normalizedContent = normalizeFaqPageContent(content, fallbackContent);
 
   const { openItem, handleToggle } = useAccordionState(accordionRefs);
+
+  // Scroll to top when page loads or route changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [location.pathname]);
 
   const handleKeyDown = (event: React.KeyboardEvent, index: number) => {
     if (event.key === 'Enter' || event.key === ' ') {

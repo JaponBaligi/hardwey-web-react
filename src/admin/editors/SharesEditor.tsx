@@ -13,7 +13,7 @@ export function SharesEditor({
     <>
       <FormField label="Heading">
         <TextInput
-          value={data.heading || ''}
+          value={(data.heading as string) || ''}
           onChange={value => setData({ ...data, heading: value })}
           placeholder="Buy shares in artists' brands"
         />
@@ -21,7 +21,7 @@ export function SharesEditor({
 
       <FormField label="Subheading (Mobile)">
         <TextInput
-          value={data.subheadingMobile || ''}
+          value={(data.subheadingMobile as string) || ''}
           onChange={value => setData({ ...data, subheadingMobile: value })}
           placeholder="A new way to invest"
         />
@@ -30,7 +30,7 @@ export function SharesEditor({
       <div className={styles.field}>
         <FormField label="Subheading Words (Desktop - separate by commas)">
           <TextInput
-            value={(data.subheadingWords || []).join(', ')}
+            value={Array.isArray(data.subheadingWords) ? (data.subheadingWords as string[]).join(', ') : ''}
             onChange={value => {
               const words = value.split(',').map(w => w.trim()).filter(w => w);
               setData({ ...data, subheadingWords: words });
@@ -43,7 +43,7 @@ export function SharesEditor({
 
       <FormField label="Body Copy">
         <TextAreaInput
-          value={data.bodyCopy || ''}
+          value={(data.bodyCopy as string) || ''}
           onChange={value => setData({ ...data, bodyCopy: value })}
           rows={4}
           placeholder="Artists build brands that generate revenue..."
@@ -52,7 +52,7 @@ export function SharesEditor({
 
       <FormField label="Image URL">
         <TextInput
-          value={data.imageUrl || ''}
+          value={(data.imageUrl as string) || ''}
           onChange={value => setData({ ...data, imageUrl: value })}
           placeholder="/assets/img/BUY%20SHARES%20IMAGE.jpg"
         />
@@ -60,13 +60,13 @@ export function SharesEditor({
           onUpload={onUploadBackground!}
           fileRef={backgroundFileRef}
           hint="Or upload an image"
-          previewUrl={data.imageUrl}
+          previewUrl={data.imageUrl as string | undefined}
         />
       </FormField>
 
       <FormField label="Image SrcSet (optional)">
         <TextAreaInput
-          value={data.imageSrcSet || ''}
+          value={(data.imageSrcSet as string) || ''}
           onChange={value => setData({ ...data, imageSrcSet: value })}
           rows={2}
           placeholder="/assets/img/shares-500.jpg 500w, /assets/img/shares-800.jpg 800w, ..."

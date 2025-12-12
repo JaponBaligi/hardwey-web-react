@@ -121,7 +121,7 @@ function TermsFooterActions({ email, buttonText }: TermsFooterActionsProps) {
 }
 
 // Hook for visibility observer
-function useVisibilityObserver(ref: React.RefObject<HTMLDivElement>) {
+function useVisibilityObserver(ref: React.RefObject<HTMLDivElement | null>) {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {

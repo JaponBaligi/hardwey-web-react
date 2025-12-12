@@ -6,7 +6,7 @@ export function InvestmentIntroEditor({ data, setData }: SectionEditorProps) {
     <>
       <FormField label="Heading">
         <TextInput
-          value={data.heading || ''}
+          value={(data.heading as string) || ''}
           onChange={value => setData({ ...data, heading: value })}
           placeholder="If you've never invested..."
         />
@@ -14,7 +14,7 @@ export function InvestmentIntroEditor({ data, setData }: SectionEditorProps) {
 
       <FormField label="Subtitle">
         <TextInput
-          value={data.subtitle || ''}
+          value={(data.subtitle as string) || ''}
           onChange={value => setData({ ...data, subtitle: value })}
           placeholder="This one's for you"
         />

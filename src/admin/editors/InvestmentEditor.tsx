@@ -15,7 +15,7 @@ export function InvestmentEditor({
     <>
       <FormField label="Background Image URL">
         <TextInput
-          value={data.backgroundImage || ''}
+          value={(data.backgroundImage as string) || ''}
           onChange={value => setData({ ...data, backgroundImage: value })}
           placeholder="/assets/img/BUY SHARES IMAGE.jpg"
         />
@@ -23,13 +23,13 @@ export function InvestmentEditor({
           onUpload={onUploadBackground!}
           fileRef={backgroundFileRef}
           hint="Or upload an image"
-          previewUrl={data.backgroundImage}
+          previewUrl={data.backgroundImage as string | undefined}
         />
       </FormField>
 
       <FormField label="Main Heading">
         <TextInput
-          value={data.mainHeading || ''}
+          value={(data.mainHeading as string) || ''}
           onChange={value => setData({ ...data, mainHeading: value })}
           placeholder="invest in artists"
         />
@@ -38,7 +38,7 @@ export function InvestmentEditor({
       <div className={styles.field}>
         <FormField label="Animated Words (comma-separated)">
           <TextInput
-            value={Array.isArray(data.animatedWords) ? data.animatedWords.join(', ') : ''}
+            value={Array.isArray(data.animatedWords) ? (data.animatedWords as string[]).join(', ') : ''}
             onChange={value => setData({ ...data, animatedWords: value.split(',').map(w => w.trim()).filter(w => w) })}
             placeholder="it, hits, different"
           />
@@ -48,7 +48,7 @@ export function InvestmentEditor({
 
       <FormField label="Coming Soon Title">
         <TextInput
-          value={data.comingSoonTitle || ''}
+          value={(data.comingSoonTitle as string) || ''}
           onChange={value => setData({ ...data, comingSoonTitle: value })}
           placeholder="Coming soon"
         />
@@ -56,7 +56,7 @@ export function InvestmentEditor({
 
       <FormField label="Date Text">
         <TextInput
-          value={data.dateText || ''}
+          value={(data.dateText as string) || ''}
           onChange={value => setData({ ...data, dateText: value })}
           placeholder="(?/?/2026)"
         />
@@ -64,7 +64,7 @@ export function InvestmentEditor({
 
       <FormField label="Logo Image URL">
         <TextInput
-          value={data.logoImage || ''}
+          value={(data.logoImage as string) || ''}
           onChange={value => setData({ ...data, logoImage: value })}
           placeholder="/assets/img/hardweymainlogo.jpg"
         />
@@ -72,13 +72,13 @@ export function InvestmentEditor({
           onUpload={onUploadLogo!}
           fileRef={logoFileRef}
           hint="Or upload an image"
-          previewUrl={data.logoImage}
+          previewUrl={data.logoImage as string | undefined}
         />
       </FormField>
 
       <FormField label="Welcome Text">
         <TextInput
-          value={data.welcomeText || ''}
+          value={(data.welcomeText as string) || ''}
           onChange={value => setData({ ...data, welcomeText: value })}
           placeholder="Welcome to HARDWEY"
         />

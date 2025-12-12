@@ -70,7 +70,7 @@ function SectionHeader({ heading }: SectionHeaderProps) {
 }
 
 // Hook for visibility observer
-function useVisibilityObserver(ref: React.RefObject<HTMLDivElement>) {
+function useVisibilityObserver(ref: React.RefObject<HTMLDivElement | null>) {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
