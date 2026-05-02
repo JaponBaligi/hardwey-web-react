@@ -1,0 +1,126 @@
+/* InvestmentIntroSection Component Styles */
+/* Simple text-only section matching the live site */
+
+.investmentIntroSection {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12rem 0;
+  min-height: 60vh;
+}
+
+.textContainer {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 6rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 2rem;
+}
+
+.heading {
+  font-family: var(--font-family-heading);
+  font-size: clamp(1.25rem, 3vw, 2rem);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-inverse);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  line-height: 1.2;
+  margin: 0 0 1rem 0;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.8s ease;
+}
+
+.headingVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.subtitle {
+  font-family: var(--font-family-primary);
+  font-size: clamp(0.875rem, 2vw, 1.25rem);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.8s ease 0.3s;
+}
+
+.subtitleVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .investmentIntroSection {
+    padding: 8rem 0;
+    min-height: 50vh;
+  }
+
+  .textContainer {
+    padding: 0 4rem;
+  }
+
+  .heading {
+    font-size: clamp(1.25rem, 6vw, 2rem);
+  }
+
+  .subtitle {
+    font-size: clamp(0.875rem, 4vw, 1.25rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .investmentIntroSection {
+    padding: 6rem 0;
+    min-height: 40vh;
+  }
+
+  .textContainer {
+    padding: 0 3rem;
+  }
+
+  .heading {
+    font-size: clamp(1.125rem, 8vw, 1.5rem);
+  }
+
+  .subtitle {
+    font-size: clamp(0.75rem, 5vw, 1rem);
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .heading {
+    color: var(--color-text-inverse);
+  }
+
+  .subtitle {
+    color: var(--color-text-inverse);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .heading,
+  .subtitle {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .headingVisible,
+  .subtitleVisible {
+    transform: none;
+  }
+}

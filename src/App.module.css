@@ -1,0 +1,66 @@
+/* App Component Styles */
+/* Main application layout and global styles */
+
+.app {
+  min-height: 100vh;
+  background-color: var(--color-background-dark);
+  color: var(--color-text-inverse);
+  font-family: var(--font-family-primary);
+  line-height: var(--line-height-base);
+  overflow-x: hidden;
+}
+
+.mainContent {
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+}
+
+.webglBackground {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Global scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Focus management for accessibility */
+*:focus-visible {
+  outline: 2px solid var(--color-accent-blue);
+  outline-offset: 2px;
+}
+
+/* Smooth transitions for reduced motion users */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .app {
+    background-color: var(--color-background-darker);
+  }
+}
+
+/* Print styles */
+@media print {
+  .app {
+    background-color: var(--color-background-primary);
+    color: var(--color-text-primary);
+  }
+}

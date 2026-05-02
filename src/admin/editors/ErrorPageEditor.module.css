@@ -1,0 +1,35 @@
+.errorSection {
+  margin-bottom: 16px;
+  padding: 12px;
+  background-color: #2a2a2a;
+  border-radius: 6px;
+  border: 1px solid #444;
+}
+
+.sectionTitle {
+  margin-top: 0;
+  margin-bottom: 12px;
+  color: #fff;
+}
+
+
+.imagePreview {
+  margin-top: 8px;
+}
+
+.imagePreview img {
+  max-width: 100%;
+  max-height: 100px;
+  border: 1px solid #ccc;
+}
+
+.iconPreview {
+  margin-top: 8px;
+}
+
+.iconPreview img {
+  max-width: 50px;
+  max-height: 50px;
+  border: 1px solid #ccc;
+}
+

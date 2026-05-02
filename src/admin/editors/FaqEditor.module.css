@@ -1,0 +1,47 @@
+.actions {
+  margin-bottom: 16px;
+}
+
+.addButton {
+  margin-bottom: 12px;
+  padding: 8px 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.faqItem {
+  margin-bottom: 16px;
+  padding: 16px;
+  background-color: #2a2a2a;
+  border-radius: 6px;
+  border: 1px solid #444;
+}
+
+.faqItemHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.faqItemTitle {
+  margin: 0;
+  color: #fff;
+}
+
+.removeButton {
+  padding: 4px 12px;
+  background-color: #ff4444;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.removeButton:hover {
+  background-color: #cc3333;
+}
+

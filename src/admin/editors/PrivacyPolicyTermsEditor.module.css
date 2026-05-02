@@ -1,0 +1,229 @@
+.emptyState {
+  padding: 12px;
+  background-color: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 4px;
+  color: #888;
+  margin-bottom: 16px;
+}
+
+.introSection {
+  margin-bottom: 16px;
+}
+
+.sectionsContainer {
+  margin-bottom: 16px;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.sectionLabel {
+  display: block;
+  color: #fff;
+  font-weight: 600;
+}
+
+.count {
+  font-size: 12px;
+  font-weight: normal;
+  color: #888;
+}
+
+.addButton {
+  padding: 6px 12px;
+  background-color: #444;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.addButton:hover {
+  background-color: #555;
+}
+
+.addSmallButton {
+  padding: 6px 12px;
+  background-color: #444;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.addSmallButton:hover {
+  background-color: #555;
+}
+
+.addTinyButton {
+  padding: 4px 8px;
+  background-color: #444;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.addTinyButton:hover {
+  background-color: #555;
+}
+
+.emptySubState {
+  padding: 8px;
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 4px;
+  color: #666;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.introParagraph {
+  margin-bottom: 8px;
+}
+
+.textAreaRow {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.removeSmallButton {
+  padding: 8px 12px;
+  background-color: #d12d37;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.removeSmallButton:hover {
+  background-color: #b0252f;
+}
+
+.sectionItem {
+  margin-bottom: 16px;
+  padding: 16px;
+  background-color: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 6px;
+}
+
+.sectionItemHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.sectionItemTitle {
+  margin: 0;
+  color: #fff;
+}
+
+.removeTinyButton {
+  padding: 4px 8px;
+  background-color: #d12d37;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.removeTinyButton:hover {
+  background-color: #b0252f;
+}
+
+.paragraphsSection {
+  margin-bottom: 12px;
+}
+
+.subSectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.subLabel {
+  display: block;
+  color: #ccc;
+}
+
+.paragraphRow {
+  margin-bottom: 8px;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.listsSection {
+  margin-bottom: 12px;
+}
+
+.listContainer {
+  margin-bottom: 12px;
+  padding: 12px;
+  background-color: #1a1a1a;
+  border-radius: 4px;
+}
+
+.listHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.listLabel {
+  font-size: 12px;
+  color: #888;
+}
+
+.removeMicroButton {
+  padding: 2px 6px;
+  background-color: #d12d37;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 10px;
+}
+
+.removeMicroButton:hover {
+  background-color: #b0252f;
+}
+
+.listItemRow {
+  margin-bottom: 4px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.listItemInput {
+  flex: 1;
+  padding: 6px;
+  background-color: #0a0a0a;
+  color: #fff;
+  border: 1px solid #333;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.disclaimerSection {
+  margin-bottom: 12px;
+}
+
+.contactInfoSection {
+  margin-bottom: 0;
+}
+

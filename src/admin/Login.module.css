@@ -1,0 +1,98 @@
+.loginContainer {
+  min-height: 100vh;
+  background-color: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.loginBox {
+  max-width: 360px;
+  width: 100%;
+  padding: 2rem;
+  border: 1px solid #ffffff;
+  border-radius: 8px;
+  background-color: transparent;
+  position: relative;
+}
+
+.loginTitle {
+  color: #ffffff;
+  font-size: 2rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin: 0;
+  margin-bottom: 1.5rem;
+  font-family: sans-serif;
+  letter-spacing: 0.02em;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.formLabel {
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 500;
+  font-family: sans-serif;
+}
+
+.formInput {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #ffffff;
+  border: 1px solid #000000;
+  border-radius: 0;
+  color: #000000;
+  font-size: 1rem;
+  font-family: sans-serif;
+  box-sizing: border-box;
+}
+
+.formInput:focus {
+  outline: none;
+  border-color: #000000;
+}
+
+.loginButton {
+  padding: 0.75rem 1.5rem;
+  background-color: #ffffff;
+  border: 1px solid #000000;
+  border-radius: 0;
+  color: #000000;
+  font-size: 1rem;
+  font-weight: 500;
+  font-family: sans-serif;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  margin-top: 0.5rem;
+}
+
+.loginButton:hover {
+  opacity: 0.9;
+}
+
+.loginButton:active {
+  opacity: 0.8;
+}
+
+.errorMessage {
+  color: #ff0000;
+  font-size: 0.875rem;
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0.5rem 0;
+}
+

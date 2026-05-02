@@ -1,0 +1,188 @@
+/* CSS Custom Properties (Variables) */
+/* Exact match to original hardwey.css */
+
+@font-face {
+  font-family: 'Helveticanowdisplay';
+  src: url('https://uploads-ssl.webflow.com/64f45f425cb2cbb837b6f9b8/64f4609c8c1b3d94ba3a1817_HelveticaNowDisplay-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Helveticanowdisplay';
+  src: url('https://uploads-ssl.webflow.com/64f45f425cb2cbb837b6f9b8/64fc2eb015ed201d5b41b662_HelveticaNowDisplay-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Helveticanowdisplay';
+  src: url('https://uploads-ssl.webflow.com/64f45f425cb2cbb837b6f9b8/64fc2ecb5e6e8fbe17cd852b_HelveticaNowDisplay-ExtraBold.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Helveticanowdisplay';
+  src: url('https://uploads-ssl.webflow.com/64f45f425cb2cbb837b6f9b8/64fc2efa23d3c065b3615aab_HelveticaNowDisplay-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* Exact color variables from original hardwey.css */
+  --white: white;
+  --mita-blue: #bbdbfa;
+  --black: black;
+  --mita-red: #d12d37;
+  --faded-black: rgba(0, 0, 0, .4);
+  
+  /* Typography - Exact font family from original */
+  --font-family-primary: 'Helveticanowdisplay', sans-serif;
+  --font-family-heading: 'Helveticanowdisplay', sans-serif;
+  
+  /* Font weights matching original */
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  
+  /* Layout */
+  --container-max-width: 100vw;
+  --header-height: auto;
+  --footer-height: auto;
+  
+  /* Transitions matching original */
+  --transition-fast: 0.3s ease;
+  --transition-normal: 0.4s ease;
+  --transition-slow: 0.6s ease;
+  
+  /* Z-Index Scale matching original */
+  --z-background: 1;
+  --z-content: 2;
+  --z-navigation: 3;
+  --z-modal: 10;
+  --z-overlay: 20;
+  --z-top: 999;
+}
+
+/* Global styles matching original */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  font-family: sans-serif;
+}
+
+body {
+  margin: 0;
+  background-color: var(--black);
+  font-family: 'Helveticanowdisplay', sans-serif;
+}
+
+/* Typography matching original exactly */
+h1 {
+  color: var(--white);
+  text-align: center;
+  text-transform: uppercase;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-family: 'Helveticanowdisplay', sans-serif;
+  font-size: 38px;
+  font-weight: 700;
+  line-height: 44px;
+}
+
+h2 {
+  color: var(--white);
+  text-align: center;
+  text-transform: uppercase;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-family: 'Helveticanowdisplay', sans-serif;
+  font-size: 6em;
+  font-weight: 700;
+  line-height: 1em;
+}
+
+h3 {
+  color: var(--white);
+  text-transform: uppercase;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-family: 'Helveticanowdisplay', sans-serif;
+  font-size: 2.6em;
+  font-weight: 700;
+  line-height: 1em;
+}
+
+a {
+  color: var(--mita-blue);
+  text-decoration: underline;
+}
+
+/* Layout utilities matching original */
+.w-layout-hflex {
+  flex-direction: row;
+  align-items: flex-start;
+  display: flex;
+}
+
+.w-layout-vflex {
+  flex-direction: column;
+  align-items: flex-start;
+  display: flex;
+}
+
+/* Responsive breakpoints matching original */
+@media screen and (max-width: 991px) {
+  h1 {
+    font-size: 28px;
+    line-height: 32px;
+  }
+  
+  h2 {
+    font-size: 4em;
+  }
+  
+  h3 {
+    font-size: 2em;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  h1 {
+    font-size: 24px;
+    line-height: 28px;
+  }
+  
+  h2 {
+    font-size: 3em;
+  }
+  
+  h3 {
+    font-size: 1.8em;
+  }
+}
+
+@media screen and (max-width: 479px) {
+  h1 {
+    font-size: 20px;
+    line-height: 24px;
+  }
+  
+  h2 {
+    font-size: 2.5em;
+  }
+  
+  h3 {
+    font-size: 1.6em;
+  }
+}

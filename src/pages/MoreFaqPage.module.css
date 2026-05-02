@@ -1,0 +1,667 @@
+/* MoreFaqPage Component Styles */
+/* Based on original more-faq-it.html styles */
+
+.pageContainer {
+  min-height: 100vh;
+  background-color: var(--black);
+  padding: 0.25em;
+  padding-top: calc(0.25em + 100px);
+  position: relative;
+}
+
+.pageHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+  padding-bottom: var(--spacing-lg);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  background: none;
+  border: none;
+  color: var(--color-text-inverse);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: color 0.3s ease;
+  padding: var(--spacing-xs);
+}
+
+.backButton:hover {
+  color: var(--color-accent-blue);
+}
+
+.backButton:focus-visible {
+  outline: 2px solid var(--color-accent-blue);
+  outline-offset: 2px;
+}
+
+.backArrow {
+  width: 1em;
+  height: 1em;
+  transform: rotate(180deg);
+  transition: transform 0.3s ease;
+}
+
+.backButton:hover .backArrow {
+  transform: rotate(180deg) translateX(-2px);
+}
+
+.headerContent {
+  width: 100%;
+  text-align: center;
+}
+
+.pageTitle {
+  color: var(--color-text-inverse);
+  font-family: var(--font-family-heading);
+  font-size: clamp(2rem, 6vw, 4rem);
+  font-weight: var(--font-weight-bold);
+  line-height: 0.9;
+  text-transform: uppercase;
+  margin: 0 0 var(--spacing-md) 0;
+  letter-spacing: -0.02em;
+}
+
+.pageSubtitle {
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-normal);
+  line-height: 1.4;
+  margin: 0;
+  opacity: 0.8;
+}
+
+.collectionList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.6s ease;
+}
+
+.collectionListVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.accordionItem {
+  width: 100%;
+  border: 2px solid var(--mita-red);
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.accordionItemVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.accordionItem:hover {
+  box-shadow: 4px 4px 25px rgba(0, 0, 0, 0.2);
+}
+
+.accordionTabButton {
+  cursor: pointer;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  padding-left: 1em;
+  padding-right: 1em;
+  position: relative;
+  width: 100%;
+  background-color: var(--black);
+  border-top: 2px solid var(--mita-red);
+  border-bottom: 2px solid var(--mita-red);
+  border-left: none;
+  border-right: none;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+  min-height: 6em;
+}
+
+.accordionTabButton > *:not(.faqNumber):not(.arrowDivWrapper) {
+  position: relative;
+  z-index: 1;
+}
+
+.accordionTabButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  background-color: var(--mita-red);
+}
+
+.accordionTabButton:hover .heading3 {
+  color: var(--black);
+}
+
+.accordionTabButton:hover .faqNumber {
+  color: var(--black);
+}
+
+.accordionTabButton:hover .arrowDiv {
+  filter: brightness(0);
+  transform: rotateZ(135deg) scale(1.3);
+}
+
+.accordionTabButton:focus-visible {
+  outline: 2px solid var(--white);
+  outline-offset: 2px;
+}
+
+.accordionTabButtonActive {
+  background-color: var(--mita-red);
+  border-top: 2px solid var(--mita-red);
+  border-bottom: 2px solid var(--mita-red);
+  border-left: none;
+  border-right: none;
+}
+
+.accordionTabButtonActive .faqNumber {
+  color: var(--black);
+}
+
+.accordionTabButtonActive .heading3 {
+  color: var(--black);
+}
+
+.accordionTabButtonActive .faqSupportTxt {
+  color: var(--black);
+}
+
+.accordionTabButtonActive .arrowDiv {
+  transform: rotateZ(180deg);
+  filter: brightness(0);
+}
+
+.accordionTabButtonActive:hover .arrowDiv {
+  transform: rotateZ(135deg);
+  filter: brightness(0);
+}
+
+.faqNumber {
+  z-index: 5;
+  position: absolute;
+  top: 0.2em;
+  bottom: auto;
+  left: 0.2em;
+  color: var(--mita-red);
+  text-align: left;
+  text-transform: uppercase;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-family: 'Helveticanowdisplay', sans-serif;
+  font-size: 3em;
+  font-weight: 700;
+  line-height: 1em;
+  transition: color 0.3s ease;
+}
+
+.faqTitleFlex {
+  z-index: 5;
+  position: relative;
+  grid-column-gap: 1em;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-left: 6em;
+  margin-right: auto;
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  gap: 1em;
+}
+
+.heading3 {
+  font-family: 'Helveticanowdisplay', sans-serif;
+  font-size: 4em;
+  font-weight: 700;
+  color: var(--mita-red);
+  margin: 0;
+  line-height: 1.2;
+  transition: color 0.3s ease;
+  text-transform: uppercase;
+  text-align: left;
+}
+
+.heading3IsFaq {
+  font-size: 4em;
+}
+
+.faqSupportTxt {
+  transform-origin: 0%;
+  color: var(--white);
+  text-align: right;
+  text-transform: uppercase;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-family: 'Helveticanowdisplay', sans-serif;
+  font-size: 0.9em;
+  font-weight: 500;
+  line-height: 1.3;
+  transition: transform 0.3s ease, color 0.3s ease;
+  align-self: flex-start;
+  flex-shrink: 0;
+}
+
+.arrowDivWrapper {
+  z-index: 10;
+  width: 3em;
+  height: 3em;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  position: absolute !important;
+  top: auto !important;
+  right: 0.5em !important;
+  bottom: 0.5em !important;
+  left: auto !important;
+  flex-shrink: 0;
+}
+
+.arrowDiv {
+  width: 40px;
+  height: 40px;
+  transition: transform 0.3s ease, filter 0.3s ease;
+  transform: rotateZ(90deg);
+  filter: none;
+}
+
+.arrowDivActive {
+  transform: rotateZ(135deg);
+}
+
+.accordionPane {
+  background-color: var(--mita-red) !important;
+  overflow: hidden;
+  transition: height 0.3s ease-in-out;
+  width: 100%;
+}
+
+.accordionPaneContent {
+  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin-bottom: 0;
+  padding: 6em 22vw 2em 8.5vw;
+  display: flex;
+  background-color: var(--mita-red) !important;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.faqAnswer {
+  color: var(--black);
+  text-align: left;
+  text-transform: uppercase;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-family: 'Helveticanowdisplay', sans-serif;
+  font-size: 1.4em;
+  font-weight: 400;
+  line-height: 1em;
+}
+
+.faqSecondaryFlex {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+.bodyCopy {
+  font-family: 'Helveticanowdisplay', sans-serif;
+  font-size: 1em;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--black);
+  margin: 0;
+}
+
+.imageSection {
+  z-index: 12;
+  width: 100%;
+  background-color: var(--black);
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 40em;
+  padding-bottom: 40em;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+
+.imageFull {
+  z-index: 1;
+  width: 100%;
+  height: 112%;
+  max-width: none;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.bodyTextContain {
+  z-index: 5;
+  width: 54em;
+  grid-row-gap: 1em;
+  flex-direction: column;
+  align-items: center;
+  display: flex;
+  position: relative;
+}
+
+.heading2Image {
+  z-index: 5;
+  color: var(--white);
+  text-align: center;
+  text-transform: uppercase;
+  font-family: 'Helveticanowdisplay', sans-serif;
+  font-size: 4.2em;
+  font-weight: 700;
+  line-height: 0.9em;
+  margin: 0;
+}
+
+.emailButton {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.8rem 1.5rem;
+  background-color: #4a6fa5;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 4px;
+  font-family: 'Helveticanowdisplay', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  border: 2px solid #4a6fa5;
+}
+
+.emailButton:hover {
+  background-color: #2c4a7a;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(74, 111, 165, 0.4);
+  border-color: #2c4a7a;
+}
+
+.emailButton:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .pageContainer {
+    padding: 0.25em;
+    padding-top: calc(0.25em + 100px);
+  }
+
+  .pageHeader {
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .pageTitle {
+    font-size: clamp(1.5rem, 8vw, 2.5rem);
+  }
+
+  .pageSubtitle {
+    font-size: var(--font-size-base);
+  }
+
+  .accordionTabButton {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .faqNumber {
+    display: none;
+  }
+
+  .faqTitleFlex {
+    grid-column-gap: 30px;
+    grid-row-gap: 30px;
+    flex-direction: column;
+    margin-left: 15px;
+  }
+
+  .faqSupportTxt {
+    font-size: 14px;
+    line-height: 14px;
+  }
+
+  .faqAnswer {
+    font-size: 16px;
+    line-height: 18px;
+  }
+
+  .accordionPaneContent {
+    padding: 60px 80px 15px 15px;
+  }
+
+  .imageSection {
+    padding-top: 22em;
+    padding-bottom: 14em;
+  }
+
+  .bodyTextContain {
+    width: 90%;
+    max-width: 54em;
+  }
+
+  .heading2Image {
+    font-size: 3em;
+    line-height: 1em;
+  }
+}
+
+@media (max-width: 480px) {
+  .pageContainer {
+    padding: 0.25em;
+    padding-top: calc(0.25em + 100px);
+  }
+
+  .pageTitle {
+    font-size: clamp(1.2rem, 10vw, 2rem);
+  }
+
+  .pageSubtitle {
+    font-size: var(--font-size-sm);
+  }
+
+  .accordionTabButton {
+    width: 100%;
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+
+  .faqTitleFlex,
+  .faqTitleFlexIsNormal {
+    margin-left: 0;
+  }
+
+  .arrowDivWrapper {
+    width: 2.5em;
+    height: 2.5em;
+    top: auto !important;
+    right: 0.5em !important;
+    left: auto !important;
+    bottom: 0.5em !important;
+  }
+
+  .arrowDiv {
+    width: 36px;
+    height: 36px;
+  }
+
+  .accordionPaneContent {
+    padding-bottom: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .accordionTabButton {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 15px;
+  }
+
+  .faqTitleFlex,
+  .faqTitleFlex.isNormal {
+    margin-left: 0;
+  }
+
+  .faqSupportTxt {
+    font-size: 12px;
+  }
+
+  .faqAnswer {
+    font-size: 14px;
+    line-height: 16px;
+  }
+
+  .imageSection {
+    padding-top: 15em;
+    padding-bottom: 10em;
+  }
+
+  .bodyTextContain {
+    width: 95%;
+    padding: 0 1em;
+  }
+
+  .heading2Image {
+    font-size: 2em;
+    line-height: 1.1em;
+  }
+
+  .emailButton {
+    font-size: 0.9rem;
+    padding: 0.6rem 1.2rem;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .faqItem {
+    border-width: 2px;
+  }
+
+  .faqItemOpen {
+    border-width: 3px;
+  }
+
+  .emailButton {
+    border-width: 3px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .accordionItem,
+  .arrowDiv,
+  .accordionPane {
+    transition: none;
+  }
+
+  .arrowDivActive {
+    transform: translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(180deg) skew(0, 0);
+  }
+
+  .accordionPane {
+    transition: height 0.2s ease;
+  }
+
+  .contactButton {
+    transition: none;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .pageContainer {
+    background-color: var(--color-background-darker);
+  }
+
+  .faqItem {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .faqItem:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.25);
+  }
+
+  .contactSection {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+}
+
+/* Print styles */
+@media print {
+  .pageContainer {
+    background-color: var(--color-background-primary);
+    color: var(--color-text-primary);
+  }
+
+  .pageTitle,
+  .faqQuestion,
+  .contactTitle {
+    color: var(--color-text-primary);
+  }
+
+  .pageSubtitle,
+  .faqSubtitle,
+  .answerText,
+  .contactText {
+    color: var(--color-text-secondary);
+  }
+
+  .faqItem {
+    background-color: transparent;
+    border-color: var(--color-border);
+  }
+
+  .contactButton {
+    background-color: transparent;
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-text-primary);
+  }
+
+  .backButton,
+  .contactButtons {
+    display: none;
+  }
+}

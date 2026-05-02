@@ -1,0 +1,33 @@
+.srcSetInput {
+  font-family: monospace;
+  font-size: 12px;
+}
+
+.colorPicker {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.colorInput {
+  width: 60px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.colorTextInput {
+  flex: 1;
+}
+
+.preview {
+  margin-top: 8px;
+}
+
+.preview img {
+  max-width: 100%;
+  max-height: 200px;
+  border: 1px solid #ccc;
+}
+

@@ -1,0 +1,169 @@
+/* MobileMenu Component Styles */
+/* Mobile navigation overlay matching the design */
+
+.mobileMenuOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  animation: fadeIn 0.3s ease-out;
+  overflow: hidden;
+}
+
+.watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-family-primary);
+  font-size: 15vw;
+  font-weight: var(--font-weight-bold);
+  color: rgba(187, 219, 250, 0.08);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  user-select: none;
+  pointer-events: none;
+  z-index: 1;
+  filter: blur(0.5px);
+}
+
+.closeButton {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  font-family: var(--font-family-primary);
+  font-size: 16px;
+  font-weight: var(--font-weight-normal);
+  color: var(--mita-blue);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: opacity var(--transition-fast);
+  z-index: 1200;
+  line-height: 1;
+}
+
+.closeButton:hover {
+  opacity: 0.7;
+}
+
+.closeButton:focus-visible {
+  outline: 2px solid var(--mita-blue);
+  outline-offset: 4px;
+}
+
+.mobileNav {
+  position: absolute;
+  top: 80px;
+  left: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  z-index: 1200;
+}
+
+.navLink {
+  font-family: var(--font-family-primary);
+  font-size: 24px;
+  font-weight: var(--font-weight-normal);
+  color: var(--mita-blue);
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: opacity var(--transition-fast);
+  line-height: 1.4;
+}
+
+.navLink:hover {
+  opacity: 0.7;
+}
+
+.navLink:focus-visible {
+  outline: 2px solid var(--mita-blue);
+  outline-offset: 4px;
+}
+
+.socialLinks {
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  z-index: 1200;
+}
+
+.socialLink {
+  font-family: var(--font-family-primary);
+  font-size: 16px;
+  font-weight: var(--font-weight-normal);
+  color: var(--mita-blue);
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: opacity var(--transition-fast);
+  line-height: 1;
+}
+
+.socialLink:hover {
+  opacity: 0.7;
+}
+
+.socialLink:focus-visible {
+  outline: 2px solid var(--mita-blue);
+  outline-offset: 4px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .watermark {
+    font-size: 20vw;
+  }
+
+  .closeButton {
+    top: 20px;
+    right: 20px;
+    font-size: 14px;
+  }
+
+  .mobileNav {
+    top: 60px;
+    left: 20px;
+    gap: 28px;
+  }
+
+  .navLink {
+    font-size: 20px;
+  }
+
+  .socialLinks {
+    bottom: 20px;
+    left: 20px;
+    gap: 20px;
+  }
+
+  .socialLink {
+    font-size: 14px;
+  }
+}

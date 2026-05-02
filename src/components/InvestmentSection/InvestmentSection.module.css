@@ -1,0 +1,299 @@
+/* InvestmentSection Component Styles */
+/* Matches the live site "invest in artists" section */
+
+.investmentSection {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: var(--color-background-dark);
+}
+
+.container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.backgroundImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.backgroundImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.content {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+}
+
+/* Main Heading */
+.mainHeading {
+  font-family: var(--font-family-heading);
+  font-size: clamp(4rem, 12vw, 8rem);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-inverse);
+  text-transform: lowercase;
+  letter-spacing: -0.02em;
+  line-height: 0.8;
+  margin: 0 0 2rem 0;
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 1s ease;
+}
+
+.mainHeadingVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Animated Text */
+.animatedText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 3rem;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 1s ease 0.5s;
+}
+
+.animatedTextVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.word {
+  font-family: var(--font-family-heading);
+  font-size: clamp(2rem, 6vw, 4rem);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-inverse);
+  text-transform: lowercase;
+  letter-spacing: 0.05em;
+  line-height: 1;
+  opacity: 0;
+  transform: translateX(-50px);
+  animation: slideInWord 0.8s ease forwards;
+}
+
+.word:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.word:nth-child(2) {
+  animation-delay: 0.3s;
+}
+
+.word:nth-child(3) {
+  animation-delay: 0.5s;
+}
+
+@keyframes slideInWord {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Coming Soon */
+.comingSoon {
+  margin-bottom: 2rem;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 1s ease 1s;
+}
+
+.comingSoonVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.comingSoonTitle {
+  font-family: var(--font-family-heading);
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-inverse);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0 0 1rem 0;
+}
+
+.launchDate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.dateText {
+  font-family: var(--font-family-heading);
+  font-size: clamp(1.2rem, 3vw, 2rem);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-inverse);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0;
+}
+
+.logoImg {
+  width: 3rem;
+  height: 3rem;
+  object-fit: contain;
+  border-radius: var(--border-radius-sm);
+}
+
+/* Welcome Text */
+.welcomeText {
+  font-family: var(--font-family-primary);
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 1s ease 1.5s;
+}
+
+.welcomeTextVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .content {
+    padding: 1rem;
+  }
+
+  .mainHeading {
+    font-size: clamp(3rem, 15vw, 6rem);
+    margin-bottom: 1.5rem;
+  }
+
+  .animatedText {
+    margin-bottom: 2rem;
+  }
+
+  .word {
+    font-size: clamp(1.5rem, 8vw, 3rem);
+  }
+
+  .comingSoon {
+    margin-bottom: 1.5rem;
+  }
+
+  .comingSoonTitle {
+    font-size: clamp(1.2rem, 6vw, 2rem);
+  }
+
+  .dateText {
+    font-size: clamp(1rem, 5vw, 1.5rem);
+  }
+
+  .logoImg {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .welcomeText {
+    font-size: clamp(0.875rem, 4vw, 1.25rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .content {
+    padding: 0.5rem;
+  }
+
+  .mainHeading {
+    font-size: clamp(2.5rem, 18vw, 4rem);
+    margin-bottom: 1rem;
+  }
+
+  .animatedText {
+    margin-bottom: 1.5rem;
+    gap: 0.25rem;
+  }
+
+  .word {
+    font-size: clamp(1.2rem, 10vw, 2rem);
+  }
+
+  .comingSoon {
+    margin-bottom: 1rem;
+  }
+
+  .comingSoonTitle {
+    font-size: clamp(1rem, 8vw, 1.5rem);
+  }
+
+  .dateText {
+    font-size: clamp(0.875rem, 6vw, 1.25rem);
+  }
+
+  .logoImg {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .welcomeText {
+    font-size: clamp(0.75rem, 5vw, 1rem);
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .mainHeading,
+  .word,
+  .comingSoonTitle,
+  .dateText {
+    color: var(--color-text-inverse);
+  }
+
+  .welcomeText {
+    color: var(--color-text-inverse);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .mainHeading,
+  .animatedText,
+  .comingSoon,
+  .welcomeText {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .word {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}

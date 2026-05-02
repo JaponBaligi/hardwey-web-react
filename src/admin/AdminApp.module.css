@@ -1,0 +1,101 @@
+.container {
+  max-width: 1100px;
+  margin: 32px auto;
+  padding: 12px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.headerTitle {
+  margin: 0;
+}
+
+.logoutButton {
+  padding: 8px 16px;
+}
+
+.sectionsInfo {
+  margin-bottom: 8px;
+  color: #888;
+}
+
+.sectionsList {
+  font-size: 14px;
+  overflow-x: auto;
+}
+
+.main {
+  display: flex;
+  gap: 16px;
+}
+
+.sidebar {
+  min-width: 200px;
+  flex-shrink: 0;
+}
+
+.divider {
+  width: 1px;
+  background-color: #ddd;
+  flex-shrink: 0;
+}
+
+.editorContainer {
+  flex: 1;
+  min-width: 0;
+}
+
+.syncButton {
+  font-size: 14px;
+  padding: 6px 12px;
+}
+
+.syncButtonContainer {
+  padding-top: 8px;
+}
+
+@media (max-width: 768px) {
+  .container {
+    margin: 16px auto;
+    padding: 8px;
+  }
+
+  .header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .main {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    margin-bottom: 16px;
+    min-width: unset;
+  }
+
+  .divider {
+    display: none;
+  }
+
+  .sectionsList {
+    font-size: 12px;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 8px;
+    margin: 8px;
+  }
+}
+
